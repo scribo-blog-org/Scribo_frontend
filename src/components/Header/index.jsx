@@ -125,7 +125,9 @@ function Header() {
               {
                 profile?.notifications?.some(item => item.is_read === false ) 
                   ? 
-                    <div className='header_notification_new'></div>
+                    <div className='header_notification_new'>
+                      <div className='header_notification_new_circle'></div>
+                    </div>
                   :
                     <></>
               }

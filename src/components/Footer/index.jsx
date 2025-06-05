@@ -5,7 +5,7 @@ import { ReactComponent as GhIcon } from "../../assets/svg/github-icon.svg";
 import { ReactComponent as InstagramIcon } from "../../assets/svg/instagram-icon.svg";
 import { ReactComponent as TelegramIcon } from "../../assets/svg/telegram-icon.svg";
 import { ReactComponent as TWitterIcon } from "../../assets/svg/twitter-icon.svg";
-import { ReactComponent as MainLogo } from "../../assets/svg/main-logo-icon.svg";
+import { ReactComponent as MainLogo } from "../../assets/svg/full-logo-icon.svg";
 
 function Footer(){
     return(
@@ -44,7 +44,7 @@ function Footer(){
                         </a>
                     </div>
                     <div className="footer_column footer_main_logo">
-                        <MainLogo/>
+                        <MainLogo className="app-transition"/>
                     </div>
                     <div className="footer_column footer_copyright">
                         <p>

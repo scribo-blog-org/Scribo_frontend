@@ -1,6 +1,6 @@
-# Daily Buzz
+# Scribo
 
-Simple new site project
+Simple blog site project
 
 ## Technologies
 - HTMl
@@ -11,16 +11,15 @@ Simple new site project
 
 ## Functionality
 
-- All news screen
-- Profile screen
-- New screen
-- Login/Register screeen
-- Saved posts
+- Creating posts
+- Reading posts
+- Login/Register accounts
+- Following/Unfollowing
 
 ## Install and run
 
 ```bash
-git clone https://github.com/MaksimKosyanchuk/news_site_frontend
+git clone https://github.com/MaksimKosyanchuk/Scribo_frontend
 cd news-site
 ```
 set server link into `REACT_APP_API_URL` variable in .env file
@@ -32,7 +31,7 @@ npm start
 
 ## Links
 
-- [Visit site](https://news-site-frontend-rosy.vercel.app/)
+- [Visit site](https://scribo-blog.vercel.app)
 - [Backend repository](https://github.com/MaksimKosyanchuk/news_site_backend)
 
 ---

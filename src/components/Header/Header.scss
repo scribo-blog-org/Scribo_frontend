@@ -90,10 +90,13 @@
         .header_notification {
           &_new {
             position: fixed;
-            background-color: red;
-            height: 5px;
-            width: 5px;
-            border-radius: 50%;
+
+            &_circle {
+              background-color: red;
+              height: 4px;
+              width: 4px;
+              border-radius: 50%;
+            }
           }
         }
       }
