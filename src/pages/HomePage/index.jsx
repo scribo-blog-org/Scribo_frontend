@@ -13,7 +13,7 @@ const HomePage = () => {
     const fetchPosts = async () => {
         setIsLoading(true)
         const response = await getPosts()
-        if(response.status === "success"){
+        if(response.status === true){
             setPosts(response.data)
         }
         else{

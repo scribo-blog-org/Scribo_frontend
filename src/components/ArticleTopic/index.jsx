@@ -54,21 +54,20 @@ const ArticleTopic = ({ article }) => {
     const save_post = async () => {
         setSavingProcess(true)
         const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: localStorage.getItem('token'), post_id: article._id })
+            method: profile.saved_posts.some( (post) => { return post.toString() === article._id } ) ? 'DELETE' : 'POST',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}`}
         };
 
         try {
-            let result = await fetch(`${API_URL}/api/profile/save-post`, requestOptions)
+            let result = await fetch(`${API_URL}/api/profile/save-post/${article._id}`, requestOptions)
             result = await result.json();
-            if (result.status === "success") {
+            if (result.status === true) {
                 let saved_posts = isSaved ? profile.saved_posts.filter(element => element !== article._id ) : [...profile.saved_posts, article._id]
                 setProfile({ ...profile, saved_posts: saved_posts })
                 showToast({ message: isSaved ? "Убрано из сохранённых!" : "Сохранено!", type: "success" });
                 setIsSaved(!isSaved)
             }
-            else{
+            else {
                 showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
             }
         } catch (error) {

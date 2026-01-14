@@ -24,10 +24,10 @@ const Article = () => {
         try {
             setIsLoading(true)
             
-            await fetch(`${API_URL}/api/posts/${id}`)
+            await fetch(`${API_URL}/api/posts/${id}?expand=author`)
             .then(res => res.json())
             .then(res => {
-                if (res.status === "success") {
+                if (res.status === true) {
                     setArticle(res.data)
                 }
                 else {

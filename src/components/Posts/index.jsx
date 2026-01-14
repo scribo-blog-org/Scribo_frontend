@@ -12,7 +12,7 @@ const Posts =  ( { posts, isLoading } ) => {
     if(!posts) {
         return <NoPosts/>
     }
-
+    
     return (
         <div className="posts posts_columns">
         {

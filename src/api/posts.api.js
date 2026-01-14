@@ -1,6 +1,5 @@
 import { API_URL } from "../config"
 
-
 export const getPosts = async (query) => {
     let queryString = ""
 
@@ -13,7 +12,7 @@ export const getPosts = async (query) => {
         }).join('&')
     }
     
-    const result = await fetch(`${API_URL}/api/posts?${queryString}`)
+    const result = await fetch(`${API_URL}/api/posts?${queryString}&&expand=author`)
     .then(res => res.json())
     .then(res => {
         res?.data?.sort((prev, next) => new Date(next.created_date) - new Date(prev.created_date));

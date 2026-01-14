@@ -74,13 +74,16 @@ const CreatePost = () => {
 
     const create_post = async (title, mainText) => {
         const formData = new FormData();
-        formData.append('token', localStorage.getItem("token"));
         formData.append('title', title)
         formData.append('content_text', fields.content_text)
         formData.append('featured_image', fields.featured_image)
 
+        const headers = {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+
         try{
-            const creating = await fetch(`${API_URL}/api/posts/create-post`, { method: "POST", body: formData})
+            const creating = await fetch(`${API_URL}/api/posts/create-post`, { method: "POST", body: formData, headers: headers})
             if (!creating.ok) {
                 console.log(creating)
             }

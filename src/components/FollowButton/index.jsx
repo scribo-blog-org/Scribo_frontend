@@ -3,31 +3,19 @@ import { useContext } from "react";
 import { API_URL } from "../../config";
 import "./FollowButton.scss";
 
-const FollowButton = ({ user, update_user=null, setUser, author_id, class_name }) => {
-    const { profile, setProfile, showToast } = useContext(AppContext);
+const FollowButton = ({ setNewData, author_id, class_name }) => {
+    const { profile, showToast } = useContext(AppContext);
 
     const follow = async () => {
         try {
-            const formData = new FormData();
-            formData.append("token", localStorage.getItem("token"));
-            formData.append('user_id', author_id);
-
-            const follow = await fetch(`${API_URL}/api/profile/follow`, { method: "POST", body: formData})
+            const headers = {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+            const follow = await fetch(`${API_URL}/api/users/${author_id}/follow`, { method: "POST",  headers: headers })
             const result = await follow.json();
 
-            if(result.status === "success") {
-                setProfile(result.data.follower)
-                switch (update_user){
-                    case "follower":
-                        setUser(result.data.follower)
-                        break;
-                    case "followed":
-                        setUser(result.data.followed)
-                        break;
-                    default:
-                        console.error("Unexpexted update_user on folow button", update_user)
-                        break;
-                }
+            if(result.status === true) {
+                await setNewData(result.data)
                 showToast({ message: `Вы подписались на ${result.data.followed.nick_name}!`, type: "success" })
             }
             else {
@@ -49,37 +37,22 @@ const FollowButton = ({ user, update_user=null, setUser, author_id, class_name }
 
     const unfollow = async () => {
         try {
-            const formData = new FormData();
-            formData.append("token", localStorage.getItem("token"));
-            formData.append('user_id', author_id);
-
-            const follow = await fetch(`${API_URL}/api/profile/unfollow`, { method: "POST", body: formData})
+            const headers = {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+            const follow = await fetch(`${API_URL}/api/users/${author_id}/follow`, { method: "DELETE",  headers: headers })
             const result = await follow.json();
 
-            if(result.status === "success") {
+            if(result.status === true) {
+                await setNewData(result.data)
                 showToast({ message: `Вы отписались от ${result.data.followed.nick_name}!`, type: "success" })
-                switch (update_user){
-                    case "follower":
-                        setUser(result.data.follower)
-                        break;
-                    case "followed":
-                        setUser(result.data.followed)
-                        break;
-                    default:
-                        console.error("Unexpexted update_user on folow button", update_user)
-                        break;
-                }
-                setProfile(result.data.follower)
             }
             else {
                 if(result?.errors?.token){
                     showToast({ type: "warning", message: "Чтобы подписаться нужно войти в аккаунт!" })
                 }
-                if(result?.errors?.["user_id/nick_name"] === "You are not following this user!") {
-                    showToast({ type: "warning", message: "Вы еще не подписаны на этого пользователя!" })   
-                }
-                if(result?.errors?.["user_id/nick_name"] === "You cannot unfollow yourself!") {
-                    showToast({ type: "warning", message: "Вы не можете отписаться от самого себя!" })   
+                else if(result?.errors?.nick_name) {
+                    showToast({ type: "warning", message: result?.errors?.nick_name?.message })   
                 }
             }
         }

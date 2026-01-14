@@ -23,7 +23,43 @@ const Login = () => {
         setErrors (other)
     }
 
-    const handleLogin = async () => { 
+    const field_validation = () => {
+        if (fields.nick_name.length < 3) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                nick_name: "Username must be at least 3 characters long!"
+            }));
+            return false;
+        }
+        if (fields.nick_name.length > 20) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                nick_name: "Username cannot be longer than 20 characters!"
+            }));
+            return false;
+        }
+        if (fields.password.length < 8) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                password: "Password must be at least 8 characters long!"
+            }));
+            return false;
+        }
+        if (fields.password.length > 20) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                password: "Password cannot be longer than 20 characters!"
+            }));
+            return false;
+        }
+
+        return true
+    }
+
+    const handleLogin = async () => {
+        if(!field_validation()) {
+            return
+        }
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -32,17 +68,18 @@ const Login = () => {
         try {
             const login = await fetch(`${API_URL}/api/auth/login`, requestOptions)
             const result = await login.json() 
-            if (result.status === 'success') { 
+            if (result.status === true) { 
                 localStorage.setItem('token', result.data.token); 
                 navigate('/posts');
                 showToast({ message: 'Вы вошли в аккаунт!', type: 'success' }); 
                 return result; 
             } 
             else { 
-                if (result?.errors && Object.keys(result.errors).length > 0 ) { 
-                    showToast({ message: 'Ошибка!', type: 'error' }); 
-                    setErrors(result.errors); 
-                } 
+                showToast({ message: 'Неверно!', type: 'error' }); 
+                setErrors({ "password": result.message })
+                if (result?.errors?.body) { 
+                    setErrors(result.errors.body);
+                }
         
                 return result; 
             } 

@@ -16,15 +16,14 @@ const StartScreen = ({ children }) => {
         
         if (token) {
             const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token })
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             };
             
             try {
                 const response = await fetch(`${API_URL}/api/profile`, requestOptions);
                 const profileData = await response.json();
-                if (profileData.status === 'success') {
+                if (profileData.status === true) {
                     setProfile(profileData.data);
                 }
             } catch (error) {

@@ -21,13 +21,13 @@ export const getUsers = async (query) => {
 
         const userMap = new Map(result.data.map(user => [user._id, user]));
         return {
-            status: "success",
+            status: true,
             data: query.map(item => userMap.get(item._id) || null)
         }
     } catch (err) {
         console.error(err);
         return query.map(() => ({
-            status: "error",
+            status: false,
             message: err,
             data: null
         }));

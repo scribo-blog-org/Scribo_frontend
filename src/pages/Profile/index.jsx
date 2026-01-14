@@ -17,12 +17,34 @@ const Profile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     let tabs = ["Посты", "Сохранённые"];
-    const { profile, showToast, showModalWindow } = useContext(AppContext);
+    const { profile, setProfile, showToast, showModalWindow } = useContext(AppContext);
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const [isLoading, setIsLoading] = useState(false);
     const [posts, setPosts] = useState([]);
     const [activePosts, setActivePosts] = useState([]);
     const [user, setUser] = useState(null);
+    const [newData, setNewData] = useState(null);
+
+    useEffect(() => {
+        setProfile({
+            ...profile,
+            follows: newData?.follower?.follows
+        })
+        if(profile?._id !== user?._id) {
+            setUser({
+                ...user,
+                followers: newData?.followed?.followers,
+                follows: newData?.followed?.follows
+            })
+        }
+        else {
+            setUser({
+                ...user,
+                followers: newData?.follower?.followers,
+                follows: newData?.follower?.follows
+            })
+        }
+    }, [newData])
 
     useEffect(() => {
         const getUser = async () => {
@@ -48,7 +70,7 @@ const Profile = () => {
         if (user && user._id) {
             fetchPosts({ author: user._id }).then(data => setPosts(data));
         }
-    }, [user]);
+    }, [user?._id]);
 
     useEffect(() => {
         if (activeTab === "Посты") {
@@ -66,7 +88,7 @@ const Profile = () => {
         setIsLoading(true);
         const response = await getPosts(query);
         setIsLoading(false);
-        return response.status === "success" ? response.data : [];
+        return response.status === true ? response.data : [];
     };
 
     const handleTabClick = async (item) => {
@@ -91,7 +113,7 @@ const Profile = () => {
 
     const fetchUsers = async (query) => {
         const response = await getUsers(query);
-        return response.status === "success" ? response.data : [];
+        return response.status === true ? response.data : [];
     }
 
     const open_follows = async () => {
@@ -104,7 +126,7 @@ const Profile = () => {
                 content: result.map(authorData => (
                     <div key={authorData._id} className="modal_window_body_content_user">
                         <Author author_data={authorData} />
-                        <FollowButton update_user={profile?._id === user?._id ? "follower" : ""} setUser={setUser} author_id={authorData._id}/>
+                        <FollowButton setNewData={setNewData} author_id={authorData._id}/>
                     </div>
                   ))
             }
@@ -121,7 +143,7 @@ const Profile = () => {
                 content: result.map(authorData => (
                     <div key={authorData?._id } className="modal_window_body_content_user">
                         <Author author_data={authorData} />
-                        <FollowButton update_user={profile?._id === user?._id ? "follower" : ""} setUser={setUser} author_id={authorData._id}/>
+                        <FollowButton setNewData={setNewData} author_id={authorData._id}/>
                     </div>
                   ))
             }
@@ -175,7 +197,7 @@ const Profile = () => {
                             </button>
                         ) 
                         :
-                            <FollowButton user={user} update_user={"followed"} setUser={setUser} author_id={user?._id} class_name={"profile_info_top_right_side_button"}/> 
+                            <FollowButton setNewData={setNewData} author_id={user?._id} class_name={"profile_info_top_right_side_button"}/> 
                         }
                     </div>
                 </div>
