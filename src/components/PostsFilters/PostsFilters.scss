@@ -1,0 +1,48 @@
+.posts_filters {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0;
+
+    .post_filter {
+        background-color: var(--profile-button-background-color);
+        margin: 0;
+        border-radius: 6px;
+    }
+    
+    .post_filter:hover {
+        background-color: var(--profile-button-hover-background-color)
+    }
+
+    button {
+        font-size: 14px;
+        height: 100%;
+        padding: 8px 16px;
+        color: var(--profile-button-text-color);
+    }
+
+    button:hover {
+        
+    }
+
+    .post_filter_separator {
+        padding: 0;
+        border-right: 1px solid var(--line-color);
+        width: 0;
+        background-color: transparent;
+    }
+
+    .all_filters_button{ 
+        
+    }
+
+    .active_post_filter {
+        background-color: var(--profile-active-button-background-color);
+        button {
+            color: var(--profile-active-button-text-color);
+        }
+    }
+    .active_post_filter:hover {
+        background-color: var(--profile-active-button-hover-background-color);
+    }
+
+}
