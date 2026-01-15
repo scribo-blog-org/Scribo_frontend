@@ -212,10 +212,6 @@
         p {
             color: var(--main-text-color);
             font-size: 14px;
-
-            @include screen() {
-                font-size: 12px;
-            }
         }
 
         *{

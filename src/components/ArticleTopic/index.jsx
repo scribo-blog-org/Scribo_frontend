@@ -81,22 +81,26 @@ const ArticleTopic = ({ article }) => {
 
     return (
         <div className="article_topic">
+
             <Author author_data={article.author} />
-            <Link to={`/posts?filter=${article.category}`}>
+            <Link className="article_topic_category" to={`/posts?filter=${article.category}`}>
                 <button type="button" className="app-transition category" >{article.category}</button>
             </Link>
+            <div className="article_topic_right_side">
+
             <p className="article_topic_date">{format_date(article.created_date)}</p>
-            <button type="button" className="article_topic_button" onClick={() => 
+            <button type="button" className="article_topic_button article_topic_share" onClick={() => 
             {
                 share(article._id, showToast)
             }}>
                 <ShareIcon />
             </button>
-            <button type="button" className="article_topic_button" onClick={save_post} disabled={isSavingProcess}>
+            <button type="button" className="article_topic_button article_topic_save" onClick={save_post} disabled={isSavingProcess}>
                 {
                     (isSaved ? <BookMarkFilled /> : <BookMarkBorder />)
                 }
             </button>
+            </div>
         </div>
     )
 }
