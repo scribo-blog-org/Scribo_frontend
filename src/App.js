@@ -120,7 +120,6 @@ function App() {
     const metaThemeColor = document.querySelector("meta[name=theme-color]");
     metaThemeColor.setAttribute("content", isDarkTheme ? "#1e1e1e" : "#ffffff" );
 
-    console.log(document.querySelector("meta[name=theme-color]"))
   }, [isDarkTheme])
 
   return (
