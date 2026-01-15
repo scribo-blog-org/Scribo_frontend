@@ -52,7 +52,7 @@ function Header() {
       return `${diffInYears} лет назад`;
     }
 
-    const users = await getUsers(
+    let users = await getUsers(
       notifications.map(item => ({ _id: item.user }))
     );
 

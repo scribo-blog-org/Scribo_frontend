@@ -53,7 +53,7 @@ const Profile = () => {
                 let response = await fetch(`${API_URL}/api/users/${id}`);
                 let findNeededUser = await response.json();
 
-                if (findNeededUser.status === "error") {
+                if (findNeededUser.status === false) {
                     navigate('/404');
                 } else {
                     setUser(findNeededUser.data);
