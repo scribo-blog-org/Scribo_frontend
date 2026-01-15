@@ -17,7 +17,8 @@ const CreatePost = () => {
         {
             title: '',
             content_text: '',
-            featured_image: null
+            featured_image: null,
+            category: ''
         }
     )
 
@@ -63,7 +64,7 @@ const CreatePost = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const result = await create_post(fields.title, fields.mainText)
+        const result = await create_post(fields.title, fields.mainText, fields.category)
         setCreateResult(result)
     }
 
@@ -83,6 +84,7 @@ const CreatePost = () => {
         formData.append('title', title)
         formData.append('content_text', fields.content_text)
         formData.append('featured_image', fields.featured_image)
+        formData.append('category', fields.category)
 
         const headers = {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
@@ -121,6 +123,15 @@ const CreatePost = () => {
                 onChange={(e) => setFields({ ...fields, title: e.target.value })}
                 onFocus={() => handleFocus('title')}
                 error={errors?.body?.title?.message}
+            />
+            <InputFiled 
+                className={"create_post_category"  + (createResult.status === false && createResult?.message?.body?.category ? " incorrect_field" : "")}
+                placeholder={"Укажите категорию"}
+                is_multiline={true}
+                multiline_rows={1}
+                onChange={(e) => setFields({ ...fields, category: e.target.value })}
+                onFocus={() => handleFocus('category')}
+                error={errors?.body?.category?.message}
             />
             <DropFile setValue={(file) => setFields({ ...fields, featured_image: file })} drop_file_type={"image/*"} file_types={"SVG, PNG, JPEG, JPG и другие"} errors={errors?.body?.featured_image?.message} add_new_errors={add_errors_to_image} clear_errors={clear_errors_from_image} handleClick={handleClick}/>
             <InputFiled

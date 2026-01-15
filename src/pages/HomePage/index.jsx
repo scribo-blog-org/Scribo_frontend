@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams  } from "react-router-dom";
 import { getPosts } from "../../api/posts.api.js";
 import Banner from "../../components/Banner";
 import Posts from "../../components/Posts/index.jsx";
@@ -9,7 +9,9 @@ import "./HomePage.scss"
 const HomePage = () => {   
     const [ posts, setPosts ] = useState([])
     const [ isLoading, setIsLoading ] = useState([])
-
+    const [searchParams] = useSearchParams();
+    const filtersFromUrl = searchParams.get("filter")?.split(",").map(f => f.toLowerCase()) || [];
+    
     const fetchPosts = async () => {
         setIsLoading(true)
         const response = await getPosts()
@@ -35,7 +37,7 @@ const HomePage = () => {
                 <a href="https://github.com/MaksimKosyanchuk/news_site_frontend" target="_blank" rel={"noreferrer"}>GitHub</a>
                 <Link to={`/users/Maks`}>My profile</Link>
             </Banner>
-            <Posts posts={posts} isLoading={isLoading}/>
+            <Posts posts_filters={filtersFromUrl} posts={posts} isLoading={isLoading}/>
         </>
     )
 }
