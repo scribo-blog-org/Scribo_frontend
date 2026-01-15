@@ -9,7 +9,7 @@ import "./HomePage.scss"
 const HomePage = () => {   
     const [ posts, setPosts ] = useState([])
     const [ isLoading, setIsLoading ] = useState([])
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const filtersFromUrl = searchParams.get("filter")?.split(",").map(f => f.toLowerCase()) || [];
     
     const fetchPosts = async () => {
