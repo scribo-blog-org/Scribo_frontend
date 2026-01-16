@@ -1,4 +1,5 @@
 import { useEffect, useState, createContext } from 'react';
+import ApiDocs from './pages/Api';
 import Header from './components/Header/index.jsx';
 import StartScreen from './components/StartScreen/index.jsx';
 import HomePage from './pages/HomePage/index.jsx';
@@ -155,6 +156,7 @@ function App() {
                 path="/"
                 element={<Navigate to="/posts" replace />} />
 
+              <Route path="/api" Component={ApiDocs}/>
               <Route path="/auth/login" Component={Login}/>
               <Route path="/auth/register" Component={Register}/>
               <Route path="/404" Component={PageNotFound}/>
