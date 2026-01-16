@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams  } from "react-router-dom";
 import { getPosts } from "../../api/posts.api.js";
 import Banner from "../../components/Banner";
@@ -10,8 +10,16 @@ const HomePage = () => {
     const [ posts, setPosts ] = useState([])
     const [ isLoading, setIsLoading ] = useState([])
     const [searchParams] = useSearchParams();
-    const filtersFromUrl = searchParams.get("filter")?.split(",").map(f => f.toLowerCase()) || [];
-    
+
+    const filtersFromUrl = useMemo(() => {
+        return (
+            searchParams
+                .get("filter")
+                ?.split(",")
+                .map(f => f.toLowerCase()) || []
+        );
+    }, [searchParams]);
+
     const fetchPosts = async () => {
         setIsLoading(true)
         const response = await getPosts()

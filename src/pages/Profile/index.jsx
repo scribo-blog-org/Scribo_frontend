@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { AppContext } from "../../App.js";
 import { API_URL } from "../../config";
 import { getPosts } from "../../api/posts.api.js";
@@ -24,6 +24,8 @@ const Profile = () => {
     const [activePosts, setActivePosts] = useState([]);
     const [user, setUser] = useState(null);
     const [newData, setNewData] = useState(null);
+
+    const posts_filters = useMemo( () => [], [])
 
     useEffect(() => {
         setProfile({
@@ -249,7 +251,7 @@ const Profile = () => {
                 ))}
             </div>
             <div className="profile_posts">
-                <Posts posts_filters={[]} posts={activePosts} isLoading={isLoading} />
+                <Posts posts_filters={posts_filters} posts={activePosts} isLoading={isLoading} />
             </div>
         </div>
     );
