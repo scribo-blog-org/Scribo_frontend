@@ -55,7 +55,7 @@ const ArticleTopic = ({ article }) => {
     const save_post = async () => {
         setSavingProcess(true)
         const requestOptions = {
-            method: profile.saved_posts.some( (post) => { return post.toString() === article._id } ) ? 'DELETE' : 'POST',
+            method: profile?.saved_posts?.some( (post) => { return post.toString() === article._id } ) ? 'DELETE' : 'POST',
             headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}`}
         };
 
