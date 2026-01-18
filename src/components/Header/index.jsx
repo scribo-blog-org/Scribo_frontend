@@ -65,7 +65,7 @@ function Header() {
               :
                 <></>
           }
-          <Author author_data={users?.data[index]} />
+          <Author key={`${item?._id}-author`} author_data={users?.data[index]} />
         </div>
         <p className='modal_window_body_content_notification_message'>
           {(() => {
