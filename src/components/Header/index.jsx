@@ -56,6 +56,8 @@ function Header() {
       notifications.map(item => ({ _id: item.user }))
     );
 
+    const userMap = users.data.reduce((acc, u) => (acc[u._id] = u, acc), {});
+
     return [...notifications].reverse().map((item, index) => (
       <div key={item._id} className="modal_window_body_content_notification">
         <div className='modal_window_body_content_notification_new'>
@@ -65,7 +67,7 @@ function Header() {
               :
                 <></>
           }
-          <Author key={`${item?._id}-author`} author_data={users?.data[index]} />
+          <Author author_data={userMap[item.user]} />
         </div>
         <p className='modal_window_body_content_notification_message'>
           {(() => {
