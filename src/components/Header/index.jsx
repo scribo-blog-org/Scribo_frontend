@@ -56,7 +56,10 @@ function Header() {
       notifications.map(item => ({ _id: item.user }))
     );
 
-    const userMap = users.data.reduce((acc, u) => (acc[u._id] = u, acc), {});
+    const userMap = users.data.reduce((acc, u) => {
+      acc[u._id] = u;
+      return acc;
+    }, {});
 
     return [...notifications].reverse().map((item, index) => (
       <div key={item._id} className="modal_window_body_content_notification">
