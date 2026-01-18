@@ -32,7 +32,6 @@ function App() {
   let [ toast, showToast ] = useState(false);
   let [ modalWindow, showModalWindow ] = useState(false)
 
-
   const CssVariables = {
     '--gray-16': '#161616',
     '--gray-1e': '#1e1e1e',
@@ -125,6 +124,16 @@ function App() {
     '--footer-line-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-e7)',
     '--footer-content-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-b5)',
     '--footer-content-hover-color': isDarkTheme ? 'var(--gray-d7)' : 'var(--gray-4f)',
+
+    '--swagger-patch-color': isDarkTheme ? '#237b67' : '#00b1a9',
+    '--swagger-post-color': isDarkTheme ? '#237b67' : '#249762',
+    '--swagger-main-text-color': isDarkTheme ? '#d3d3d3' : 'black',
+    '--swagger-secondary-text-color': isDarkTheme ? '#a3a3a3' : 'black',
+    '--swagger-field-background-color': isDarkTheme ? 'rgba(0,0,0, .1)' : 'rgba(255, 255, 255, .5)',
+    '--swagger-field-color': isDarkTheme ? 'white' : 'black',
+    '--swagger-titles-color': isDarkTheme ? '#a2acc7' : '#3b4151',
+    '--swagger-option-background-color': isDarkTheme ? '#1b2229' : '#f1f5f9',
+    '--swagger-servers-background-color': isDarkTheme ? 'rgba(89,89,89, .1)' : 'rgba(255,255,255, .4)'
   }
 
 

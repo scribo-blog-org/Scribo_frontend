@@ -1,0 +1,39 @@
+.swagger-wrapper {
+    .opblock-summary-control:focus {
+        outline: none;
+    }
+    .swagger-ui .opblock.opblock-patch .opblock-summary-method {
+        background: var(--swagger-patch-color);
+    }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method {
+        background: var(--swagger-post-color);
+    }
+    .swagger-ui .opblock .opblock-summary-operation-id, .swagger-ui .opblock .opblock-summary-path, .swagger-ui .opblock .opblock-summary-path__deprecated, .swagger-ui .opblock .opblock-section-header h4 {
+        color: var(--swagger-main-text-color);
+    }
+    .swagger-ui .opblock .opblock-summary-description, .swagger-ui .btn, .swagger-ui label, .swagger-ui .parameter__name, .swagger-ui .parameter__type, .swagger-ui .opblock-description-wrapper p, .swagger-ui .opblock-external-docs-wrapper p, .swagger-ui .opblock-title_normal p,.swagger-ui table thead tr td, .swagger-ui table thead tr th, .swagger-ui table tbody tr td:first-of-type,.swagger-ui .response-col_links, .swagger-ui .response-control-media-type, .swagger-ui .response-control-examples__title, .swagger-ui .response-control-media-type__title, .swagger-ui .tab li {
+        color: var(--swagger-secondary-text-color);
+    }
+    .swagger-ui .opblock .opblock-section-header {
+        background: rgba(0,0,0, .1);
+    }
+    .swagger-ui .parameters-col_description input, .swagger-ui select {
+        background-color: var(--swagger-field-background-color);
+        color: var(--swagger-field-color);
+    }
+    .swagger-ui select option {
+        background-color: var(--swagger-option-background-color);
+    }
+    .swagger-ui .info h1, .swagger-ui .info h2, .swagger-ui .info h3, .swagger-ui .info h4, .swagger-ui .info h5, .swagger-ui .info li, .swagger-ui .info p, .swagger-ui .info table, .swagger-ui a.nostyle, .swagger-ui a.nostyle:visited {
+        color: var(--swagger-titles-color);
+    }
+    .swagger-ui .btn.execute {
+        color: white;
+    }
+    .swagger-ui .scheme-container {
+        background: var(--swagger-servers-background-color);
+    }
+    .swagger-ui .version-stamp {
+        display: none !important;
+    }
+}

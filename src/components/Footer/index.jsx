@@ -19,7 +19,7 @@ function Footer(){
                         <LinkToProfile to={'/profile'}><p>Профиль</p></LinkToProfile>
                     </div>
                     <div className="footer_links">
-                        <a href="https://github.com/MaksimKosyanchuk/news_site_backend/blob/master/README.md#fetches" target="_blank" rel="noreferrer"><p>Api</p></a>
+                        <Link to={'/api'}><p>Api</p></Link>
                     </div>
                     <div className="footer_links">
                         <Link to={'/users/Dev'}><p>Dev blog</p></Link>

@@ -1,0 +1,3045 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Scribo-blog",
+    "version": "1.0.0",
+    "description": "Api documentation for scribo-blog backend."
+  },
+  "paths": {
+    "/posts/": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get posts",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "description": "Title of post",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data of posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "description": "Post data",
+                        "properties": {
+                          "author": {
+                            "type": "string",
+                            "description": "Author id of post"
+                          },
+                          "title": {
+                            "type": "string",
+                            "description": "Title of post"
+                          },
+                          "featured_image": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "content_text": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "_id": {
+                            "type": "string",
+                            "description": "Id of user that do action of notifcation"
+                          },
+                          "time": {
+                            "type": "string",
+                            "format": "date-time"
+                          } 
+                        },
+                        "required": ["title", "created_date", "author", "featured_image", "content_text", "category"]
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                },
+                "examples": {
+                  "Default": {
+                    "value": {
+                      "status": true,
+                      "message": "Success",
+                      "data": [{
+                        "author": "661d9b31358cb251f3dc2089",
+                        "title": "string",
+                        "featured_image": "string",
+                        "content_text": "string",
+                        "category": "string",
+                        "_id": "string",
+                        "time": "2026-01-17T21:37:50.437Z"
+                      }]
+                    }
+                  },
+                  "With expand=author": {
+                    "value": {
+                      "status": true,
+                      "message": "Success",
+                      "data": [{
+                        "author": {
+                          "_id": "661d9b31358cb251f3dc2089",
+                          "nick_name": "Maks",
+                          "avatar": "https://scribo-blog.s3.us-east-1.amazonaws.com/src/avatar/Maks.jpeg",
+                          "created_date": "2024-04-15T21:12:15.999Z",
+                          "is_admin": true,
+                          "is_verified": true,
+                          "description": "13",
+                          "follows": [
+                            "66201abf9a28c513e7f3ded3",
+                            "6752048ba8b54c2224d7d30a"
+                          ],
+                          "followers": [
+                            "66201abf9a28c513e7f3ded3",
+                            "6752048ba8b54c2224d7d30a"
+                          ]
+                        },
+                        "title": "string",
+                        "featured_image": "string",
+                        "content_text": "string",
+                        "category": "string",
+                        "_id": "string",
+                        "time": "2026-01-17T21:37:50.437Z"
+                      }]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Incorrect nick_name": {
+                    "summary": "Incorrect nick_name",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "nick_name": {
+                            "message": "Nick name must be longer than 3 characters!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect _id": {
+                    "summary": "Incorrect _id",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "_id": {
+                            "message": "Incorrect type!",
+                            "data": "12"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+                "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                    "status": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Indicates failure"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "There is no posts",
+                        "description": "Error message describing the problem"
+                    },
+                    "data": {
+                        "type": "null",
+                        "example": null,
+                        "description": "No data returned on error"
+                    }
+                    },
+                    "required": ["status", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Create new post",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string"},
+                  "category": { "type": "string" },
+                  "content_text": { "type": "string" },
+                  "featured_image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Content of the post image"
+                  }
+                }
+              },
+              "encoding": {
+                "featured_image": {
+                  "contentType": "image/png, image/jpeg, image/svg, image/gif",
+                  "required": false
+                }
+              },
+              "required": ["title", "content_text", "category"]
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data of created post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Post data",
+                      "properties": {
+                        "author": {
+                          "type": "string",
+                          "description": "Author id of post"
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "Title of post"
+                        },
+                        "featured_image": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "content_text": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "description": "Id of user that do action of notifcation"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "date-time"
+                        } 
+                      },
+                      "required": ["title", "created_date", "author", "featured_image", "content_text", "category"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                },
+                "examples": {
+                  "With featured_image": {
+                    "summary": "With featured_image",
+                    "value": {
+                      "status": true,
+                      "message": "Success created post",
+                      "data": {
+                        "author": "661d9b31358cb251f3dc2082",
+                        "title": "Title",
+                        "featured_image": "https://new_image.com",
+                        "content_text": "Content text",
+                        "category": "Category",
+                        "_id": "696be0bee901284dcf81337d",
+                        "created_date": "2026-01-17T19:19:26.321Z"
+                      }
+                    }
+                  },
+                  "Without featured_image": {
+                    "summary": "Without featured_image",
+                    "value": {
+                      "status": true,
+                      "message": "Success created post",
+                      "data": {
+                        "author": "661d9b31358cb251f3dc2082",
+                        "title": "Title",
+                        "featured_image": null,
+                        "content_text": "Content text",
+                        "category": "Category",
+                        "_id": "696be0bee901284dcf81337d",
+                        "created_date": "2026-01-17T19:19:26.321Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty title": {
+                    "summary": "Empty title",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "title": {
+                            "message": "Title must be not empty!",
+                            "data": ""
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Empty content_text": {
+                    "summary": "Empty content_text",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "content_text": {
+                            "message": "Content text must be not empty!",
+                            "data": ""
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Short category": {
+                    "summary": "Short category",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "category": {
+                            "message": "The post category must be longer than 3 characters!",
+                            "data": "12"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect featured_image type": {
+                    "summary": "Incorrect featured_image type",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "file": {
+                          "featured_image": {
+                            "message": "Incorrect file type, only images (jpeg, png, gif, webp) are allowed!"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "This user doesn`t have permission to create a post!", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" }
+                  }
+                },
+                "required": ["status", "message", "data"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get post by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of post",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "required": false,
+            "description": "Should response expand",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data of post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Post data",
+                      "properties": {
+                        "author": {
+                          "type": "string",
+                          "description": "Author id of post"
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "Title of post"
+                        },
+                        "featured_image": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "content_text": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "description": "Id of user that do action of notifcation"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "date-time"
+                        } 
+                      },
+                      "required": ["title", "created_date", "author", "featured_image", "content_text", "category"]
+                      
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                },
+                "examples": {
+                  "Default": {
+                    "value": {
+                      "status": true,
+                      "message": "Success",
+                      "data": {
+                        "author": "661d9b31358cb251f3dc2089",
+                        "title": "string",
+                        "featured_image": "string",
+                        "content_text": "string",
+                        "category": "string",
+                        "_id": "string",
+                        "time": "2026-01-17T21:37:50.437Z"
+                      }
+                    }
+                  },
+                  "With expand=author": {
+                    "value": {
+                      "status": true,
+                      "message": "Success",
+                      "data": {
+                        "author": {
+                          "_id": "661d9b31358cb251f3dc2089",
+                          "nick_name": "Maks",
+                          "avatar": "https://scribo-blog.s3.us-east-1.amazonaws.com/src/avatar/Maks.jpeg",
+                          "created_date": "2024-04-15T21:12:15.999Z",
+                          "is_admin": true,
+                          "is_verified": true,
+                          "description": "13",
+                          "follows": [
+                            "66201abf9a28c513e7f3ded3",
+                            "6752048ba8b54c2224d7d30a"
+                          ],
+                          "followers": [
+                            "66201abf9a28c513e7f3ded3",
+                            "6752048ba8b54c2224d7d30a"
+                          ]
+                        },
+                        "title": "string",
+                        "featured_image": "string",
+                        "content_text": "string",
+                        "category": "string",
+                        "_id": "string",
+                        "time": "2026-01-17T21:37:50.437Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "object",
+                              "properties": {
+                                "message": { "type": "string", "example": "incorrect type!" },
+                                "data": { "type": "string", "example": "1" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+                "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                    "status": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Indicates failure"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Post not found!",
+                        "description": "Error message describing the problem"
+                    },
+                    "data": {
+                        "type": "null",
+                        "example": null,
+                        "description": "No data returned on error"
+                    }
+                    },
+                    "required": ["status", "message", "data"]
+                }
+                }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Delete post by id",
+        "parameters": {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Id of post",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success deleted post"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Post data",
+                      "properties": {
+                        "author": {
+                          "type": "string",
+                          "description": "Author id of post"
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "Title of post"
+                        },
+                        "featured_image": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "content_text": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "description": "Id of user that do action of notifcation"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "date-time"
+                        } 
+                      },
+                      "required": ["title", "created_date", "author", "featured_image", "content_text", "category"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "object",
+                              "properties": {
+                                "message": {
+                                  "type": "string",
+                                  "example": "Incorrect type!"
+                                },
+                                "data": {
+                                  "type": "string",
+                                  "example": "1"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "This user doesn`t has permission to delete posts!", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" }
+                  }
+                },
+                "required": ["status", "message", "data"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all users",
+        "description": "Returns a list of all users",
+        "parameters": [
+          {
+            "name": "nick_name",
+            "in": "query",
+            "required": false,
+            "description": "Nick name of the user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "_id",
+            "in": "query",
+            "required": false,
+            "description": "Id of the user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_admin",
+            "in": "query",
+            "required": false,
+            "description": "Indicates whether the user has admin privileges",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_verified",
+            "in": "query",
+            "required": false,
+            "description": "Indicates whether the user has been verified",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": false,
+            "description": "Description of user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+            "200": {
+            "description": "A JSON array of users",
+            "content": {
+                "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "status": {
+                          "type": "boolean",
+                          "description": "Indicates whether the request was successful"
+                        },
+                          "message": {
+                          "type": "string",
+                          "description": "Response message"
+                        },
+                        "data": {
+                        "type": "array",
+                        "description": "Array of user objects",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                            "_id": { "type": "string", "description": "Unique identifier of the user" },
+                            "nick_name": { "type": "string", "description": "Nick name of the user" },
+                            "avatar": { "type": "string", "format": "uri", "description": "URL of the user's avatar" },
+                            "created_date": { "type": "string", "format": "date-time", "description": "Date when the user was created" },
+                            "is_admin": { "type": "boolean", "description": "True if the user has admin privileges" },
+                            "__v": { "type": "integer", "description": "Version key (internal MongoDB field)" },
+                            "is_verified": { "type": "boolean", "description": "True if the user is verified" },
+                            "description": { "type": "string", "description": "User's description or bio" },
+                            "follows": {
+                                "type": "array",
+                                "items": { "type": "string" },
+                                "description": "Array of user IDs that this user follows"
+                            },
+                            "followers": {
+                                "type": "array",
+                                "items": { "type": "string" },
+                                "description": "Array of user IDs that follow this user"
+                            }
+                            },
+                            "required": ["_id", "nick_name", "created_date", "is_admin", "is_verified", "follows", "followers"]
+                        }
+                        }
+                    },
+                        "required": ["status", "message", "data"]
+                    }
+                }
+            }
+            },
+            "400": {
+                "description": "Bad Request - invalid input",
+                "content": {
+                    "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                        "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                        "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                        "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                        "errors": {
+                            "type": "object",
+                            "properties": {
+                            "params": {
+                                "type": "object",
+                                "description": "Validation errors in request parameters",
+                                "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "message": { "type": "string" },
+                                    "data": { "type": "string" }
+                                }
+                                }
+                            },
+                            "body": {
+                                "type": "object",
+                                "description": "Validation errors in request body",
+                                "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "message": { "type": "string" },
+                                    "data": { "type": "string" }
+                                }
+                                }
+                            }
+                            }
+                        }
+                        },
+                        "required": ["status", "message", "data", "errors"]
+                    },
+                    "examples": {
+                        "invalidNickName": {
+                        "summary": "Invalid nick_name param",
+                        "value": {
+                            "status": false,
+                            "message": "Some errors in your fields",
+                            "data": null,
+                            "errors": {
+                            "params": {
+                                "nick_name": {
+                                "message": "Nick name must be more than 2 and less than 21 characters",
+                                "data": "1"
+                                }
+                            }
+                            }
+                        }
+                        },
+                        "invalidIdAndBody": {
+                        "summary": "Invalid _id and body fields",
+                        "value": {
+                            "status": false,
+                            "message": "Some errors in your fields",
+                            "data": null,
+                            "errors": {
+                            "params": {
+                                "_id": {
+                                "message": "Invalid user ID",
+                                "data": "abc123"
+                                }
+                            },
+                            "body": {
+                                "is_admin": {
+                                "message": "is_admin must be boolean",
+                                "data": "yes"
+                                },
+                                "description": {
+                                "message": "Description length must be less than 100 characters",
+                                "data": "Lorem ipsum dolor sit amet..."
+                                }
+                            }
+                            }
+                        }
+                        },
+                        "invalidVerified": {
+                        "summary": "Invalid is_verified field",
+                        "value": {
+                            "status": false,
+                            "message": "Some errors in your fields",
+                            "data": null,
+                            "errors": {
+                            "body": {
+                                "is_verified": {
+                                "message": "is_verified must be boolean",
+                                "data": "maybe"
+                                }
+                            }
+                            }
+                        }
+                        }
+                    }
+                    }
+                }
+                },
+            "404": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                        "status": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Indicates failure"
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Users not found",
+                            "description": "Error message describing the problem"
+                        },
+                        "data": {
+                            "type": "null",
+                            "example": null,
+                            "description": "No data returned on error"
+                        }
+                        },
+                        "required": ["status", "message", "data"]
+                    }
+                    }
+                }
+            }
+        }
+      }
+    },
+    "/users/{nick_name}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user by nick name",
+        "parameters": [
+          {
+            "name": "nick_name",
+            "in": "path",
+            "required": true,
+            "description": "Nick name of the user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Array of user objects",
+                      "properties": {
+                        "_id": { "type": "string", "description": "Unique identifier of the user" },
+                        "nick_name": { "type": "string", "description": "Nick name of the user" },
+                        "avatar": { "type": "string", "format": "uri", "description": "URL of the user's avatar" },
+                        "created_date": { "type": "string", "format": "date-time", "description": "Date when the user was created" },
+                        "is_admin": { "type": "boolean", "description": "True if the user has admin privileges" },
+                        "__v": { "type": "integer", "description": "Version key (internal MongoDB field)" },
+                        "is_verified": { "type": "boolean", "description": "True if the user is verified" },
+                        "description": { "type": "string", "description": "User's description or bio" },
+                        "follows": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "description": "Array of user IDs that this user follows"
+                        },
+                        "followers": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "description": "Array of user IDs that follow this user"
+                        }
+                      },
+                      "required": ["_id", "nick_name", "created_date", "is_admin", "is_verified", "follows", "followers"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Incorrect nick_name": {
+                    "summary": "Invalid nick_name param",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "nick_name": {
+                            "message": "Nick name must be longer than 3 characters!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Indicates failure"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found",
+                      "description": "Error message describing the problem"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned on error"
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/follow": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Follow user by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success followed"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Returns updated data",
+                      "properties": {
+                        "follower": { 
+                          "type": "object",
+                          "description": "Updated data of user, who follows",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Id of user"
+                            },
+                            "nick_name": {
+                              "type": "string",
+                              "description": "Nick name of user"
+                            },
+                            "follows": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that this user follows"
+                            },
+                            "followers": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that follow this user"
+                            }
+                          }
+                        },
+                        "followed": { 
+                          "type": "object",
+                          "description": "Updated data of user, who follows",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Id of user"
+                            },
+                            "nick_name": {
+                              "type": "string",
+                              "description": "Nick name of user"
+                            },
+                            "follows": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that this user follows"
+                            },
+                            "followers": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that follow this user"
+                            }
+                          }
+                        }
+                      },
+                      "required": ["follower", "followed"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "invalidNickName": {
+                    "summary": "Invalid id param",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "id": {
+                            "message": "Incorrect type!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": {
+                      "type": "string",
+                      "example": "You are already following this user!",
+                      "description": "Summary message"
+                    },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" }
+                  },
+                  "required": ["status", "message", "data"]
+                },
+                "examples": {
+                  "Follow a user that you are already following": {
+                    "summary": "Follow a user that you are already following",
+                    "value": {
+                      "status": false,
+                      "message": "You are already following this user!",
+                      "data": null
+                    }
+                  },
+                  "Follow yourself": {
+                    "summary": "Follow yourself",
+                    "value": {
+                      "status": false,
+                      "message": "You cannot follow yourself!",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Indicates failure"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found",
+                      "description": "Error message describing the problem"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned on error"
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Unfollow user by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success unfollowed"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Returns updated data",
+                      "properties": {
+                        "follower": { 
+                          "type": "object",
+                          "description": "Updated data of user, who follows",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Id of user"
+                            },
+                            "nick_name": {
+                              "type": "string",
+                              "description": "Nick name of user"
+                            },
+                            "follows": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that this user follows"
+                            },
+                            "followers": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that follow this user"
+                            }
+                          }
+                        },
+                        "followed": { 
+                          "type": "object",
+                          "description": "Updated data of user, who follows",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Id of user"
+                            },
+                            "nick_name": {
+                              "type": "string",
+                              "description": "Nick name of user"
+                            },
+                            "follows": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that this user follows"
+                            },
+                            "followers": {
+                              "type": "array",
+                              "items": { "type": "string" },
+                              "description": "Array of user IDs that follow this user"
+                            }
+                          }
+                        }
+                      },
+                      "required": ["follower", "followed"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "invalidNickName": {
+                    "summary": "Invalid id param",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "id": {
+                            "message": "Incorrect type!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": {
+                      "type": "string",
+                      "description": "Summary message"
+                    },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" }
+                  },
+                  "required": ["status", "message", "data"]
+                },
+                "examples": {
+                  "Unfollow user that u not following": {
+                    "summary": "Unfollow user that u not following",
+                    "value": {
+                      "status": false,
+                      "message": "You are not following this user!",
+                      "data": null
+                    }
+                  },
+                  "Unfollow yourself": {
+                    "summary": "Unfollow yourself",
+                    "value": {
+                      "status": false,
+                      "message": "You cannot unfollow yourself!",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Indicates failure"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found",
+                      "description": "Error message describing the problem"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned on error"
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register account",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nick_name": { "type": "string", "required": true },
+                  "password": { "type": "string", "required": true },
+                  "description": { "type": "string", "required": false },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "featured_image": {
+                  "contentType": "image/png, image/jpeg, image/svg, image/gif",
+                  "required": false
+                }
+              },
+              "required": ["nick_name", "password"]
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Data of new account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "User data",
+                      "properties": {
+                        "nick_name": {
+                          "type": "string",
+                          "description": "Nick name of the user"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "description": "Avatar",
+                          "nullable": true
+                        },
+                        "is_admin": {
+                          "type": "boolean",
+                          "nullable": true
+                        },
+                        "is_verified": {
+                          "type": "boolean"
+                        },
+                        "saved_posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "follows": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "followers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "_id": {
+                          "type": "string",
+                          "description": "Id of user that do action of notifcation"
+                        },
+                        "created_date": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "notifications": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          },
+                          "example": []
+                        }
+                      }
+                    }
+                  },
+                  "required": ["nick_name", "avatar", "is_admin", "is_verified", "saved_posts", "follows", "followers", "_id", "created_date", "notifications"]
+                },
+                "examples": {
+                  "With avatar": {
+                    "summary": "With avatar",
+                    "value": {
+                      "status": true,
+                      "message": "Success registered",
+                      "data": {
+                        "nick_name": "new_2",
+                        "avatar": null,
+                        "is_admin": false,
+                        "is_verified": false,
+                        "saved_posts": [],
+                        "follows": [],
+                        "followers": [],
+                        "_id": "696c3ca3ace200ff4062a482",
+                        "created_date": "2026-01-18T01:51:31.206Z",
+                        "notifications": []
+                      }
+                    }
+                  },
+                  "Without avatar": {
+                    "summary": "Without avatar",
+                    "value": {
+                      "status": true,
+                      "message": "Success registered",
+                      "data": {
+                        "nick_name": "new_2",
+                        "avatar": "https://avatar.com",
+                        "is_admin": false,
+                        "is_verified": false,
+                        "saved_posts": [],
+                        "follows": [],
+                        "followers": [],
+                        "_id": "696c3ca3ace200ff4062a482",
+                        "created_date": "2026-01-18T01:51:31.206Z",
+                        "notifications": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Incorrect nick_name": {
+                    "summary": "Incorrect nick_name",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "nick_name": {
+                            "message": "Nick name must be longer than 3 characters!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect password": {
+                    "summary": "Incorrect password",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "password": {
+                            "message": "Passowrd must be longer than 7 characters!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect avatar type": {
+                    "summary": "Incorrect avatar type",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "file": {
+                          "avatar": {
+                            "message": "Incorrect file type, only images (jpeg, png, gif, webp) are allowed!"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "properties": {
+                            "nick_name": {
+                              "type": "object",
+                              "properties": {
+                                "message": { "type": "string" , "example": "This username is already in use!"},
+                                "data": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login to account",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nick_name": { "type": "string", "required": true },
+                  "password": { "type": "string", "required": true }
+                }
+              },
+              "required": ["nick_name", "password"]
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Data of account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Authorized!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "User data",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYxZDliMzEzNThjYjI1MWYzZGMyMDg5IiwiaWF0IjoxNzY4NzAyNTA2fQ.m4cZjb_Qe099ZCrS5r4dMoV-ZTRPHu1nJGPoekaQRzD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Incorrect nick_name": {
+                    "summary": "Incorrect nick_name",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "nick_name": {
+                            "message": "Nick name must be longer than 3 characters!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect password": {
+                    "summary": "Incorrect password",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "body": {
+                          "password": {
+                            "message": "Passowrd must be longer than 7 characters!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "body": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "properties": {
+                            "nick_name": {
+                              "type": "object",
+                              "properties": {
+                                "message": { "type": "string" , "example": "User not found!"},
+                                "data": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get profile data",
+        "parameters": [
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "User data",
+                      "properties": {
+                        "_id": { "type": "string", "description": "Unique identifier of the user" },
+                        "nick_name": { "type": "string", "description": "Nick name of the user" },
+                        "avatar": { "type": "string", "format": "uri", "description": "URL of the user's avatar" },
+                        "created_date": { "type": "string", "format": "date-time", "description": "Date when the user was created" },
+                        "is_admin": { "type": "boolean", "description": "True if the user has admin privileges" },
+                        "__v": { "type": "integer", "description": "Version key (internal MongoDB field)" },
+                        "is_verified": { "type": "boolean", "description": "True if the user is verified" },
+                        "description": { "type": "string", "description": "User's description or bio" },
+                        "follows": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "description": "Array of user IDs that this user follows"
+                        },
+                        "followers": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "description": "Array of user IDs that follow this user"
+                        },
+                        "saved_posts": {
+                          "type": "array",
+                          "description": "Array of ids of posts that user saved",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "notifications": {
+                          "type": "array",
+                          "description": "Users notifications",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "is_read": {
+                                "type": "boolean"
+                              },
+                              "type": {
+                                "type": "string",
+                                "description": "Type of action of notification"
+                              },
+                              "user": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "post": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "_id": {
+                                "type": "string",
+                                "description": "Id of user that do action of notifcation"
+                              },
+                              "time": {
+                                "type": "string",
+                                "format": "date-time"
+                              } 
+                            }
+                          }
+                        }
+                      },
+                      "required": ["_id", "nick_name", "created_date", "is_admin", "is_verified", "follows", "followers"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/save-post/{id}": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Save post by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the post",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated saved_posts data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success saved posts"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Returns updated data",
+                      "properties": {
+                        "saved_posts": { 
+                          "type": "array",
+                          "description": "Updated saved_posts data",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": ["saved_posts"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "invalidNickName": {
+                    "summary": "Invalid id param",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "id": {
+                            "message": "Incorrect type!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": {
+                      "type": "string",
+                      "example": "Post is already in saved posts!",
+                      "description": "Summary message"
+                    },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Indicates failure"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Post not found",
+                      "description": "Error message describing the problem"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned on error"
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Profile"],
+        "summary": "Unsave post by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the post",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated saved_posts data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message",
+                      "example": "Success unsaved posts"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Returns updated data",
+                      "properties": {
+                        "saved_posts": { 
+                          "type": "array",
+                          "description": "Updated saved_posts data",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": ["saved_posts"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "invalidNickName": {
+                    "summary": "Invalid id param",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "id": {
+                            "message": "Incorrect type!",
+                            "data": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": {
+                      "type": "string",
+                      "example": "Post is not in saved posts!",
+                      "description": "Summary message"
+                    },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Indicates failure"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Post not found",
+                      "description": "Error message describing the problem"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned on error"
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/read-notification/": {
+      "patch": {
+        "tags": ["Profile"],
+        "summary": "Send server that you readed all new notifications",
+        "parameters": [
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated data of profile notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "description": "Indicates whether the request was successful"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "User data",
+                      "properties": {
+                        "notifications": {
+                          "type": "array",
+                          "description": "Users notifications",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "is_read": {
+                                "type": "boolean"
+                              },
+                              "type": {
+                                "type": "string",
+                                "description": "Type of action of notification"
+                              },
+                              "user": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "post": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "_id": {
+                                "type": "string",
+                                "description": "Id of user that do action of notifcation"
+                              },
+                              "time": {
+                                "type": "string",
+                                "format": "date-time"
+                              } 
+                            }
+                          }
+                        }
+                      },
+                      "required": ["_id", "nick_name", "created_date", "is_admin", "is_verified", "follows", "followers"]
+                    }
+                  },
+                  "required": ["status", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false, "description": "Indicates failure" },
+                    "message": { "type": "string", "example": "Some errors in your fields", "description": "Summary message" },
+                    "data": { "type": "null", "example": null, "description": "No data returned on error" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "description": "Validation errors in request parameters",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "message": { "type": "string" },
+                              "data": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["status", "message", "data", "errors"]
+                },
+                "examples": {
+                  "Empty token": {
+                    "summary": "Empty token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Token is empty!"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Incorrect token": {
+                    "summary": "Incorrect token",
+                    "value": {
+                      "status": false,
+                      "message": "Some errors in your fields",
+                      "data": null,
+                      "errors": {
+                        "params": {
+                          "token": {
+                            "message": "Incorrect token!",
+                            "data": "1221"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
