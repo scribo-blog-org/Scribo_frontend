@@ -126,7 +126,7 @@ function App() {
     '--footer-content-hover-color': isDarkTheme ? 'var(--gray-d7)' : 'var(--gray-4f)',
 
     '--swagger-patch-color': isDarkTheme ? '#237b67' : '#00b1a9',
-    '--swagger-post-color': isDarkTheme ? '#237b67' : '#249762',
+    '--swagger-post-color': isDarkTheme ? '#237b46' : '#249762',
     '--swagger-main-text-color': isDarkTheme ? '#d3d3d3' : 'black',
     '--swagger-secondary-text-color': isDarkTheme ? '#a3a3a3' : 'black',
     '--swagger-field-background-color': isDarkTheme ? 'rgba(0,0,0, .1)' : 'rgba(255, 255, 255, .5)',

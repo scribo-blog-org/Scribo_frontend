@@ -1,4 +1,8 @@
 .swagger-wrapper {
+    path {
+        fill: var(--swagger-main-text-color);
+        transition: .3s;
+    }
     .opblock-summary-control:focus {
         outline: none;
     }
@@ -13,6 +17,10 @@
     }
     .swagger-ui .opblock .opblock-summary-description, .swagger-ui .btn, .swagger-ui label, .swagger-ui .parameter__name, .swagger-ui .parameter__type, .swagger-ui .opblock-description-wrapper p, .swagger-ui .opblock-external-docs-wrapper p, .swagger-ui .opblock-title_normal p,.swagger-ui table thead tr td, .swagger-ui table thead tr th, .swagger-ui table tbody tr td:first-of-type,.swagger-ui .response-col_links, .swagger-ui .response-control-media-type, .swagger-ui .response-control-examples__title, .swagger-ui .response-control-media-type__title, .swagger-ui .tab li {
         color: var(--swagger-secondary-text-color);
+    }
+    .servers-title {
+        color: var(--swagger-secondary-text-color);
+        transition: .3s;
     }
     .swagger-ui .opblock .opblock-section-header {
         background: rgba(0,0,0, .1);
@@ -32,8 +40,15 @@
     }
     .swagger-ui .scheme-container {
         background: var(--swagger-servers-background-color);
+        transition: .3s;
     }
     .swagger-ui .version-stamp {
         display: none !important;
+    }
+    .opblock-summary-method {
+        transition: .3s;
+    }
+    .swagger-ui .auth-wrapper .authorize {
+        border-color: #008128;
     }
 }
