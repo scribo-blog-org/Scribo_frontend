@@ -33,6 +33,7 @@ function App() {
   let [ modalWindow, showModalWindow ] = useState(false)
 
   const CssVariables = {
+    '--accent-color': isDarkTheme ? '#4e93ff' : "#1b73fb",
     '--gray-16': '#161616',
     '--gray-1e': '#1e1e1e',
     '--gray-25': '#252525',
@@ -133,7 +134,11 @@ function App() {
     '--swagger-field-color': isDarkTheme ? 'white' : 'black',
     '--swagger-titles-color': isDarkTheme ? '#a2acc7' : '#3b4151',
     '--swagger-option-background-color': isDarkTheme ? '#1b2229' : '#f1f5f9',
-    '--swagger-servers-background-color': isDarkTheme ? 'rgba(89,89,89, .1)' : 'rgba(255,255,255, .4)'
+    '--swagger-servers-background-color': isDarkTheme ? 'rgba(89,89,89, .1)' : 'rgba(255,255,255, .4)',
+
+    '--popup-background-color': 'transparent',
+    '--popup-button-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
+    '--popup-button-background-hover-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)'
   }
 
 

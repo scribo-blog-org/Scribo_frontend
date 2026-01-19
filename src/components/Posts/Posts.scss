@@ -5,12 +5,14 @@
     flex-direction: column;
     min-height: 100px;
     position: relative;
-
+    gap: 28px;
+    
     &.posts_columns {  
-        @media screen and (min-width: 768px) {
+        @include screen() {
             // flex-direction: row;
             flex-wrap: wrap;
-            justify-content: space-between;            
+            justify-content: space-between;      
+            gap: 12px;
         }
         
         .posts_item {
@@ -25,10 +27,8 @@
             justify-content: space-between;
             background-color: var(--post-card-background);
             border-radius: 8px;
-            margin-top: 24px;
 
             @include screen() {
-                margin-top: 12px;
                 padding: 12px;
                 gap: 12px;
             }

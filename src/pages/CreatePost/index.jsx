@@ -145,6 +145,8 @@ const CreatePost = () => {
                 multiline_rows={navigator.maxTouchPoints > 0 ? 6 : 10}
                 length={2000}
                 error={errors?.body?.content_text?.message}
+                editable={true}
+                enableLink={true}
             />
             <div className="create_post_buttons">
                 <button className='submit_button create_post_submit app-transition' type="submit">

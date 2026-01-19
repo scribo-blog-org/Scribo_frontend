@@ -1,86 +1,132 @@
-@import "../../styles/common.scss";
 @import "../../styles/helpers.scss";
 
 .banner {
-    width: 100%;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
     display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-bottom: 28px;
 
-    &::before {
-        border-radius: 9px;
+    &__logo {
+        width: 152px;
+        height: 32px;
+        fill: none;
     }
 
-    &::after {
-        border-radius: 5px;
-    }
+    &__logo path {
+        stroke: var(--text-color);
+        stroke-width: 4px;
 
-    &::before, &::after {
-        @include use-transition();
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-        z-index: 1;
-        background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0) 70%);
+        stroke-dasharray: 520;
+        stroke-dashoffset: 520;
+
+        animation:
+        banner-stroke 1.8s linear forwards,
+        banner-fill 0.5s ease forwards 1.6s;
+        transition: .3s;
 
         @include screen() {
-            height: 200%;
+            height: 28px;
         }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+
+        @include screen() {
+            gap: 20px;
+        }
+    }
+
+    &__title {
+        display: flex;
+        align-items: flex-end;
+
+        h1{ 
+            display: flex;
+            flex-direction: column;
+            line-height: 0.85;
+            color: var(--text-color);
+            font-size: 38px;
+
+            @include screen() {
+                font-size: 34PX;
+            }
+        }
+    }
+
+    &__brand {
+        color: #84aeff;
+        text-transform: uppercase;
+        opacity: 0;
+        display: none;
     }
     
-    &::after {
-        opacity: var(--banner-haze);
-        background: linear-gradient(to top, var(--main-background), rgba(0,0,0,0) 70%);
+    &__text {
+        max-width: 80%;
+        margin-top: 10px;
 
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        user-select: none;
-        position: absolute;
-        left: 0;
-        top: 0;
-        border-radius: 10px;
-    }
-
-    &_content {
-        position: relative;
-        padding: 16px;
-        padding-top: clamp(100px, 20.83vw, 300px);
-        z-index: 2;
-
-        h1{
-            font-size: 36px;
-            
-            @include screen() {
-                font-size: 16px;
-            }
+        @include screen() {
+            margin: 0;
         }
+    }
+
+    &__actions {
+        margin-top: auto;
+        display: flex;
+        gap: 14px;
         
-        p {            
-            margin-top: 12px;
-
-            @media screen and (min-width: 768px) {
-                max-width: 45%;                
-            }
+        @include screen() {
+            // justify-content: space-between;
+            // padding: 0 50px;
         }
+    }
 
-        a {
-            display: block;
-            text-decoration: underline;
-            margin-top: 12px;
+    &__btn {
+        padding: 8px 16px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--profile-active-button-background-color);
+        color: var(--main-background);
+        font-size: 14px;
+    }
 
-            @include screen() {
-                font-size: 12px;
-                margin-top: 2px;
-            }
+    &__btn:hover {
+        background: var(--profile-active-button-hover-background-color);
+    }
+
+    &__image {
+        width: 50%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 12px;
+        position: relative;
+        z-index: 1;
+
+        
+        @include screen() {
+            display: none;
         }
+    }
+}
+
+@keyframes banner-stroke {
+    from {
+        stroke-dashoffset: 520;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes banner-fill {
+    from {
+        fill: transparent;
+    }
+    to {
+        fill: currentColor;
     }
 }

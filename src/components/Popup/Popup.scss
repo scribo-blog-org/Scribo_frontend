@@ -1,0 +1,10 @@
+.popup {
+    backdrop-filter: blur(20px);
+
+    position: absolute;
+    border-radius: 8px;
+    z-index: 100;
+    padding: 12px;
+    border: 1px solid var(--submit-button-primary-color);
+    color: var(--submit-button-primary-color);
+}
