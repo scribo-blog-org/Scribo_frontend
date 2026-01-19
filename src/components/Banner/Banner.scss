@@ -1,7 +1,10 @@
+@import "../../styles/helpers.scss";
+
 .banner {
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    margin-bottom: 28px;
 
     &__logo {
         width: 152px;
@@ -20,20 +23,35 @@
         banner-stroke 1.8s linear forwards,
         banner-fill 0.5s ease forwards 1.6s;
         transition: .3s;
+
+        @include screen() {
+            height: 28px;
+        }
     }
 
     &__content {
         display: flex;
         flex-direction: column;
+
+        @include screen() {
+            gap: 20px;
+        }
     }
 
     &__title {
+        display: flex;
+        align-items: end;
+
         h1{ 
+            display: flex;
+            flex-direction: column;
+            line-height: 0.85;
             color: var(--text-color);
             font-size: 38px;
-            line-height: 1.2;
-            display: inline-flex;
-            align-items: center;
+
+            @include screen() {
+                font-size: 34PX;
+            }
         }
     }
 
@@ -47,12 +65,21 @@
     &__text {
         max-width: 80%;
         margin-top: 10px;
+
+        @include screen() {
+            margin: 0;
+        }
     }
 
     &__actions {
         margin-top: auto;
         display: flex;
         gap: 14px;
+        
+        @include screen() {
+            // justify-content: space-between;
+            // padding: 0 50px;
+        }
     }
 
     &__btn {
@@ -78,6 +105,11 @@
         border-radius: 12px;
         position: relative;
         z-index: 1;
+
+        
+        @include screen() {
+            display: none;
+        }
     }
 }
 

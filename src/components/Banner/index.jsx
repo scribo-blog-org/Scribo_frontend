@@ -11,8 +11,6 @@ const Banner = () => {
                     <h1>
                     Hello! It's{" "}
                     </h1>
-                    <strong className="banner__brand">scribo</strong>
-
                     <Logo className="banner__logo app-transition"/>
                 </div>
 
