@@ -21,12 +21,12 @@ const Banner = () => {
 
                 <div className="banner__actions">
                     <a
-                        href="https://github.com/MaksimKosyanchuk/news_site_frontend"
+                        href="https://github.com/MaksimKosyanchuk"
                         target="_blank"
                         rel="noreferrer"
                         className="banner__btn banner__btn--primary app-transition"
                     >
-                        GitHub
+                        My GitHub
                     </a>
 
                     <Link
