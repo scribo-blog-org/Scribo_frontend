@@ -25,7 +25,7 @@ function Footer(){
                         <Link to={'/api'}><p>Api</p></Link>
                     </div>
                     <div className="footer_links">
-                        <a href="mailto:scribo.blog.dev@gmail.com" target="_blank"><p>Support</p></a>
+                        <a href="mailto:scribo.blog.dev@gmail.com" target="_blank" rel="noreferrer"><p>Support</p></a>
                     </div>
                 </div>
                 <div className="footer_bottom_content app-transition">
