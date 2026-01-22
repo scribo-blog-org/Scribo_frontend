@@ -113,7 +113,6 @@ const RegisterForm = ({ email = null, google_token = null, gmail_code = null }) 
             formData.append("email", email)
             formData.append("code", gmail_code)
         }
-        console.log(google_token)
         try {
             const register = await fetch(`${API_URL}/api/auth/register`, { method: "POST", body: formData });
             const result = await register.json();
