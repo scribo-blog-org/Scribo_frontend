@@ -353,7 +353,7 @@ const Register = () => {
         if(googleToken) {
             do_login()
         }
-    }, [googleToken]);
+    }, [googleToken, navigate, showToast]);
 
     if (google_token || (email && gmail_code)) {
         return <RegisterForm email={email ?? null} google_token={google_token ?? null} gmail_code={gmail_code ?? null}/>

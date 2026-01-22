@@ -53,7 +53,7 @@ const Login = () => {
         if(googleToken) {
             do_login()
         }
-    }, [googleToken]);
+    }, [googleToken, navigate, showToast]);
 
     const handleFocus = (fieldName) => {
         const { [fieldName]: removedField, ...other } = errors;
