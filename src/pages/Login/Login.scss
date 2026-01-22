@@ -1,2 +1,19 @@
 @import '../../styles/common.scss';
 
+.google_auth_button {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0 0 0;
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--submit-button-primary-color);
+    color: var(--submit-button-primary-color);
+    border-radius: 8px;
+}
+
+.google_auth_button:hover {
+    background-color: var(--submit-button-primary-color);
+    color: var(--submit-button-secondary-color);
+}

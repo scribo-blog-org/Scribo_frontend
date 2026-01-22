@@ -19,18 +19,18 @@ function Footer(){
                         <LinkToProfile to={'/profile'}><p>Профиль</p></LinkToProfile>
                     </div>
                     <div className="footer_links">
-                        <Link to={'/api'}><p>Api</p></Link>
-                    </div>
-                    <div className="footer_links">
                         <Link to={'/users/Dev'}><p>Dev blog</p></Link>
                     </div>
                     <div className="footer_links">
-                        <a href="https://github.com/MaksimKosyanchuk" target="_blank" rel="noreferrer"><p>GitHub</p></a>
+                        <Link to={'/api'}><p>Api</p></Link>
+                    </div>
+                    <div className="footer_links">
+                        <a href="mailto:scribo.blog.dev@gmail.com" target="_blank" rel="noreferrer"><p>Support</p></a>
                     </div>
                 </div>
                 <div className="footer_bottom_content app-transition">
                     <div className="footer_column footer_socials">
-                        <a className="footer_socials_item" href="https://github.com/MaksimKosyanchuk" target="_blank" rel="noreferrer">
+                        <a className="footer_socials_item" href="https://github.com/scribo-blog-org" target="_blank" rel="noreferrer">
                             <GhIcon className="app-transition"/>
                         </a>
                         <a className="footer_socials_item" href="https://www.instagram.com/maks_kos/" target="_blank" rel="noreferrer">

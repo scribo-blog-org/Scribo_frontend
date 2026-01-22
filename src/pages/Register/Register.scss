@@ -99,4 +99,25 @@
     .drop_file_error_messages {
         margin-bottom: 20px;
     }
+
+    .otp_container {
+        &_title_email {
+            font-weight: 600;
+        }
+
+        &_content{
+            display: flex;
+            gap: 10px;
+            text-align: center;
+            .input_field_label_error_message {
+                display: none;
+            }
+    
+            .input_field, .incorrect_field {
+                padding: 12px;
+                text-align: center;
+    
+            }
+        }
+    }
 }

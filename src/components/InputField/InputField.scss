@@ -16,12 +16,27 @@
             color: var(--input-text-color);
             transition: .3s;
             font-size: 16px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             font-family: "Google Sans", roboto, "Noto Sans Myanmar UI", arial, sans-serif;
         }
 
         .description {
            height: auto;
+        }
+
+        .input_wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .inpuut_confirmed_icon {
+            position: absolute;
+            color: #057905;
+            right: 12px;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
         }
     }
 
@@ -40,6 +55,12 @@
 
     .input_field:focus {
         border: 1px solid var(--input-outline-active-color);
+    }
+
+    .input_field.confirmed{
+        border: 1px solid var(--input-outline-color);
+        //pointer-events: none;
+        //cursor: not-allowed;
     }
 
     .input_field::placeholder {
@@ -114,7 +135,6 @@ input:focus {
     }
 
     .submit_button {
-        margin-top: 18px;
         width: 100%;
         padding: 12px 14px;
         font-size: 16px;
@@ -137,7 +157,7 @@ input:focus {
         color: var(--main-text-color);
         
         font-size: 12px;
-        margin-top: 4px;
+        margin-top: 10px;
         
         a {
             font-weight: bold;

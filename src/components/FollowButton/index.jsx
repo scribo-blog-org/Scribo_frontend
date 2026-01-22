@@ -19,14 +19,8 @@ const FollowButton = ({ setNewData, author_id, class_name }) => {
                 showToast({ message: `Вы подписались на ${result.data.followed.nick_name}!`, type: "success" })
             }
             else {
-                if(result?.errors?.token){
+                if(result?.errors?.Authorization?.token){
                     showToast({ type: "warning", message: "Чтобы подписаться нужно войти в аккаунт!" })
-                }
-                if(result?.errors?.["user_id/nick_name"] === "U are already following this user!") {
-                    showToast({ type: "warning", message: "Вы уже подписаны на этого пользователя!" })   
-                }
-                if(result?.errors?.["user_id/nick_name"] === "U cacanot follow your self!") {
-                    showToast({ type: "warning", message: "Вы не можете подписаться на самого себя!" })   
                 }
             }
         }
