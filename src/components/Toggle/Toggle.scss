@@ -1,0 +1,52 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.track {
+  width: 36px;
+  height: 20px;
+  background: var(--toggle-track-background);
+  border-radius: 999px;
+  position: relative;
+  transition: background .3s ease;
+}
+
+.thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--toggle-thumb-background);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform .3s ease, background .3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+
+.toggle input:checked + .track .thumb {
+  transform: translateX(16px);
+  background: var(--toggle-active-thumb-background);
+}
+
+/* включено */
+.toggle input:checked + .track {
+  background: var(--toggle-active-track-background);
+}
+
+.toggle input:checked + .track .thumb {
+  transform: translateX(16px);
+}
+
+/* focus с клавиатуры */
+.toggle input:focus-visible + .track {
+  outline: 2px solid var(--toggle-active-track-background);
+  outline-offset: 2px;
+}

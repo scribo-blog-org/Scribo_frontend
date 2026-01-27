@@ -139,7 +139,16 @@ function App() {
 
     '--popup-background-color': 'transparent',
     '--popup-button-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
-    '--popup-button-background-hover-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)'
+    '--popup-button-background-hover-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)',
+
+    '--dropdown-outline-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-c6)',
+    '--dropdown-selected-background-color': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-d7)',
+    '--dropdown-item-hover-background-color': isDarkTheme ? 'var(--gray-25)' : '',
+
+    '--toggle-track-background': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-c6)',
+    '--toggle-active-track-background': isDarkTheme ? '#4caf50' : '#4caf50',
+    '--toggle-thumb-background': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-ff)',
+    '--toggle-active-thumb-background': 'var(--gray-ff)'
   }
 
 

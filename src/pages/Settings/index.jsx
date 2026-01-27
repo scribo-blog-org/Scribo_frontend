@@ -4,13 +4,14 @@ import { AppContext } from '../../App';
 import { API_URL } from '../../config';
 import InputField from '../../components/InputField/index';
 import DropFile from '../../components/DropFile/index';
+import DropDown from '../../components/DropDown/index';
+import Toggle from '../../components/Toggle/index';
 import "./Settings.scss";
 import { ReactComponent as AvatarIcon } from "../../assets/svg/avatar-icon.svg"
 
 const Settings = () => {
     const { profile, profileLoading,showToast } = useContext(AppContext)
     const [ initialized, setInitialized ] = useState(false);
-    const [ email, setEmail ] = useState('')
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
 
@@ -18,9 +19,17 @@ const Settings = () => {
         {
             nick_name: '',
             description: '',
+            is_email_public: false,
             avatar: null
         }
     )
+
+    const set_email_visibility = (visibility) => {
+        setFields(prev => ({
+            ...prev,
+            is_email_public: visibility
+        }))
+    }
 
     useEffect(() => {
         if (!initialized) {
@@ -28,7 +37,7 @@ const Settings = () => {
             return;
         }
 
-        if (!profileLoading && (!profile || !profile.is_admin)) {
+        if (!profileLoading && (!profile)) {
             navigate("/posts");
             return;
         }
@@ -40,7 +49,7 @@ const Settings = () => {
 
             if (profile.avatar) {
                 try {
-                    const res = await fetch(profile.avatar);
+                    const res = await fetch(`${profile.avatar}?v=1`);
                     const blob = await res.blob();
 
                     avatarFile = new File([blob], "avatar.jpg", {
@@ -50,16 +59,13 @@ const Settings = () => {
                     console.error("Failed to load avatar", e);
                 }
             }
-
             setFields(prev => ({
                 ...prev,
                 nick_name: profile.nick_name ?? "",
                 description: profile.description ?? "",
-                avatar: prev.avatar === null ? avatarFile : prev.avatar
-                // 👆 если пользователь уже удалил — не возвращаем
+                avatar: prev.avatar === null ? avatarFile : prev.avatar,
+                is_email_public: profile.is_email_public
             }));
-
-            setEmail(profile.email ?? "");
         };
 
         setProfileData();
@@ -106,20 +112,6 @@ const Settings = () => {
             setErrors(prevErrors => ({
                 ...prevErrors,
                 nick_name: "Username cannot be longer than 20 characters!"
-            }));
-            is_error = true
-        }
-        if (fields.password.length < 8) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                password: "Password must be at least 8 characters long!"
-            }));
-            is_error = true
-        }
-        if (fields.password.length > 20) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                password: "Password cannot be longer than 20 characters!"
             }));
             is_error = true
         }
@@ -182,57 +174,63 @@ const Settings = () => {
     };
 
     return (
-        <form className='form_input app-transition'>
-            <>
-                <DropFile
-                    value={fields.avatar}
-                    setValue={(file) =>
-                        setFields(prev => ({ ...prev, avatar: file }))
-                    }
-                    background={<AvatarIcon className="drop_file_info_avatar_icon app-transition" />}
-                    drop_file_type={"image/*"}
-                    file_types={"SVG, PNG, JPEG, JPG и другие"}
-                    errors={errors?.avatar}
-                    add_new_errors={add_errors_to_image}
-                    clear_errors={clear_errors_from_image}
-                    onRemove={handleAvatarRemove}
-                />
-                <InputField
-                    className={`email`}
-                    type="text"
-                    onChange={(e) => setFields({ ...fields, email: e.target.value })}
-                    onFocus={() => handleFocus('nick_name')}
-                    input_label="Почта"
-                    placeholder="Email"
-                    value={email}
-                    error={errors?.email ?? null}
-                    confirmed={true}
-                />
-                <InputField
-                    className={`user_name`}
-                    type="text"
-                    onChange={(e) => setFields({ ...fields, nick_name: e.target.value })}
-                    onFocus={() => handleFocus('nick_name')}
-                    input_label="Имя пользователя"
-                    placeholder="User Name"
-                    value={fields?.nick_name}
-                    error={errors?.nick_name ?? null}
-                />
-                <InputField
-                    className={`description`}
-                    type="text"
-                    is_multiline = {true}
-                    length={60}
-                    onChange={(e) => setFields({ ...fields, description: e.target.value })}
-                    onFocus={() => handleFocus('description')}
-                    input_label="Описание"
-                    placeholder="Description of profile"
-                    value={fields?.description}
-                    error={errors?.description ?? null}
-                />
-                <button className="submit_button app-transition" type="button" onClick={handleRegister}>Зарегистрироваться</button>
-            </>
-        </form>
+        <div className='settings'>
+
+
+            <form className='form_input app-transition'>
+                <>
+                    <DropFile
+                        value={fields.avatar}
+                        setValue={(file) =>
+                            setFields(prev => ({ ...prev, avatar: file }))
+                        }
+                        background={<AvatarIcon className="drop_file_info_avatar_icon app-transition" />}
+                        drop_file_type={"image/*"}
+                        file_types={"SVG, PNG, JPEG, JPG и другие"}
+                        errors={errors?.avatar}
+                        add_new_errors={add_errors_to_image}
+                        clear_errors={clear_errors_from_image}
+                        onRemove={handleAvatarRemove}
+                    />
+                    <div className='email'>
+                        <p className='email_label'>
+                            {profile?.email}
+                        </p>
+                        
+                        <div className='email_toggle'>
+                            <p>Отображать в профиле</p>
+                            <Toggle 
+                                checked={fields.is_email_public}
+                                onChange={set_email_visibility}
+                            />
+                        </div>
+                    </div>
+                    <InputField
+                        className={`user_name`}
+                        type="text"
+                        onChange={(e) => setFields({ ...fields, nick_name: e.target.value })}
+                        onFocus={() => handleFocus('nick_name')}
+                        input_label="Имя пользователя"
+                        placeholder="User Name"
+                        value={fields?.nick_name}
+                        error={errors?.nick_name ?? null}
+                    />
+                    <InputField
+                        className={`description`}
+                        type="text"
+                        is_multiline = {true}
+                        length={60}
+                        onChange={(e) => setFields({ ...fields, description: e.target.value })}
+                        onFocus={() => handleFocus('description')}
+                        input_label="Описание"
+                        placeholder="Description of profile"
+                        value={fields?.description}
+                        error={errors?.description ?? null}
+                    />
+                    <button className="submit_button app-transition" type="button" onClick={handleRegister}>Сохранить</button>
+                </>
+            </form>
+        </div>
     );
 };
 

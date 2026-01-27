@@ -27,7 +27,7 @@ const Input = forwardRef(
   const InputComponent = is_multiline ? "textarea" : "input";
 
   return (
-    <label className="input_field_label">
+    <div className="input_field_label">
       <div className="input">
         <span>{input_label ? input_label + ":" : ""}</span>
 
@@ -58,7 +58,7 @@ const Input = forwardRef(
         <WarningIcon className="input_field_label_error_message_logo" />
         <p>{error}</p>
       </div>
-    </label>
+    </div>
   );
 });
 
