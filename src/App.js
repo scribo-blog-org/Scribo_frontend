@@ -5,6 +5,7 @@ import StartScreen from './components/StartScreen/index.jsx';
 import HomePage from './pages/HomePage/index.jsx';
 import Article from './pages/Article';
 import Profile from "./pages/Profile";
+import Settings from './pages/Settings/index.jsx';
 import PageNotFound from './pages/PageNotFound/index.jsx';
 import Footer from "./components/Footer/index.jsx";
 import Login from './pages/Login/index.jsx';
@@ -79,7 +80,7 @@ function App() {
     '--author-name-hover-color' : isDarkTheme ? 'var(--gray-f1)' : 'var(--gray-16)',
     '--input-text-color': isDarkTheme ? 'var(--gray-d7)' : 'var(--gray-1e)',
     '--input-background-color': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-f9)',
-    '--input-outline-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-c6)',
+    '--input-outline-color': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-c6)',
     '--input-outline-active-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
     '--input-placeholder-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-c6)',
     // '--drop-file-background-color': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-f7)',
@@ -138,7 +139,16 @@ function App() {
 
     '--popup-background-color': 'transparent',
     '--popup-button-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
-    '--popup-button-background-hover-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)'
+    '--popup-button-background-hover-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)',
+
+    '--dropdown-outline-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-c6)',
+    '--dropdown-selected-background-color': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-d7)',
+    '--dropdown-item-hover-background-color': isDarkTheme ? 'var(--gray-25)' : '',
+
+    '--toggle-track-background': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-c6)',
+    '--toggle-active-track-background': isDarkTheme ? 'var(--gray-d7)' : 'var(--gray-25)',
+    '--toggle-thumb-background': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)',
+    '--toggle-active-thumb-background': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)'
   }
 
 
@@ -151,7 +161,7 @@ function App() {
 
   return (
     <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow }}>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className={`App ${isDarkTheme ? 'App_dark' : ''}`} style={CssVariables}>
 
           <ModalWindow
@@ -178,6 +188,7 @@ function App() {
               <Route path="/create-post" Component={CreatePost}/>
               <Route path="/users/:id" Component={Profile}/>
               <Route path="/posts/:id" Component={Article}/>
+              <Route path="/settings" Component={Settings}/>
             </Routes>
             
           </StartScreen>

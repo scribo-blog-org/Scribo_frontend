@@ -91,9 +91,9 @@
                         font-size: 12px;
                     }
 
-                    &_quit{
-                        color: var(--red-button-primary-color);
-                        border: 1px solid var(--red-button-primary-color);
+                    &_settings {
+                        color: var(--submit-button-primary-color);
+                        border: 1px solid var(--submit-button-primary-color);
                         
                         @include screen {
                             padding: 8px 11px;
@@ -101,10 +101,9 @@
                         }
                     }
 
-                    &_quit:hover {
-                        background-color: var(--red-button-primary-color);
-                        
-                        color: var(--red-button-secondary-color);
+                    &_settings:hover {
+                        color: var(--submit-button-secondary-color);
+                        background-color: var(--submit-button-primary-color);
                     }
                 }
             }
@@ -151,10 +150,24 @@
             }
 
             &_administrator {
+                margin-top: 6px;
                 p {
                     font-size: 14px;
                     color: var(--administrator-color);
                     text-shadow: 0 0 16px var(--red-f1);
+
+                    @include screen() {
+                        font-size: 12px;
+                    }
+                }
+            }
+
+            &_email{
+                margin-top: 10px;
+
+                p {
+                    font-size: 20px;
+                    color: var(--main-text-color);
 
                     @include screen() {
                         font-size: 12px;

@@ -151,8 +151,21 @@ const RegisterForm = ({ email = null, google_token = null, gmail_code = null }) 
     return (
         <form className='form_input app-transition'>
             <>
-                <DropFile setValue={(file) => setFields({ ...fields, avatar: file })} value={fields.avatar} background={<AvatarIcon className="drop_file_info_avatar_icon app-transition"/>} drop_file_type={"image/*"} file_types={"SVG, PNG, JPEG, JPG и другие"} errors={errors?.featured_image} add_new_errors={add_errors_to_image} clear_errors={clear_errors_from_image} handleClick={handleClick}/> 
-                <InputField
+                <DropFile
+                    value={fields.avatar}
+                    setValue={(file) =>
+                        setFields({ ...fields, avatar: file })
+                    }
+                    background={
+                        <AvatarIcon className="drop_file_info_avatar_icon app-transition" />
+                    }
+                    drop_file_type="image/*"
+                    file_types="SVG, PNG, JPEG, JPG и другие"
+                    errors={errors?.featured_image}
+                    add_new_errors={add_errors_to_image}
+                    clear_errors={clear_errors_from_image}
+                    onRemove={handleClick}
+                /><InputField
                     className={`email`}
                     type="text"
                     onChange={(e) => setFields({ ...fields, email: e.target.value })}

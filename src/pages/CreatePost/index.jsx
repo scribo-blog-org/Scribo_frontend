@@ -89,7 +89,6 @@ const CreatePost = () => {
         const headers = {
             'Authorization': `Bearer ${localStorage.getItem("token")}`
         }
-
         try{
             const creating = await fetch(`${API_URL}/api/posts`, { method: "POST", body: formData, headers: headers})
             const result = await creating.json()

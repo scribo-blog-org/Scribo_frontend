@@ -1,6 +1,55 @@
 @import '../../styles/common.scss';
 
 .form_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 330px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    gap: 20px;
+
+    @include screen() {
+        padding-top: 0;
+        height: auto;
+    }
+
+    .submit_button {
+        width: 100%;
+        padding: 12px 24px;
+        font-size: 16px;
+        color: var(--submit-button-secondary-color);
+        background-color: var(--submit-button-primary-color);
+        border-radius: 8px;
+        
+        @include screen() {
+            font-size: 14px;
+            margin-top: 30px;
+        }
+    }
+    
+    .submit_button:hover {
+        background-color: var(--submit-button-primary-hover-color);
+    }
+
+    .redirect_object {
+        display: flex;
+        color: var(--main-text-color);
+        
+        font-size: 12px;
+        margin-top: -8px;
+        
+        a {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        a:hover{
+            text-decoration: underline;
+        }
+    }
+
     .drop_file{
         border-radius: 50%;
         width: 150px;
@@ -29,13 +78,12 @@
                 cursor: pointer;
                 padding: 6px 8px;
     
-                svg{
+                svg {
                     color: red;
                     height: 12px;
                     width: 12px;
                     
                     @include screen() {
-                        color: red;
                         height: 16px;
                         width: 16px;
                     }

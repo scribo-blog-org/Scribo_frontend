@@ -17,7 +17,7 @@ const Profile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     let tabs = ["Посты", "Сохранённые"];
-    const { profile, setProfile, showToast, showModalWindow } = useContext(AppContext);
+    const { profile, setProfile, showModalWindow } = useContext(AppContext);
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const [isLoading, setIsLoading] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -110,10 +110,8 @@ const Profile = () => {
         }
     };
 
-    const quitButtonClick = () => {
-        localStorage.removeItem('token');
-        showToast({ message: "Вы вышли из аккаунта!", type: "success" });
-        navigate('/posts');
+    const open_settings = () => {
+        navigate('/settings');
     };
 
     const fetchUsers = async (query) => {
@@ -195,10 +193,10 @@ const Profile = () => {
                         </div>
                         {profile && profile._id === user._id ? (
                             <button
-                                className="profile_info_top_right_side_button profile_info_top_right_side_button_quit app-transition"
-                                onClick={quitButtonClick}
+                                className="profile_info_top_right_side_button profile_info_top_right_side_button_settings app-transition"
+                                onClick={open_settings}
                             >
-                                Выйти
+                                Настройки
                             </button>
                         ) 
                         :
@@ -226,6 +224,11 @@ const Profile = () => {
                                 <></>
                         }
                     </div>
+                    {user?.is_email_public && (
+                        <div className="profile_info_bottom_email">
+                            <p>{user.email}</p>
+                        </div>
+                    )}
                     {user?.description && (
                         <div className="profile_info_bottom_description">
                             <p>{user.description}</p>
