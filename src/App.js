@@ -148,7 +148,10 @@ function App() {
     '--toggle-track-background': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-c6)',
     '--toggle-active-track-background': isDarkTheme ? 'var(--gray-d7)' : 'var(--gray-25)',
     '--toggle-thumb-background': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)',
-    '--toggle-active-thumb-background': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)'
+    '--toggle-active-thumb-background': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)',
+
+    '--text-editor-toolbar-item-hover-background': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
+    '--text-editor-toolbar-item-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-63)'
   }
 
 
