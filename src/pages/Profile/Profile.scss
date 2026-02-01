@@ -54,56 +54,8 @@
                     @include screen() {
                         gap: 10px;
                     }
-
-                    button {
-                        background-color: var(--profile-button-background-color);
-                        padding: 6px 12px;
-                        border-radius: 8px;
-                    }
-                    
                     p {
-                        color: var(--main-text-color);
                         font-size: 14px;
-
-                        @include screen() {
-                            font-size: 12px;
-                        }
-                    }
-                    
-                    button:hover {
-                        background-color: var(--profile-button-hover-background-color);
-                    }
-                }
-
-                &_button {
-                    margin-bottom: auto;
-                    cursor: pointer;
-                    user-select: none;
-                    font-size: 14px;
-                    padding: 10px 20px;
-                    margin-right: 0;
-                    border-radius: 8px;
-                    
-                    @include screen() {
-                        bottom: 0;
-                        margin-top: 27px;
-                        margin-left: auto;
-                        font-size: 12px;
-                    }
-
-                    &_settings {
-                        color: var(--submit-button-primary-color);
-                        border: 1px solid var(--submit-button-primary-color);
-                        
-                        @include screen {
-                            padding: 8px 11px;
-                            font-size: 12px;
-                        }
-                    }
-
-                    &_settings:hover {
-                        color: var(--submit-button-secondary-color);
-                        background-color: var(--submit-button-primary-color);
                     }
                 }
             }
@@ -124,7 +76,6 @@
                 &_name  {
                     font-size: 28px;
                     font-weight: 600;
-                    color: var(--text-color);
                     
                     @include screen(){
                         font-size: 20px;
@@ -167,7 +118,6 @@
 
                 p {
                     font-size: 20px;
-                    color: var(--main-text-color);
 
                     @include screen() {
                         font-size: 12px;
@@ -180,7 +130,6 @@
 
                 p {
                     font-size: 16px;
-                    color: var(--main-text-color);
 
                     @include screen() {
                         font-size: 10px;
@@ -215,7 +164,7 @@
         display: flex;
         justify-content: center;
         border-top: 1px solid var(--line-color);
-        margin-top: 20px;
+        margin: 20px 0;
         padding: 10px 0;
 
         @include screen() {
@@ -223,7 +172,6 @@
         }
 
         p {
-            color: var(--main-text-color);
             font-size: 14px;
         }
 
@@ -234,7 +182,6 @@
         &_active{
             p {
                 font-weight: bold;
-                color: var(--text-color)
             }
         }
     }

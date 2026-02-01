@@ -1,7 +1,7 @@
 import "./InputField.scss";
 import { forwardRef } from "react";
-import { ReactComponent as WarningIcon } from "../../assets/svg/warning-icon.svg";
-import { ReactComponent as ConfirmedIcon } from "../../assets/svg/confirmed-icon.svg";
+import { ReactComponent as WarningIcon } from "../../../assets/svg/warning-icon.svg";
+import { ReactComponent as ConfirmedIcon } from "../../../assets/svg/confirmed-icon.svg";
 
 const Input = forwardRef(
 (

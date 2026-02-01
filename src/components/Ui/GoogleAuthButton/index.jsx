@@ -1,6 +1,6 @@
 import { useGoogleLogin } from '@react-oauth/google';
-import { ReactComponent as GoogleIcon } from "../../assets/svg/google-icon.svg"
-
+import { ReactComponent as GoogleIcon } from "../../../assets/svg/google-icon.svg"
+import "./GoogleAuthButton.scss";
 
 const GoogleAuthButton = ({ setGoogleToken }) => {
   const login = useGoogleLogin({

@@ -1,0 +1,24 @@
+@import "../../../styles/helpers.scss";
+ 
+ .switcher_bar{
+    display: flex;
+    border-radius: 6px;
+    border: 1px solid var(--switcher-bar-border-color);
+    padding: 4px;
+    
+    button {
+        color: var(--switcher-bar-item-color);
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 14px;
+
+        @include screen() {
+            width: 50%;
+            font-size: 12px;
+        }
+    }
+
+    .switcher_bar_item_active{
+        background-color: var(--switcher-bar-active-item-background-color);
+    }
+}

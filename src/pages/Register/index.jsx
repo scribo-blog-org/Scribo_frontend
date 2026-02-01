@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { useContext, useEffect, useState, useRef } from 'react';
 import { AppContext } from '../../App';
 import { API_URL } from '../../config';
-import InputField from '../../components/InputField/index';
-import DropFile from '../../components/DropFile/index';
+import InputField from '../../components/Ui/InputField/index';
+import DropFile from '../../components/Ui/DropFile/index';
 import "./Register.scss";
 import { ReactComponent as AvatarIcon } from "../../assets/svg/avatar-icon.svg"
-import GoogleAuthButton from '../../components/GoogleAuthButton/index';
+import GoogleAuthButton from '../../components/Ui/GoogleAuthButton/index';
+import PrimaryButton from '../../components/Ui/PrimaryButton';
 
 const RegisterForm = ({ email = null, google_token = null, gmail_code = null }) => {
     const navigate = useNavigate();
@@ -149,71 +150,73 @@ const RegisterForm = ({ email = null, google_token = null, gmail_code = null }) 
     }
 
     return (
-        <form className='form_input app-transition'>
-            <>
-                <DropFile
-                    value={fields.avatar}
-                    setValue={(file) =>
-                        setFields({ ...fields, avatar: file })
-                    }
-                    background={
-                        <AvatarIcon className="drop_file_info_avatar_icon app-transition" />
-                    }
-                    drop_file_type="image/*"
-                    file_types="SVG, PNG, JPEG, JPG и другие"
-                    errors={errors?.featured_image}
-                    add_new_errors={add_errors_to_image}
-                    clear_errors={clear_errors_from_image}
-                    onRemove={handleClick}
-                /><InputField
-                    className={`email`}
-                    type="text"
-                    onChange={(e) => setFields({ ...fields, email: e.target.value })}
-                    onFocus={() => handleFocus('nick_name')}
-                    input_label="Почта"
-                    placeholder="Email"
-                    value={email ?? fields.email}
-                    error={errors?.email ?? null}
-                    confirmed={Boolean(email)}
-                />
-                <InputField
-                    className={`user_name`}
-                    type="text"
-                    onChange={(e) => setFields({ ...fields, nick_name: e.target.value })}
-                    onFocus={() => handleFocus('nick_name')}
-                    input_label="Имя пользователя"
-                    placeholder="User Name"
-                    value={fields.nick_name}
-                    error={errors?.nick_name ?? null}
-                />
-                <InputField
-                    className={`description`}
-                    type="text"
-                    is_multiline = {true}
-                    length={30}
-                    onChange={(e) => setFields({ ...fields, description: e.target.value })}
-                    onFocus={() => handleFocus('description')}
-                    input_label="Описание"
-                    placeholder="Description of profile"
-                    value={fields.description}
-                    error={errors?.description ?? null}
-                />
-                <InputField
-                    className={`password`}
-                    type="password"
-                    onChange={(e) => setFields({ ...fields, password: e.target.value })}
-                    onFocus={() => handleFocus('password')}
-                    input_label="Пароль"
-                    placeholder="Password123"
-                    value={fields.password}
-                    error={errors?.password ?? null}
-                />
-                <button className="submit_button app-transition" type="button" onClick={handleRegister}>Зарегистрироваться</button>
-                <p className={"redirect_object"}>Уже есть аккаунт?
-                    <Link to={"/auth/login"}>Войти.</Link>
-                </p>
-            </>
-        </form>
+        <div className='register'>
+            <form className='form_input app-transition'>
+                <>
+                    <DropFile
+                        value={fields.avatar}
+                        setValue={(file) =>
+                            setFields({ ...fields, avatar: file })
+                        }
+                        background={
+                            <AvatarIcon className="drop_file_info_avatar_icon app-transition" />
+                        }
+                        drop_file_type="image/*"
+                        file_types="SVG, PNG, JPEG, JPG и другие"
+                        errors={errors?.featured_image}
+                        add_new_errors={add_errors_to_image}
+                        clear_errors={clear_errors_from_image}
+                        onRemove={handleClick}
+                    /><InputField
+                        className={`email`}
+                        type="text"
+                        onChange={(e) => setFields({ ...fields, email: e.target.value })}
+                        onFocus={() => handleFocus('nick_name')}
+                        input_label="Почта"
+                        placeholder="Email"
+                        value={email ?? fields.email}
+                        error={errors?.email ?? null}
+                        confirmed={Boolean(email)}
+                    />
+                    <InputField
+                        className={`user_name`}
+                        type="text"
+                        onChange={(e) => setFields({ ...fields, nick_name: e.target.value })}
+                        onFocus={() => handleFocus('nick_name')}
+                        input_label="Имя пользователя"
+                        placeholder="User Name"
+                        value={fields.nick_name}
+                        error={errors?.nick_name ?? null}
+                    />
+                    <InputField
+                        className={`description`}
+                        type="text"
+                        is_multiline = {true}
+                        length={30}
+                        onChange={(e) => setFields({ ...fields, description: e.target.value })}
+                        onFocus={() => handleFocus('description')}
+                        input_label="Описание"
+                        placeholder="Description of profile"
+                        value={fields.description}
+                        error={errors?.description ?? null}
+                    />
+                    <InputField
+                        className={`password`}
+                        type="password"
+                        onChange={(e) => setFields({ ...fields, password: e.target.value })}
+                        onFocus={() => handleFocus('password')}
+                        input_label="Пароль"
+                        placeholder="Password123"
+                        value={fields.password}
+                        error={errors?.password ?? null}
+                    />
+                    <PrimaryButton onClick={handleRegister}>Зарегистрироваться</PrimaryButton>
+                    <p className={"redirect_object"}>Уже есть аккаунт?
+                        <Link to={"/auth/login"}>Войти.</Link>
+                    </p>
+                </>
+            </form>
+        </div>
     );
 };
 
@@ -282,42 +285,37 @@ const VerifyGmailCode = ({ email }) => {
     };
 
     return (
-        redigrectToForm ? <RegisterForm email={email} gmail_code={code.join("")}/> : 
-        <form className="form_input app-transition">
-            <div className="otp_container">
-                <div className='otp_container_title'>
-                    <p>Введите код, отправленный на </p>
-                    <p className='otp_container_title_email'>{email}</p>
+        redigrectToForm ? <RegisterForm email={email} gmail_code={code.join("")}/> :
+        <div className='register'>
+            <form className="form_input app-transition">
+                <div className="otp_container">
+                    <div className='otp_container_title'>
+                        <p>Введите код, отправленный на </p>
+                        <p className='otp_container_title_email'>{email}</p>
+                    </div>
+                    <div className='otp_container_content'>
+                        {code.map((digit, index) => (
+                            <InputField
+                            key={index}
+                            ref={(el) => (inputsRef.current[index] = el)}
+                            className="otp_input"
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleChange(e, index)}
+                            onKeyDown={(e) => handleKeyDown(e, index)}
+                            onFocus={() => setErrors({})}
+                            error={errors?.code ?? null}
+                            placeholder=""
+                            input_label=""
+                            />
+                        ))}
+                    </div>
                 </div>
-                <div className='otp_container_content'>
-                    {code.map((digit, index) => (
-                        <InputField
-                        key={index}
-                        ref={(el) => (inputsRef.current[index] = el)}
-                        className="otp_input"
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        value={digit}
-                        onChange={(e) => handleChange(e, index)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        onFocus={() => setErrors({})}
-                        error={errors?.code ?? null}
-                        placeholder=""
-                        input_label=""
-                        />
-                    ))}
-                </div>
-            </div>
-
-            <button
-                className="submit_button app-transition"
-                type="button"
-                onClick={handleSubmit}
-            >
-                Отправить
-            </button>
-        </form>
+                <PrimaryButton onClick={handleSubmit}>Отправить</PrimaryButton>
+            </form>
+        </div> 
     );
 };
 
@@ -415,26 +413,28 @@ const Register = () => {
 
     return (
         gmailCodeSedned ? <VerifyGmailCode email={fields.email}/> : 
-        <form className='form_input app-transition'>
-            <>
-                <InputField
-                    className={`email`}
-                    type="text"
-                    onChange={(e) => setFields({ ...fields, email: e.target.value })}
-                    onFocus={() => handleFocus('email')}
-                    input_label="Почта"
-                    placeholder="Email"
-                    value={email ?? fields.email}
-                    error={errors?.email ?? null}
-                    confirmed={Boolean(email)}
-                />
-                <button className="submit_button app-transition" type="button" onClick={handleRegister}>Зарегистрироваться</button>
-                <GoogleAuthButton setGoogleToken={setGoogleToken}/>
-                <p className={"redirect_object"}>Уже есть аккаунт?
-                    <Link to={"/auth/login"}>Войти.</Link>
-                </p>
-            </>
-        </form>
+        <div className='register'>
+            <form className='form_input app-transition'>
+                <>
+                    <InputField
+                        className={`email`}
+                        type="text"
+                        onChange={(e) => setFields({ ...fields, email: e.target.value })}
+                        onFocus={() => handleFocus('email')}
+                        input_label="Почта"
+                        placeholder="Email"
+                        value={email ?? fields.email}
+                        error={errors?.email ?? null}
+                        confirmed={Boolean(email)}
+                    />
+                    <PrimaryButton onClick={handleRegister}>Зарегистрироваться</PrimaryButton>
+                    <GoogleAuthButton setGoogleToken={setGoogleToken}/>
+                    <p className={"redirect_object"}>Уже есть аккаунт?
+                        <Link to={"/auth/login"}>Войти.</Link>
+                    </p>
+                </>
+            </form>
+        </div>
     )
 }
 

@@ -19,13 +19,14 @@ import { LinkNode } from "@lexical/link";
 import { TextNode } from "lexical";
 
 import "./TextEditorField.scss";
+import SwitchBar from "../SwitchBar";
 
-import { ReactComponent as BoldText } from "../../assets/svg/bold-text-icon.svg";
-import { ReactComponent as ItalicText } from "../../assets/svg/italic-text-icon.svg";
-import { ReactComponent as MarkList } from "../../assets/svg/mark-list-icon.svg";
-import { ReactComponent as NumList } from "../../assets/svg/num-list-icon.svg";
-import { ReactComponent as LinkText } from "../../assets/svg/link-icon.svg";
-import { ReactComponent as WarningIcon } from "../../assets/svg/warning-icon.svg";
+import { ReactComponent as BoldText } from "../../../assets/svg/bold-text-icon.svg";
+import { ReactComponent as ItalicText } from "../../../assets/svg/italic-text-icon.svg";
+import { ReactComponent as MarkList } from "../../../assets/svg/mark-list-icon.svg";
+import { ReactComponent as NumList } from "../../../assets/svg/num-list-icon.svg";
+import { ReactComponent as LinkText } from "../../../assets/svg/link-icon.svg";
+import { ReactComponent as WarningIcon } from "../../../assets/svg/warning-icon.svg";
 
 import { useState, useEffect } from "react";
 
@@ -122,7 +123,7 @@ export default function TextEditor({
   onFocus
 }) 
 {
-  const [ editable, setEditable ] = useState(true);
+  const [ switcherActiveIndex, setSwitcherActiveIndex ] = useState(0);
 
   function EditablePlugin({ editable }) {
     const [editor] = useLexicalComposerContext();
@@ -141,20 +142,13 @@ export default function TextEditor({
           editorState: value
         }}
       >
-      <EditablePlugin editable={editable} />
+      <EditablePlugin editable={switcherActiveIndex === 0} />
         <div className="text_editor app-transition">
           <div className={`text_editor_body ${error ? "incorrect_field" : ""} app-transition`}>
 
             <div className="text_editor_body_top_side app-transition">
               <EditorToolbar />
-              <div className="text_editor_body_top_side_mode_switcher app-transition">
-                <button className={`${editable ? "active" : ""} app-transition`} type="button" onClick={() => setEditable(true)}>
-                  Редактировать
-                </button>
-                <button className={`${!editable ? "active" : ""} app-transition`} type="button" onClick={() => setEditable(false)}>
-                  Просмотр
-                </button>
-              </div>
+              <SwitchBar active_index={switcherActiveIndex} setActiveIndex={setSwitcherActiveIndex} items={["Редактировать", "Предпросмотр"]} />
             </div>
             <RichTextPlugin
               contentEditable={

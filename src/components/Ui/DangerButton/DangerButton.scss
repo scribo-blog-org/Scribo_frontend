@@ -1,0 +1,12 @@
+.danger_button {
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--red-button-primary-color);
+    color: var(--red-button-primary-color);
+}
+
+.danger_button:hover {
+    color: var(--red-button-secondary-color);
+    background: var(--red-button-primary-color);
+}

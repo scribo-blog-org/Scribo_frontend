@@ -1,0 +1,20 @@
+.chip_button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--chip-button-text-color);
+    background-color: var(--chip-button-background-color);
+}
+
+.chip_button:hover {
+    background-color: var(--chip-button-hover-background-color);
+}
+
+.chip_button_active {
+    color: var(--chip-active-button-text-color);
+    background-color: var(--chip-active-button-background-color);
+}
+
+.chip_button_active:hover {
+    background-color: var(--chip-active-button-hover-background-color);
+}

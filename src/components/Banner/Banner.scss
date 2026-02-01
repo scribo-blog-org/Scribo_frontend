@@ -13,7 +13,7 @@
     }
 
     &__logo path {
-        stroke: var(--text-color);
+        stroke: var(--main-text-color);
         stroke-width: 4px;
 
         stroke-dasharray: 520;
@@ -46,7 +46,7 @@
             display: flex;
             flex-direction: column;
             line-height: 0.85;
-            color: var(--text-color);
+            color: var(--main-text-color);
             font-size: 38px;
 
             @include screen() {
@@ -75,11 +75,6 @@
         margin-top: auto;
         display: flex;
         gap: 14px;
-        
-        @include screen() {
-            // justify-content: space-between;
-            // padding: 0 50px;
-        }
     }
 
     &__btn {

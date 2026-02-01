@@ -5,13 +5,15 @@ import { API_URL } from "../../config";
 import { getPosts } from "../../api/posts.api.js";
 import { getUsers } from "../../api/users.api.js";
 import Posts from "../../components/Posts/index.jsx"
-import Loading from "../../components/Loading";
+import Loading from "../../components/Ui/Loading/index.jsx";
 import Author from "../../components/Author"
 import "./Profile.scss"
 import DefaultProfileAvatar from "../../assets/images/default-profile-avatar.png"
 import { ReactComponent as Verified } from "../../assets/svg/verified-icon.svg";
 import { ReactComponent as Calendar } from "../../assets/svg/calendar-icon.svg";
-import FollowButton from "../../components/FollowButton/index.jsx";
+import FollowButton from "../../components/FollowButton";
+import ActionButton from "../../components/Ui/ActionButton";
+import ChipButton from "../../components/Ui/ChipButton";
 
 const Profile = () => {
     const { id } = useParams();
@@ -184,20 +186,17 @@ const Profile = () => {
                         <div></div>
                         <div className="profile_info_top_right_side_elements">
                             <p>{posts?.length ?? "0"} постов</p>
-                            <button onClick={ () => { open_follows() } } className="app-transition">
-                                <p>{user?.follows?.length ?? "0"} подписок</p>
-                            </button>
-                            <button onClick={ () => { open_followers() } } className="app-transition">
-                                <p>{user?.followers?.length ?? "0"} подписчиков</p>
-                            </button>
+                            <ChipButton onClick={ open_followers }>
+                                {user?.followers?.length ?? "0"} подписчиков
+                            </ChipButton>
+                            <ChipButton onClick={ open_follows }>
+                                {user?.follows?.length ?? "0"} подписок
+                            </ChipButton>
                         </div>
                         {profile && profile._id === user._id ? (
-                            <button
-                                className="profile_info_top_right_side_button profile_info_top_right_side_button_settings app-transition"
-                                onClick={open_settings}
-                            >
+                            <ActionButton className="profile_info_top_right_side_button" onClick={open_settings}>
                                 Настройки
-                            </button>
+                            </ActionButton>
                         ) 
                         :
                             <FollowButton setNewData={setNewData} author_id={user?._id} class_name={"profile_info_top_right_side_button"}/> 

@@ -1,170 +1,162 @@
 @import '../../styles/common.scss';
 
-.form_input{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 330px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0;
-    gap: 20px;
-
-    @include screen() {
-        padding-top: 0;
-        height: auto;
-    }
-
-    .submit_button {
-        width: 100%;
-        padding: 12px 24px;
-        font-size: 16px;
-        color: var(--submit-button-secondary-color);
-        background-color: var(--submit-button-primary-color);
-        border-radius: 8px;
-        
-        @include screen() {
-            font-size: 14px;
-            margin-top: 30px;
-        }
-    }
-    
-    .submit_button:hover {
-        background-color: var(--submit-button-primary-hover-color);
-    }
-
-    .redirect_object {
+.register {
+    .form_input{
         display: flex;
-        color: var(--main-text-color);
-        
-        font-size: 12px;
-        margin-top: -8px;
-        
-        a {
-            font-weight: bold;
-            margin-left: 5px;
-        }
-        
-        a:hover{
-            text-decoration: underline;
-        }
-    }
-
-    .drop_file{
-        border-radius: 50%;
-        width: 150px;
-        height: 150px;
-        margin-bottom: 10px;
-
-        @include screen() {
-            width: 120px;
-            height: 120px;
-        }
-
-        .remove_image {
-            position: absolute;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            bottom: 5px;
-            background-color: var(--sticky-button-background-color);
-            border: 1px solid var(--line-color);
-            
-            p {
-                display: none;
-            }
-
-            .remove_image_button {
-                cursor: pointer;
-                padding: 6px 8px;
+        flex-direction: column;
+        align-items: center;
+        width: 330px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0;
+        gap: 20px;
     
-                svg {
-                    color: red;
-                    height: 12px;
-                    width: 12px;
-                    
-                    @include screen() {
-                        height: 16px;
-                        width: 16px;
+        @include screen() {
+            padding-top: 0;
+            height: auto;
+        }
+    
+        .primary_button {
+            width: 100%;
+        }
+    
+        .redirect_object {
+            display: flex;
+            color: var(--main-text-color);
+            
+            font-size: 12px;
+            margin-top: -8px;
+            
+            a {
+                font-weight: bold;
+                margin-left: 5px;
+            }
+            
+            a:hover{
+                text-decoration: underline;
+            }
+        }
+    
+        .drop_file{
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 10px;
+    
+            @include screen() {
+                width: 120px;
+                height: 120px;
+            }
+    
+            .remove_image {
+                position: absolute;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                bottom: 5px;
+                background-color: var(--sticky-button-background-color);
+                border: 1px solid var(--line-color);
+                
+                p {
+                    display: none;
+                }
+    
+                .remove_image_button {
+                    cursor: pointer;
+                    padding: 6px 8px;
+        
+                    svg {
+                        color: red;
+                        height: 12px;
+                        width: 12px;
+                        
+                        @include screen() {
+                            height: 16px;
+                            width: 16px;
+                        }
                     }
                 }
             }
-        }
-
-        &_info {
-            gap: 6px;
-            width: 100%;
-            height: 100%;
-            justify-content: flex-end;
-
-            @include screen() {
-                gap: 4px;
-            }
-
-            &_avatar_icon {
-                height: 70%;
-                width: 70%;
-                color: var(--avatar-icon-color);
-            }
-
-            &_upload_icon {
-                width: 40px;
-                height: 40px;
-
+    
+            &_info {
+                gap: 6px;
+                width: 100%;
+                height: 100%;
+                justify-content: flex-end;
+    
                 @include screen() {
-                    height: 35px;
-                    width: 35px;
+                    gap: 4px;
+                }
+    
+                &_avatar_icon {
+                    height: 70%;
+                    width: 70%;
+                    color: var(--avatar-icon-color);
+                }
+    
+                &_upload_icon {
+                    width: 40px;
+                    height: 40px;
+    
+                    @include screen() {
+                        height: 35px;
+                        width: 35px;
+                    }
+                }
+    
+                &_main_text {
+                    display: none;
+                }
+    
+                &_help_text {
+                    font-size: 12px;
+                    text-align: center;
+    
+                    @include screen() {
+                        font-size: 10px;
+                    }
+                }
+    
+                &_select {
+                    display: none;
                 }
             }
-
-            &_main_text {
-                display: none;
-            }
-
-            &_help_text {
-                font-size: 12px;
-                text-align: center;
-
-                @include screen() {
-                    font-size: 10px;
-                }
-            }
-
-            &_select {
-                display: none;
-            }
         }
-    }
-
-    .image_input {
-        border-radius: 50%;
-    }
-
-    .form_input_description{
-        margin-bottom: 20px;
-    }
-
-    .drop_file_error_messages {
-        margin-bottom: 20px;
-    }
-
-    .otp_container {
-        &_title_email {
-            font-weight: 600;
+    
+        .image_input {
+            border-radius: 50%;
         }
-
-        &_content{
+    
+        .form_input_description{
+            margin-bottom: 20px;
+        }
+    
+        .drop_file_error_messages {
+            margin-bottom: 20px;
+        }
+    
+        .otp_container {
             display: flex;
-            gap: 10px;
-            text-align: center;
-            .input_field_label_error_message {
-                display: none;
+            flex-direction: column;
+            gap: 20px;
+
+            &_title_email {
+                font-weight: 600;
             }
     
-            .input_field, .incorrect_field {
-                padding: 12px;
+            &_content{
+                display: flex;
+                gap: 10px;
                 text-align: center;
-    
+                .input_field_label_error_message {
+                    display: none;
+                }
+        
+                .input_field, .incorrect_field {
+                    padding: 12px;
+                    text-align: center;
+        
+                }
             }
         }
     }

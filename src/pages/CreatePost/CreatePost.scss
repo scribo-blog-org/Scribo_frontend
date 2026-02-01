@@ -126,45 +126,5 @@
             flex-direction: column;
             gap: 10px;
         }
-        
-        button {
-            padding: 14px 28px;
-            font-size: 12px;
-            border-radius: 8px;
-            height: auto;
-            border: 1px solid;
-        }
-        
-        .create_post_submit {
-            color: var(--submit-button-secondary-color);
-            background-color: var(--submit-button-primary-color);
-            border-radius: 8px;
-            
-            @include screen() {
-                width: 100%;
-            }
-            
-            &_content {
-                p{
-                    margin: auto 10px;
-                    font-size: 16px;
-                }
-            }
-        }
-        
-        .create_post_submit:hover {
-            background-color: var(--submit-button-primary-hover-color); 
-        }
-        
-        .cancel_button {
-            border: 1px solid var(--red-button-primary-color);
-            color: var(--red-button-primary-color);
-        }
-        
-        .cancel_button:hover {
-            color: var(--red-button-secondary-color);
-            background: var(--red-button-primary-color);
-        }
-    
     }
 }

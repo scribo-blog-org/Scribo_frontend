@@ -3,7 +3,7 @@ import { AppContext } from "../../App";
 import { Link } from "react-router-dom";
 import { ArticleTopic } from "../../components/ArticleTopic";
 import PostsFilters from "../../components/PostsFilters";
-import Loading from "../../components/Loading";
+import Loading from "../Ui/Loading";
 import NoPosts from "../NoPosts";
 import "./Posts.scss";
 

@@ -13,6 +13,9 @@
     }
 
     .form_input{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
         width: 500px;
         margin: 0;
 
@@ -141,9 +144,6 @@
             .email_label {
                 font-size: 24px;
             }
-            .submit_button {
-                width: auto;
-            }
         }
 
         .email_private_setting {
@@ -179,7 +179,7 @@
             flex-direction: column;
             width: 100%;
             align-items: flex-start;
-            gap: 28px;
+            gap: 20px;
 
             button {
                 cursor: pointer;
@@ -188,10 +188,6 @@
                 padding: 12px 24px;
                 border-radius: 8px;
                 font-size: 14px;
-            }
-            
-            .submit_button {
-                width: auto;
             }
             
             .logout_button{

@@ -1,7 +1,8 @@
 import { AppContext } from "../../App.js";
 import { useContext } from "react";
-import { API_URL } from "../../config";
+import { API_URL } from "../../config/index.js";
 import "./FollowButton.scss";
+import ActionButton from "../Ui/ActionButton";
 
 const FollowButton = ({ setNewData, author_id, class_name }) => {
     const { profile, showToast } = useContext(AppContext);
@@ -57,19 +58,9 @@ const FollowButton = ({ setNewData, author_id, class_name }) => {
 
     return (
         profile?.follows?.some(item => item === author_id) ?
-            <button
-                onClick={() => unfollow(author_id) }
-                className={ `follow_button app-transition ${class_name ?? "" } ${ (profile?._id === author_id) ? "non_visible" : "d" }` }
-            >
-                Отписаться
-            </button>
+            <ActionButton onClick={() => unfollow(author_id)} className={ `follow_button app-transition ${class_name ?? "" } ${ (profile?._id === author_id) ? "non_visible" : "" }` }>Отписаться</ActionButton>
         :
-            <button
-                onClick={ () => { follow(author_id) } }
-                className={ `follow_button app-transition ${class_name ?? "" } ${profile?._id === author_id ? "non_visible" : "d" }` }
-            >
-                Подписаться
-            </button>
+            <ActionButton onClick={() => follow(author_id)} className={ `follow_button app-transition ${class_name ?? "" } ${ (profile?._id === author_id) ? "non_visible" : "" }` }>Подписаться</ActionButton>
     )
 }
 

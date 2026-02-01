@@ -6,6 +6,7 @@ import "./ArticleTopic.scss";
 import { ReactComponent as BookMarkBorder} from "../../assets/svg/bookmark-outline-icon.svg";
 import { ReactComponent as BookMarkFilled} from "../../assets/svg/bookmark-filled-icon.svg";
 import { ReactComponent as ShareIcon} from "../../assets/svg/share-icon.svg";
+import ChipButton from "../Ui/ChipButton";
 import { Link } from 'react-router-dom';
 
 function isMobile() {
@@ -84,7 +85,7 @@ const ArticleTopic = ({ article }) => {
 
             <Author author_data={article.author} />
             <Link className="article_topic_category" to={`/posts?filter=${article.category}`}>
-                <button type="button" className="app-transition category" >{article.category}</button>
+                <ChipButton >{article.category}</ChipButton>
             </Link>
             <div className="article_topic_right_side">
 

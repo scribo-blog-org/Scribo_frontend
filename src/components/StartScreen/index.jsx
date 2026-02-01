@@ -3,6 +3,7 @@ import { AppContext } from "../../App";
 import { API_URL } from "../../config";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./StartScreen.scss"
+import ActionButton from "../Ui/ActionButton";
 
 const StartScreen = ({ children }) => {
     const location = useLocation()
@@ -61,7 +62,9 @@ const StartScreen = ({ children }) => {
             {
                 (profile && profile.is_admin && location?.pathname !== "/create-post") ? 
                 <div className={"create_post_button"}>
-                    <button className={"submit_button blurred app-transition"} onClick={handleClick}>Создать новость</button> 
+                    <ActionButton className="blurred" onClick={handleClick}>
+                        Создать новость
+                    </ActionButton>
                 </div>
                 : <></>
             }

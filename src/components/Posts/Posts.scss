@@ -33,6 +33,29 @@
                 gap: 12px;
             }
 
+            .article_topic{
+                .article_topic_category {
+                    height: 100%;
+                    
+                    .chip_button {
+                        color: var(--article-topic-category-color);
+                        background-color: var(--article-topic-category-background-color);
+                    }
+
+                    a {
+                        height: 100%;
+                        width: 100%;
+                    }
+                }
+
+                .article_topic_category:hover {
+                    .chip_button {
+                        color: var(--article-topic-category-hover-color);
+                        background-color: var(--article-topic-category-background-hover-color);
+                    }
+                }
+            }
+
             &_content_text{
                 font-size: 18px;
                 display: flex;

@@ -1,0 +1,11 @@
+.primary_button {
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 8px;
+    color: var(--submit-button-secondary-color);
+    background-color: var(--submit-button-primary-color);
+}
+
+.primary_button:hover {
+    background-color: var(--submit-button-primary-hover-color);
+}

@@ -1,0 +1,19 @@
+@import "../../../styles/helpers.scss";
+
+.action_button {
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 8px;
+    color: var(--submit-button-primary-color);
+    border: 1px solid var(--submit-button-primary-color);
+
+    @include screen() {
+        font-size: 12px;
+        padding: 10px 20px;
+    }
+}
+
+.action_button:hover {
+    color: var(--submit-button-secondary-color);
+    background: var(--submit-button-primary-color);
+}

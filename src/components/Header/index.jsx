@@ -56,7 +56,7 @@ function Header() {
       notifications.map(item => ({ _id: item.user }))
     );
 
-    const userMap = users.data.reduce((acc, u) => {
+    const userMap = users?.data?.reduce((acc, u) => {
       acc[u._id] = u;
       return acc;
     }, {});

@@ -45,25 +45,6 @@
         }
     }
 
-    .category {
-        height: 100%;
-        padding: 8px 12px;
-        border-radius: 8px;
-        color: var(--article-topic-category-color);
-        background-color: var(--article-topic-category-background-color);
-        font-size: 14px;
-
-        a{
-            height: 100%;
-            width: 100%;
-        }
-    }
-
-    .category:hover {
-        color: var(--article-topic-category-hover-color);
-        background-color: var(--article-topic-category-background-hover-color);
-    }
-
     &_button {
         width: 18px;
         height: 18px;

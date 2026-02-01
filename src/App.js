@@ -11,7 +11,7 @@ import Footer from "./components/Footer/index.jsx";
 import Login from './pages/Login/index.jsx';
 import Register from './pages/Register/index.jsx';
 import CreatePost from './pages/CreatePost/index.jsx';
-import Toast from "./components/Toast/index.jsx";
+import Toast from "./components/Ui/Toast/index.jsx";
 import ModalWindow from './components/ModalWindow/index.jsx';
 
 import "./styles/common.scss";
@@ -47,6 +47,7 @@ function App() {
     '--gray-b5': '#b5b5b5',
     '--gray-c6': '#c6c6c6',
     '--gray-d7': '#d7d7d7',
+    '--gray-e1': '#e1e1e1',
     '--gray-e7': '#e7e7e7',
     '--gray-f1': '#f1f1f1',
     '--gray-f9': '#f9f9f9',
@@ -70,7 +71,6 @@ function App() {
     '--svg-logo-color': isDarkTheme ? 'white' : '#2f2f2f',
     '--administrator-color': isDarkTheme ? 'var(--red-f5)' : 'red',
     '--line-color': isDarkTheme ? 'var(--gray-4f)' : "#afafaf",
-    '--text-color': isDarkTheme ? 'var(--gray-e7)' : 'var(--gray-25)',
     '--main-text-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
     '--light-text-color': isDarkTheme ? 'var(--gray-63)' : 'var(--gray-79)',
     '--background-text-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-e7)',
@@ -89,16 +89,11 @@ function App() {
     '--drop-file-border-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)',
     '--drop-file-hover-border-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-63)',
     '--avatar-icon-color': 'var(--drop-file-hover-background-color)',
-    '--submit-button-primary-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
-    '--submit-button-primary-hover-color': isDarkTheme ? 'var(--gray-e7)' : 'var(--gray-4f)',
+
+    '--submit-button-primary-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-33)',
+    '--submit-button-primary-hover-color': isDarkTheme ? 'var(--gray-e7)' :'var(--gray-1e)',
     '--submit-button-secondary-color': 'var(--main-background)',
-    '--profile-button-text-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
-    '--profile-active-button-text-color': isDarkTheme ? 'var(--gray-16)' : 'var(--gray-e7)',
-    '--profile-button-text-hover-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
-    '--profile-button-background-color': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-e7)',
-    '--profile-active-button-background-color': isDarkTheme ? 'var(--gray-99)' : 'var(--gray-33)',
-    '--profile-active-button-hover-background-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-4f)',
-    '--profile-button-hover-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
+
     '--sticky-button-background-color': isDarkTheme ? 'rgba(22, 22, 22, .8)' : 'rgba(241, 241, 241, .8)',
     '--red-button-primary-color': isDarkTheme ? 'var(--red-f1)' : 'var(--red-f1)',
     '--red-button-secondary-color': isDarkTheme ? 'var(--gray-f1)' : 'var(--main-background)',
@@ -151,7 +146,20 @@ function App() {
     '--toggle-active-thumb-background': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)',
 
     '--text-editor-toolbar-item-hover-background': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
-    '--text-editor-toolbar-item-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-63)'
+    '--text-editor-toolbar-item-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-63)',
+
+    '--switcher-bar-border-color': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-c6)',
+    '--switcher-bar-item-color': isDarkTheme ? 'var(--gray-f9)' : 'var(--gray-16)',
+    '--switcher-bar-active-item-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-e1)',
+
+    '--chip-button-background-color': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-e7)',
+    '--chip-button-text-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
+    '--chip-button-hover-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
+
+
+    '--chip-active-button-text-color': isDarkTheme ? 'var(--gray-16)' : 'var(--gray-e7)',
+    '--chip-active-button-background-color': isDarkTheme ? 'var(--gray-99)' : 'var(--gray-33)',
+    '--chip-active-button-hover-background-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-4f)',
   }
 
 

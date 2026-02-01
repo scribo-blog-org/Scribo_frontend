@@ -3,9 +3,10 @@ import { AppContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../config';
 import { Link } from 'react-router-dom';
-import InputField from '../../components/InputField/index';
+import InputField from '../../components/Ui/InputField/index';
+import PrimaryButton from '../../components/Ui/PrimaryButton';
 import "./Login.scss";
-import GoogleAuthButton from '../../components/GoogleAuthButton/index';
+import GoogleAuthButton from '../../components/Ui/GoogleAuthButton/index';
 
 const Login = () => {
     const navigate = useNavigate(); 
@@ -132,35 +133,37 @@ const Login = () => {
     };
  
   return (
-    <form className='form_input app-transition'>
-        <InputField
-            className={`user_login`}
-            type="text"
-            onChange={(e) => setFields({ ...fields, user_login: e.target.value })}
-            onFocus={() => handleFocus('user_login')}
-            input_label="Логин"
-            placeholder="Введите имя пользователя или email"
-            value={fields.user_login}
-            error={errors?.user_login ?? null}
-        />
-        <InputField
-            className={`password`}
-            type="password"
-            onChange={(e) => setFields({ ...fields, password: e.target.value })}
-            onFocus={() => handleFocus('password')}
-            input_label="Пароль"
-            placeholder="Введите пароль"
-            value={fields.password}
-            error={errors?.password ?? null}
-        />
-        <button className="submit_button app-transition" onClick={handleLogin} type="button">Войти</button>
-        <GoogleAuthButton setGoogleToken={setGoogleToken}/>
-        <p className={"redirect_object"}>Нет акаунта?
-        <Link to={"/auth/register"}>
-            Зарегестрироваться.
-        </Link>
-        </p>
-    </form>
+    <div className='login'>
+        <form className='form_input app-transition'>
+            <InputField
+                className={`user_login`}
+                type="text"
+                onChange={(e) => setFields({ ...fields, user_login: e.target.value })}
+                onFocus={() => handleFocus('user_login')}
+                input_label="Логин"
+                placeholder="Введите имя пользователя или email"
+                value={fields.user_login}
+                error={errors?.user_login ?? null}
+            />
+            <InputField
+                className={`password`}
+                type="password"
+                onChange={(e) => setFields({ ...fields, password: e.target.value })}
+                onFocus={() => handleFocus('password')}
+                input_label="Пароль"
+                placeholder="Введите пароль"
+                value={fields.password}
+                error={errors?.password ?? null}
+            />
+            <PrimaryButton onClick={handleLogin}>Войти</PrimaryButton>
+            <GoogleAuthButton setGoogleToken={setGoogleToken}/>
+            <p className={"redirect_object"}>Нет акаунта?
+            <Link to={"/auth/register"}>
+                Зарегестрироваться.
+            </Link>
+            </p>
+        </form>
+    </div>
   );
 };
 

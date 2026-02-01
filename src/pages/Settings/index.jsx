@@ -2,9 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../App';
 import { API_URL } from '../../config';
-import InputField from '../../components/InputField/index';
-import DropFile from '../../components/DropFile/index';
-import Toggle from '../../components/Toggle/index';
+import InputField from '../../components/Ui/InputField/index';
+import DropFile from '../../components/Ui/DropFile/index';
+import Toggle from '../../components/Ui/Toggle/index';
+import PrimaryButton from '../../components/Ui/PrimaryButton';
+import DangerButton from '../../components/Ui/DangerButton';
 import "./Settings.scss";
 import { ReactComponent as AvatarIcon } from "../../assets/svg/avatar-icon.svg"
 
@@ -244,8 +246,8 @@ const Settings = () => {
                         error={errors?.description ?? null}
                     />
                     <div className='form_input_buttons'>
-                        <button className="submit_button app-transition" type="button" onClick={save_settings}>Сохранить</button>
-                        <button className="logout_button app-transition" type="button" onClick={logout}>Выйти с аккаунта</button>
+                        <PrimaryButton type='button' onClick={save_settings}>Сохранить</PrimaryButton>
+                        <DangerButton className="logout_button app-transition" type="button" onClick={logout}>Выйти с аккаунта</DangerButton>
                     </div>
                 </>
             </form>

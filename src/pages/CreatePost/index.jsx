@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import DropFile from '../../components/DropFile/index';
+import DropFile from '../../components/Ui/DropFile/index';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../App';
 import { API_URL } from '../../config';
-import InputFiled from "../../components/InputField";
-import TextEditorField from "../../components/TextEditorField";
+import InputFiled from "../../components/Ui/InputField";
+import TextEditorField from "../../components/Ui/TextEditorField";
+import PrimaryButton from "../../components/Ui/PrimaryButton";
+import DangerButton from "../../components/Ui/DangerButton";
 import "./CreatePost.scss"
 
 const CreatePost = () => {
@@ -136,22 +138,10 @@ const CreatePost = () => {
                 error={errors?.body?.category?.message}
             />
             <DropFile setValue={(file) => setFields({ ...fields, featured_image: file })} drop_file_type={"image/*"} file_types={"SVG, PNG, JPEG, JPG и другие"} errors={errors?.body?.featured_image?.message} add_new_errors={add_errors_to_image} clear_errors={clear_errors_from_image} handleClick={handleClick}/>
-            {/* <InputFiled
-                className={"create_post_main_text" + (createResult.status === "error" && createResult.message === "'content_text' length must be mroe than 0" ? " incorrect_field" : "")}
-                placeholder={"Введите текст"}
-                onChange={(e) => setFields({ ...fields, content_text: e.target.value })}
-                onFocus={() => handleFocus('content_text')}
-                is_multiline={true}
-                multiline_rows={navigator.maxTouchPoints > 0 ? 6 : 10}
-                length={2000}
-                error={errors?.body?.content_text?.message}
-            /> */}
             <TextEditorField onFocus={() => handleFocus('content_text')} onChange={(html) => setFields({ ...fields, content_text: html })} error={errors?.body?.content_text?.message}/>
             <div className="create_post_buttons">
-                <button className='submit_button create_post_submit app-transition' type="submit">
-                    Создать пост
-                </button>
-                <button onClick={() => navigate("/posts")} className="cancel_button app-transition">Отмена</button>
+                <PrimaryButton onClick={handleSubmit}>Создать пост</PrimaryButton>
+                <DangerButton onClick={() => navigate("/posts")}>Отмена</DangerButton>
             </div>
         </form>
     )
