@@ -6,94 +6,77 @@
     align-items: stretch;
     margin-bottom: 28px;
 
-    &__logo {
-        width: 152px;
-        height: 32px;
-        fill: none;
-    }
-
-    &__logo path {
-        stroke: var(--main-text-color);
-        stroke-width: 4px;
-
-        stroke-dasharray: 520;
-        stroke-dashoffset: 520;
-
-        animation:
-        banner-stroke 1.8s linear forwards,
-        banner-fill 0.5s ease forwards 1.6s;
-        transition: .3s;
-
-        @include screen() {
-            height: 28px;
-        }
-    }
-
-    &__content {
+    &_content{
         display: flex;
         flex-direction: column;
-
+        
         @include screen() {
             gap: 20px;
         }
-    }
 
-    &__title {
-        display: flex;
-        align-items: flex-end;
-
-        h1{ 
+        
+        &_title {
             display: flex;
-            flex-direction: column;
-            line-height: 0.85;
-            color: var(--main-text-color);
-            font-size: 38px;
+            align-items: flex-end;
+            
+            h1 { 
+                display: flex;
+                flex-direction: column;
+                line-height: 0.85;
+                color: var(--main-text-color);
+                font-size: 38px;
+                
+                @include screen() {
+                    font-size: 34PX;
+                }
+            }
+            
+            &_logo {
+                width: 152px;
+                height: 32px;
+                fill: none;
 
+                path {
+                    stroke: var(--main-text-color);
+                    stroke-width: 4px;
+            
+                    stroke-dasharray: 520;
+                    stroke-dashoffset: 520;
+            
+                    animation:
+                    banner-stroke 1.8s linear forwards,
+                    banner-fill 0.5s ease forwards 1.6s;
+                    transition: .3s;
+            
+                    @include screen() {
+                        height: 28px;
+                    }
+                }
+            }
+        }
+        
+        &_text {
+            max-width: 80%;
+            margin-top: 10px;
+    
             @include screen() {
-                font-size: 34PX;
+                margin: 0;
+            }
+        }
+    
+        &_actions {
+            margin-top: auto;
+            display: flex;
+            gap: 14px;
+
+            .chip_button{
+                border-radius: 50px;
             }
         }
     }
 
-    &__brand {
-        color: #84aeff;
-        text-transform: uppercase;
-        opacity: 0;
-        display: none;
-    }
-    
-    &__text {
-        max-width: 80%;
-        margin-top: 10px;
 
-        @include screen() {
-            margin: 0;
-        }
-    }
-
-    &__actions {
-        margin-top: auto;
-        display: flex;
-        gap: 14px;
-    }
-
-    &__btn {
-        padding: 8px 16px;
-        border-radius: 50px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--profile-active-button-background-color);
-        color: var(--main-background);
-        font-size: 14px;
-    }
-
-    &__btn:hover {
-        background: var(--profile-active-button-hover-background-color);
-    }
-
-    &__image {
+    &_image {
         width: 50%;
         height: auto;
         object-fit: cover;
