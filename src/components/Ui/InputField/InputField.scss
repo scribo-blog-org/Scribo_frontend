@@ -27,6 +27,7 @@
             position: relative;
             width: 100%;
         }
+
         .inpuut_confirmed_icon {
             position: absolute;
             color: #057905;
@@ -50,6 +51,11 @@
         color: var(--input-text-color);
         font-family: "Google Sans", roboto, "Noto Sans Myanmar UI", arial, sans-serif;
         resize: none;
+    }
+
+    .input_field::selection {
+        color: var(--main-text-selection-color);
+        background-color: var(--main-text-selection-background-color);
     }
 
     .input_field:focus {
