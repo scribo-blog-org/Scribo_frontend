@@ -1,9 +1,28 @@
 .primary_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     padding: 12px 24px;
-    font-size: 14px;
     border-radius: 8px;
-    color: var(--submit-button-secondary-color);
     background-color: var(--submit-button-primary-color);
+    
+    p {
+        font-size: 14px;
+        color: var(--submit-button-secondary-color);
+    }
+
+    &.primary_button_loading {
+        .loader {
+            position: absolute;
+        }
+        cursor: not-allowed;
+        background-color: var(--submit-button-loading-background-color);
+    }
+
+    &.primary_button_loading:hover {
+        background-color: var(--submit-button-loading-background-color);
+    }
 }
 
 .primary_button:hover {

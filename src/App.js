@@ -62,7 +62,6 @@ function App() {
     '--blue-8f': '#84aeff',
 
     '--main-background': isDarkTheme ? 'var(--gray-16)' : 'var(--gray-f1)',
-    '--loader-color': isDarkTheme ? 'white' : 'black',
     '--verified-icon-color': '#0095f6',
     '--warning-color': isDarkTheme ? 'rgb(255 191 0)' : 'rgb(255, 179, 0)',
     '--warning-background-color': isDarkTheme ? 'rgb(94, 85, 42, .8)' : 'rgba(255, 245, 163, .8)',
@@ -99,6 +98,9 @@ function App() {
     '--submit-button-primary-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-33)',
     '--submit-button-primary-hover-color': isDarkTheme ? 'var(--gray-e7)' :'var(--gray-1e)',
     '--submit-button-secondary-color': 'var(--main-background)',
+    '--submit-button-loading-background-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-d7)',
+
+    '--loader-color': isDarkTheme ? 'white' : 'black',
 
     '--sticky-button-background-color': isDarkTheme ? 'rgba(22, 22, 22, .8)' : 'rgba(241, 241, 241, .8)',
     '--red-button-primary-color': isDarkTheme ? 'var(--red-f1)' : 'var(--red-f1)',

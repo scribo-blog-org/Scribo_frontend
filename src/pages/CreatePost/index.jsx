@@ -16,6 +16,8 @@ const CreatePost = () => {
     const [ createResult, setCreateResult ] = useState({})
     const [errors, setErrors] = useState({ });
 
+    const [ isLoading, setIsLoading ] = useState(false);
+
     const [ fields, setFields ] = useState(
         {
             title: '',
@@ -67,7 +69,9 @@ const CreatePost = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const result = await create_post(fields.title, fields.mainText, fields.category)
+        setIsLoading(true);
+        const result = await create_post(fields.title, fields.content_text)
+        setIsLoading(false);
         setCreateResult(result)
     }
 
@@ -140,7 +144,7 @@ const CreatePost = () => {
             <DropFile setValue={(file) => setFields({ ...fields, featured_image: file })} drop_file_type={"image/*"} file_types={"SVG, PNG, JPEG, JPG и другие"} errors={errors?.body?.featured_image?.message} add_new_errors={add_errors_to_image} clear_errors={clear_errors_from_image} handleClick={handleClick}/>
             <TextEditorField onFocus={() => handleFocus('content_text')} onChange={(html) => setFields({ ...fields, content_text: html })} error={errors?.body?.content_text?.message}/>
             <div className="create_post_buttons">
-                <PrimaryButton onClick={handleSubmit}>Создать пост</PrimaryButton>
+                <PrimaryButton onClick={handleSubmit} is_loading={isLoading}>Создать пост</PrimaryButton>
                 <DangerButton onClick={() => navigate("/posts")}>Отмена</DangerButton>
             </div>
         </form>

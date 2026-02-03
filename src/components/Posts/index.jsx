@@ -70,7 +70,9 @@ const Posts =  ( { posts, isLoading, posts_filters = [] } ) => {
         <div className="posts posts_columns">
             { 
                 isLoading ?
-                    <Loading />
+                    <div className="posts_loader">
+                        <Loading size={50} />
+                    </div>
                 : 
                     posts.length === 0 ?
                         <NoPosts />
