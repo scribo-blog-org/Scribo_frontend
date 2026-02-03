@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../../App';
 import './Header.scss';
 import { getUsers, read_notifications } from '../../api/users.api';
@@ -10,10 +10,8 @@ import { ReactComponent as MainLogo } from "../../assets/svg/main-logo-icon.svg"
 import { ReactComponent as DefaultProfileIcon } from "../../assets/svg/profile-icon.svg";
 import { ReactComponent as NotificationIcon } from "../../assets/svg/notification-icon.svg";
 import Author from "../Author"
-import Popup from '../Ui/Popup';
 
 function Header() {
-  const navigate = useNavigate();
   const { showToast, profile, setProfile, setIsDarkTheme, isDarkTheme, showModalWindow } = useContext(AppContext)
 
   const get_notification = async (notifications) => {
@@ -146,23 +144,7 @@ function Header() {
             </button> 
             {
               profile ? 
-                <Popup body={[
-                  {
-                      title: "Профиль",
-                      onclick: () => { navigate(`/users/${profile.nick_name}`) }
-                  },
-                  {
-                      title: "Настройки",
-                      onclick: () => { navigate(`/settings`) }
-                  },
-                  {
-                      title: "Выйти с аккаунта",
-                      onclick: () => { localStorage.setItem("token", ""); setProfile(null); navigate(`/posts`); showToast({ message: "Вы вышли из аккаунта!", type: "success" }) },
-                      type: "danger"
-                  },
-                  ]}>
-                    <Author author_data={ profile } class_name={"header_profile_author"} asLink={false}/> 
-                </Popup>
+                <Author author_data={ profile } class_name={"header_profile_author"}/> 
               :
                 <div className='header_profile header_item'>
                   <Link to={"auth/login"} className='header_item'>
