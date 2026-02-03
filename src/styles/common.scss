@@ -36,6 +36,11 @@ p, h1, h2, h3, h4 ,h5, h6 {
     color: var(--main-text-color);
 }
 
+p::selection, h1::selection, h2::selection, h3::selection, h4::selection, h5::selection, h6::selection {
+    color: var(--main-text-selection-color);
+    background-color: var(--main-text-selection-background-color);
+}
+
 p, h1, h2, h3, h4 ,h5, h6, .app-transition {
     @include use-transition();
 }

@@ -73,7 +73,11 @@ function App() {
     '--svg-logo-color': isDarkTheme ? 'white' : '#2f2f2f',
     '--administrator-color': isDarkTheme ? 'var(--red-f5)' : 'red',
     '--line-color': isDarkTheme ? 'var(--gray-4f)' : "#afafaf",
+    
     '--main-text-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-25)',
+    '--main-text-selection-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-f1)',
+    '--main-text-selection-background-color': isDarkTheme ? 'var(--gray-b5)' : 'var(--gray-33)',
+    
     '--light-text-color': isDarkTheme ? 'var(--gray-63)' : 'var(--gray-79)',
     '--background-text-color': isDarkTheme ? 'var(--gray-25)' : 'var(--gray-e7)',
     '--post-text-color': isDarkTheme ? 'var(--gray-e7)': 'var(--gray-25)',
