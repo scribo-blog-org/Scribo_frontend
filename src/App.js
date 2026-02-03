@@ -55,6 +55,8 @@ function App() {
 
     '--red-f5': '#ff4545',
     '--red-f1': '#ff5151',
+    '--red-34': '#312424',
+    '--red-ff': '#ffefef',
 
     '--blue-39': '#3b76c9',
     '--blue-8f': '#84aeff',
@@ -132,7 +134,6 @@ function App() {
     '--swagger-option-background-color': isDarkTheme ? '#1b2229' : '#f1f5f9',
     '--swagger-servers-background-color': isDarkTheme ? 'rgba(89,89,89, .1)' : 'rgba(255,255,255, .4)',
 
-    '--popup-background-color': 'transparent',
     '--popup-button-background-color': isDarkTheme ? 'var(--gray-2f)' : 'var(--gray-d7)',
     '--popup-button-background-hover-color': isDarkTheme ? 'var(--gray-4f)' : 'var(--gray-b5)',
 
@@ -160,6 +161,12 @@ function App() {
     '--chip-active-button-text-color': isDarkTheme ? 'var(--gray-16)' : 'var(--gray-e7)',
     '--chip-active-button-background-color': isDarkTheme ? 'var(--gray-99)' : 'var(--gray-33)',
     '--chip-active-button-hover-background-color': isDarkTheme ? 'var(--gray-79)' : 'var(--gray-4f)',
+  
+    '--popup-border-color': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-c6)',
+    '--popup-text-color': 'var(--main-text-color)',
+    '--popup-background-color': isDarkTheme ? 'var(--gray-1e)' : 'var(--gray-ff)',
+    '--popup-item-hover-background-color': isDarkTheme ? 'var(--gray-33)' : 'var(--gray-e7)',
+    '--popup-danger-item-hover-background-color': isDarkTheme ? 'var(--red-34)' : 'var(--red-ff)',
   }
 
 

@@ -1,10 +1,33 @@
 .popup {
-    backdrop-filter: blur(20px);
-
-    position: absolute;
     border-radius: 8px;
-    z-index: 100;
-    padding: 12px;
-    border: 1px solid var(--submit-button-primary-color);
-    color: var(--submit-button-primary-color);
+    padding: 6px;
+    border: 1px solid var(--popup-border-color);
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    background: var(--popup-background-color);
+    box-shadow: 0px 0px 11px 3px rgba(0, 0, 0, 0.1);
+
+    &_item {
+        display: flex;
+        white-space: nowrap;
+        text-align: start;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        color: var(--popup-text-color);
+    }
+    
+    &_item:hover {
+        background-color: var(--popup-item-hover-background-color);
+    }
+
+    &_item_danger {
+        color: var(--red-f5);
+    }
+
+    &_item_danger:hover {
+        background-color: var(--popup-danger-item-hover-background-color);
+    }
+
 }
