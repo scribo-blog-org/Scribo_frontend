@@ -137,7 +137,7 @@ const Notifications = () => {
 
                         return (
                             <article
-                                key={item._id}
+                                key={item.time}
                                 className={`notifications_page_item app-transition ${isUnread ? "notifications_page_item_unread" : ""}`}
                             >
                                 {
