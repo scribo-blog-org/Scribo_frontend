@@ -1,8 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Navigate } from "react-router-dom";
-
 import { AppContext } from "../../App";
-import { getUsers, read_notifications } from "../../api/users.api";
+import {
+    getUsers,
+    read_notifications,
+} from "../../api/users.api";
+import { socketService } from "../../sockets/socket.service";
 import { format_back, format_date_time } from "../../utils/format";
 
 import UserBadge from "../../components/UserBadge/index";
@@ -13,35 +15,29 @@ import Loading from "../../components/Ui/Loading";
 import "./Notifications.scss";
 
 const Notifications = () => {
-    const { profile, setProfile, profileLoading } = useContext(AppContext);
+    const { profile, setProfile } = useContext(AppContext);
+
+    const [items, setItems] = useState([]);
     const [userMap, setUserMap] = useState({});
     const [usersLoading, setUsersLoading] = useState(true);
-    const [unreadIds, setUnreadIds] = useState(null);
-    const markedRead = useRef(false);
 
-    const items = useMemo(
-        () => [...(profile?.notifications || [])].reverse(),
-        [profile]
-    );
+    const initialized = useRef(false);
+
+    // Initial local snapshot.
+    useEffect(() => {
+        if (!profile || initialized.current) {
+            return;
+        }
+
+        initialized.current = true;
+
+        setItems([...(profile.notifications || [])].reverse());
+    }, [profile]);
 
     const actorKey = useMemo(
         () => items.map((item) => item.user).filter(Boolean).join(","),
         [items]
     );
-
-    useEffect(() => {
-        if (!profile || unreadIds) {
-            return;
-        }
-
-        setUnreadIds(
-            new Set(
-                (profile.notifications || [])
-                    .filter((item) => item.is_read === false)
-                    .map((item) => item._id)
-            )
-        );
-    }, [profile, unreadIds]);
 
     useEffect(() => {
         let cancelled = false;
@@ -50,15 +46,16 @@ const Notifications = () => {
             const userIds = [...new Set(actorKey.split(",").filter(Boolean))];
 
             if (userIds.length === 0) {
-                if (!cancelled) {
-                    setUserMap({});
-                    setUsersLoading(false);
-                }
+                setUserMap({});
+                setUsersLoading(false);
                 return;
             }
 
             setUsersLoading(true);
-            const users = await getUsers(userIds.map((_id) => ({ _id })));
+
+            const users = await getUsers(
+                userIds.map((_id) => ({ _id }))
+            );
 
             if (cancelled) {
                 return;
@@ -70,31 +67,62 @@ const Notifications = () => {
                     return acc;
                 }, {}) || {}
             );
+
             setUsersLoading(false);
         };
 
-        if (profile) {
-            loadActors();
-        }
+        loadActors();
 
         return () => {
             cancelled = true;
         };
-    }, [actorKey, profile]);
+    }, [actorKey]);
+
+    // Mark all notifications as read.
+    // IMPORTANT:
+    // profile is updated, but local `items` is NOT changed.
+    useEffect(() => {
+        if (!profile?._id) {
+            return;
+        }
+
+        const markAsRead = async () => {
+            const result = await read_notifications();
+
+            if (result?.status !== true) {
+                return;
+            }
+
+            setProfile((current) => {
+                if (!current) {
+                    return current;
+                }
+
+                return {
+                    ...current,
+                    notifications: result.data.notifications,
+                };
+            });
+        };
+
+        markAsRead();
+    }, [profile?._id]);
 
     useEffect(() => {
-        if (!profile || markedRead.current) {
+        if (!profile?._id) {
             return;
         }
+        const unsubscribe = socketService.on(
+            "notification",
+            async (notifications) => {
+                setItems([...notifications].reverse());
 
-        if (!profile.notifications?.some((item) => item.is_read === false)) {
-            return;
-        }
+                const result = await read_notifications();
 
-        markedRead.current = true;
+                if (result?.status !== true) {
+                    return;
+                }
 
-        read_notifications().then((result) => {
-            if (result.status === true) {
                 setProfile((current) => {
                     if (!current) {
                         return current;
@@ -102,23 +130,13 @@ const Notifications = () => {
 
                     return {
                         ...current,
-                        notifications: current.notifications.map((item) => ({
-                            ...item,
-                            is_read: true,
-                        })),
+                        notifications: result.data.notifications,
                     };
                 });
             }
-        });
-    }, [profile, setProfile]);
-
-    if (profileLoading) {
-        return <Loading size={40} />;
-    }
-
-    if (!profile) {
-        return <Navigate to="/auth/login" replace />;
-    }
+        );
+        return unsubscribe;
+    }, [profile?._id]);
 
     return (
         <div className="notifications_page">
@@ -132,36 +150,54 @@ const Notifications = () => {
                     <Loading size={40} />
                 ) : items.length ? (
                     items.map((item) => {
-                        const actor = userMap[item.user] || { nick_name: "Пользователь" };
-                        const isUnread = Boolean(unreadIds?.has(item._id));
+                        const actor = userMap[item.user] || {
+                            nick_name: "Пользователь",
+                        };
+
+                        const isUnread = item.is_read === false;
 
                         return (
-                            <article
+                            <div
                                 key={item.time}
-                                className={`notifications_page_item app-transition ${isUnread ? "notifications_page_item_unread" : ""}`}
+                                className="notifications_page_item_wrapper"
                             >
-                                {
-                                    isUnread && (
-                                        <span className={`notifications_page_item_dot notifications_page_item_dot_on`} />
-                                    )
-                                }
-                                <div className="notifications_page_item_body">
-                                    <UserBadge
-                                        data={actor}
-                                        asLink={Boolean(userMap[item.user])}
-                                    />
-                                    <p className="notifications_page_item_message">
-                                        <NotificationMessage item={item} />
-                                    </p>
-                                    <Tooltip text={format_date_time(item.time)}>
-                                        <p className="notifications_page_item_time">{format_back(item.time)}</p>
-                                    </Tooltip>
-                                </div>
-                            </article>
+                                <article
+                                    className={`notifications_page_item app-transition ${
+                                        isUnread
+                                            ? "notifications_page_item_unread"
+                                            : ""
+                                    }`}
+                                >
+                                    {isUnread && (
+                                        <span className="notifications_page_item_dot notifications_page_item_dot_on" />
+                                    )}
+
+                                    <div className="notifications_page_item_body">
+                                        <UserBadge
+                                            data={actor}
+                                            asLink={Boolean(userMap[item.user])}
+                                        />
+
+                                        <p className="notifications_page_item_message">
+                                            <NotificationMessage item={item} />
+                                        </p>
+
+                                        <Tooltip
+                                            text={format_date_time(item.time)}
+                                        >
+                                            <p className="notifications_page_item_time">
+                                                {format_back(item.time)}
+                                            </p>
+                                        </Tooltip>
+                                    </div>
+                                </article>
+                            </div>
                         );
                     })
                 ) : (
-                    <p className="notifications_page_empty">Пока нет уведомлений</p>
+                    <p className="notifications_page_empty">
+                        Пока нет уведомлений
+                    </p>
                 )}
             </div>
         </div>

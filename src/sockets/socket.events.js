@@ -14,7 +14,6 @@ class SocketEvents {
                 if (!notifications) {
                     return;
                 }
-
                 callback(notifications);
             },
             {
