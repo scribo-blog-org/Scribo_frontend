@@ -2,6 +2,7 @@ import { API_URL } from "../config";
 import { getVisitorGeo } from "./geo.client";
 
 let accessToken = null;
+let socketToken = null;
 let refreshPromise = null;
 let authGeneration = 0;
 const listeners = new Set();
@@ -10,10 +11,18 @@ export function getAccessToken() {
     return accessToken;
 }
 
+export function getSocketToken() {
+    return socketToken;
+}
+
 export function setAccessToken(token) {
     accessToken = token || null;
     authGeneration += 1;
     listeners.forEach((listener) => listener(accessToken));
+}
+
+export function setSocketToken(token) {
+    socketToken = token || null;
 }
 
 export function subscribeAccessToken(listener) {
@@ -60,6 +69,7 @@ export async function refreshAccessToken() {
         }
 
         setAccessToken(result.data.accessToken);
+        setSocketToken(result.data.socketToken);
         return result.data.accessToken;
     })().finally(() => {
         refreshPromise = null;

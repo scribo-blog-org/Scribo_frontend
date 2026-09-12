@@ -34,20 +34,24 @@
         }
     }
 
+    &_item_wrapper {
+        border-bottom: 1px solid var(--line-color);
+        padding: 4px 0;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
     &_item {
         display: flex;
         align-items: start;
         gap: 10px;
         padding: 12px 0;
-        border-radius: 0;
-        border-bottom: 1px solid var(--line-color);
+        border-radius: 8px;
 
         @include hover {
-            background: transparent;
-        }
-
-        &:last-child {
-            border-bottom: none;
+            background: var(--section-item-hover-background-color);
         }
 
         &_unread {
@@ -63,6 +67,7 @@
 
             &_on {
                 background: var(--red-f5, #c62828);
+                margin-left: 10px;
             }
         }
 

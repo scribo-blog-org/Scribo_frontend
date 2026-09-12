@@ -6,43 +6,43 @@ import { useLocation } from "react-router-dom";
 
 import { getProfile } from "../../api/profile.api";
 import { trackVisit } from "../../api/analytics.api";
-import { getAccessToken, subscribeAccessToken } from "../../api/http";
+import { getAccessToken, getSocketToken, subscribeAccessToken } from "../../api/http";
+import { socketService } from "../../sockets/socket.service";
 
 const SKIP_TRACKING = /^\/admin-panel/;
 
 const AppLayout = ({ children }) => {
-    const location = useLocation()
-    const { profile, setProfile, setProfileLoading, authReady } = useContext(AppContext)
-    const profileRef = useRef(profile)
-    const requestIdRef = useRef(0)
+    const location = useLocation();
+    const { profile, setProfile, setProfileLoading, authReady } = useContext(AppContext);
+    const profileRef = useRef(profile);
+    const requestIdRef = useRef(0);
 
-    profileRef.current = profile
+    profileRef.current = profile;
 
     const setProfileData = useCallback(async () => {
-        const requestId = ++requestIdRef.current
+        const requestId = ++requestIdRef.current;
 
         if (!getAccessToken()) {
             setProfile(null);
             setProfileLoading(false);
-            return
+            return;
         }
 
-        const silent = Boolean(profileRef.current)
+        const silent = Boolean(profileRef.current);
 
         if (!silent) {
             setProfileLoading(true);
         }
 
         const result = await getProfile();
-
+        
         if (requestId !== requestIdRef.current || !getAccessToken()) {
-            return
+            return;
         }
-
         if (result.status) {
             setProfile(result.data);
-        }
-        else if (result.unauthorized) {
+            socketService.init(result.data, getSocketToken());
+        } else if (result.unauthorized) {
             setProfile(null);
         }
 
@@ -50,19 +50,34 @@ const AppLayout = ({ children }) => {
     }, [setProfile, setProfileLoading]);
 
     useEffect(() => {
+        const unsubscribe = socketService.on(
+            "notification",
+            (notifications) => {
+                setProfile((prevProfile) => ({
+                    ...prevProfile,
+                    notifications,
+                }));
+            }
+        );
+
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
         return subscribeAccessToken((token) => {
             if (!token) {
-                requestIdRef.current += 1
-                profileRef.current = null
-                setProfile(null)
-                setProfileLoading(false)
+                requestIdRef.current += 1;
+                profileRef.current = null;
+                setProfile(null);
+                setProfileLoading(false);
+                socketService.disconnect();
             }
-        })
-    }, [setProfile, setProfileLoading])
+        });
+    }, [setProfile, setProfileLoading]);
 
     useEffect(() => {
         if (!authReady) {
-            return
+            return;
         }
 
         document.body.scrollTo({
@@ -76,13 +91,13 @@ const AppLayout = ({ children }) => {
         if (!SKIP_TRACKING.test(path)) {
             trackVisit(path);
         }
-    }, [location.pathname, location.search, setProfileData, authReady]);
+    }, [setProfileData, authReady]);
 
-     return (
+    return (
         <div className="app-layout app-transition" id="app-layout">
             {children}
         </div>
     );
-}
+};
 
 export default AppLayout;
