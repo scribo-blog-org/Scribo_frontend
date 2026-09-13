@@ -28,6 +28,7 @@ import ActionButton from "../../components/Ui/ActionButton";
 import SwitchBar from "../../components/Ui/SwitchBar";
 import Tooltip from "../../components/Ui/Tooltip/index";
 import RoleBadge from "../../components/RoleBadge/index";
+import RelativeTime from "../../components/RelativeTime/index.jsx";
 
 const Profile = () => {
     const { id } = useParams();
@@ -296,7 +297,7 @@ const Profile = () => {
                                         <div className="profile_info_activity">
                                             <Clock />
                                             <Tooltip text={format_date_time(user?.last_activity_at)}>
-                                                <p>{format_back(user?.last_activity_at)}</p>
+                                                <p><RelativeTime date={user?.last_activity_at} /></p>
                                             </Tooltip>
                                         </div>
                                     </Sceleton>

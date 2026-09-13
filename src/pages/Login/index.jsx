@@ -25,7 +25,7 @@ const Login = () => {
     )
     const [errors, setErrors] = useState({}); 
     const { showToast } = useContext(AppContext); 
-   
+
     useEffect(() => {
         const do_login = async () => {
             setPendingAuth('google')

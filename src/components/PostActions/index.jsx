@@ -45,12 +45,22 @@ async function share(id, showToast) {
 const PostActions = ({ className, article, setArticle, isLoading=false, showCategory = true }) => {
     const { profile, setProfile, showToast } = useContext(AppContext)
     const [isSaved, setIsSaved] = useState(hasId(profile?.saved_posts, article?._id));
-    const [isSavingProcess, setIsSavingProcess] = useState(false)
+
+    // --- лайки: мьютекс-очередь ---
     const likeBusy = useRef(false)
     const likeWanted = useRef(null)
-    
+
+    // --- сохранённые: та же схема мьютекс-очереди ---
+    const savedBusy = useRef(false)
+    const savedWanted = useRef(null)
+
     useEffect(() => {
-        setIsSaved(hasId(profile?.saved_posts, article?._id));
+        // синхронизируем локальный isSaved с профилем, но только если
+        // сейчас нет своего "неподтверждённого" желания (иначе можем
+        // затереть только что сделанный оптимистичный клик устаревшим profile)
+        if (savedWanted.current === null) {
+            setIsSaved(hasId(profile?.saved_posts, article?._id));
+        }
     }, [profile, article?._id])
 
     const patchArticle = (updater) => {
@@ -62,35 +72,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
             return updater(current)
         })
     }
-
-    const handleSavePost = async () => {
-        if (!profile) {
-            showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
-            return
-        }
-
-        if (isSavingProcess || !article?._id) {
-            return
-        }
-
-        setIsSavingProcess(true)
-        const currentlySaved = hasId(profile.saved_posts, article._id)
-        const result = await savePost(article._id, currentlySaved ? "DELETE" : "POST")
-
-        if (result.status === true) {
-            setProfile((prev) => ({
-                ...prev,
-                saved_posts: currentlySaved
-                    ? withoutId(prev.saved_posts, article._id)
-                    : withId(prev.saved_posts, article._id)
-            }))
-            setIsSaved(!currentlySaved)
-            showToast({ message: currentlySaved ? "Убрано из сохранённых!" : "Сохранено!", type: "success" });
-        } else if (result.statusCode === 401) {
-            showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
-        }
-        setIsSavingProcess(false)
-    };
 
     const getCommentsCount = (comments) => {
         if (!Array.isArray(comments)) return 0;
@@ -112,6 +93,8 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
         ? article.comments.find((comment) => comment?._id)?._id
         : "";
 
+    // ===================== ЛАЙКИ =====================
+
     const flushLike = async () => {
         if (likeBusy.current || !article?._id || !profile?._id) {
             return
@@ -123,6 +106,7 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
             while (likeWanted.current !== null) {
                 const wantLiked = likeWanted.current
                 likeWanted.current = null
+
                 const result = await likePost(article._id, wantLiked ? "POST" : "DELETE")
 
                 if (likeWanted.current !== null) {
@@ -131,7 +115,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
 
                 if (result.status === true && result.data?.likes) {
                     patchArticle((current) => ({ ...current, likes: result.data.likes }))
-                    showToast({ message: wantLiked ? "Поставлен лайк!" : "Лайк убран!", type: "success" })
                 } else if (result.statusCode === 409) {
                     patchArticle((current) => ({
                         ...current,
@@ -142,6 +125,7 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
                         ...current,
                         likes: setIdPresent(current.likes, profile._id, !wantLiked)
                     }))
+                    showToast({ message: "Не удалось поставить лайк, попробуйте ещё раз", type: "error" })
                 }
             }
         } finally {
@@ -158,15 +142,102 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
             return
         }
 
-        patchArticle((current) => {
-            const nextLiked = !hasId(current.likes, profile._id)
-            likeWanted.current = nextLiked
-            return {
-                ...current,
-                likes: setIdPresent(current.likes, profile._id, nextLiked)
-            }
-        })
+        if (!article?._id) {
+            return
+        }
+
+        const currentlyWantedLiked = likeWanted.current !== null
+            ? likeWanted.current
+            : hasId(article.likes, profile._id)
+
+        const nextLiked = !currentlyWantedLiked
+
+        // реф пишем синхронно, ДО patchArticle/flushLike — иначе setState-апдейтер
+        // выполнится позже (асинхронно), и очередь в момент проверки будет пустой
+        likeWanted.current = nextLiked
+
+        patchArticle((current) => ({
+            ...current,
+            likes: setIdPresent(current.likes, profile._id, nextLiked)
+        }))
+
         flushLike()
+    }
+
+    // ===================== СОХРАНЁННЫЕ =====================
+
+    const flushSave = async () => {
+        if (savedBusy.current || !article?._id || !profile?._id) {
+            return
+        }
+
+        savedBusy.current = true
+
+        try {
+            while (savedWanted.current !== null) {
+                const wantSaved = savedWanted.current
+                savedWanted.current = null
+
+                const result = await savePost(article._id, wantSaved ? "POST" : "DELETE")
+
+                if (savedWanted.current !== null) {
+                    continue
+                }
+
+                if (result.status === true) {
+                    setProfile((prev) => ({
+                        ...prev,
+                        saved_posts: wantSaved
+                            ? withId(prev.saved_posts, article._id)
+                            : withoutId(prev.saved_posts, article._id)
+                    }))
+                    showToast({ message: wantSaved ? "Сохранено!" : "Убрано из сохранённых!", type: "success" })
+                } else if (result.statusCode === 409) {
+                    // сервер говорит, что состояние уже совпадает с желаемым — считаем ок
+                    setProfile((prev) => ({
+                        ...prev,
+                        saved_posts: wantSaved
+                            ? withId(prev.saved_posts, article._id)
+                            : withoutId(prev.saved_posts, article._id)
+                    }))
+                } else {
+                    // реальная ошибка — откатываем оптимистичное обновление
+                    setIsSaved(!wantSaved)
+                    if (result.statusCode === 401) {
+                        showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
+                    } else {
+                        showToast({ message: "Не удалось сохранить пост, попробуйте ещё раз", type: "error" })
+                    }
+                }
+            }
+        } finally {
+            savedBusy.current = false
+            if (savedWanted.current !== null) {
+                flushSave()
+            }
+        }
+    }
+
+    const doSave = () => {
+        if (!profile) {
+            showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
+            return
+        }
+
+        if (!article?._id) {
+            return
+        }
+
+        const currentlyWantedSaved = savedWanted.current !== null
+            ? savedWanted.current
+            : isSaved
+
+        const nextSaved = !currentlyWantedSaved
+
+        savedWanted.current = nextSaved
+        setIsSaved(nextSaved) // оптимистично обновляем иконку сразу
+
+        flushSave()
     }
 
     return (
@@ -198,7 +269,7 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
                         </Link>
                     </Tooltip>
                     <Tooltip text={isSaved ? "Убрать из сохранённых" : "Сохранить"} clickable={true}>
-                        <button type="button" className="post_actions_button app-transition" onClick={handleSavePost} disabled={isSavingProcess}>
+                        <button type="button" className="post_actions_button app-transition" onClick={doSave}>
                             {isSaved ? <BookMarkFilled /> : <BookMarkBorder />}
                         </button>
                     </Tooltip>
