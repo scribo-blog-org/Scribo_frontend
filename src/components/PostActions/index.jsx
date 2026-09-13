@@ -46,18 +46,13 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
     const { profile, setProfile, showToast } = useContext(AppContext)
     const [isSaved, setIsSaved] = useState(hasId(profile?.saved_posts, article?._id));
 
-    // --- лайки: мьютекс-очередь ---
     const likeBusy = useRef(false)
     const likeWanted = useRef(null)
 
-    // --- сохранённые: та же схема мьютекс-очереди ---
     const savedBusy = useRef(false)
     const savedWanted = useRef(null)
 
     useEffect(() => {
-        // синхронизируем локальный isSaved с профилем, но только если
-        // сейчас нет своего "неподтверждённого" желания (иначе можем
-        // затереть только что сделанный оптимистичный клик устаревшим profile)
         if (savedWanted.current === null) {
             setIsSaved(hasId(profile?.saved_posts, article?._id));
         }
@@ -92,8 +87,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
     const firstCommentId = Array.isArray(article.comments)
         ? article.comments.find((comment) => comment?._id)?._id
         : "";
-
-    // ===================== ЛАЙКИ =====================
 
     const flushLike = async () => {
         if (likeBusy.current || !article?._id || !profile?._id) {
@@ -152,8 +145,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
 
         const nextLiked = !currentlyWantedLiked
 
-        // реф пишем синхронно, ДО patchArticle/flushLike — иначе setState-апдейтер
-        // выполнится позже (асинхронно), и очередь в момент проверки будет пустой
         likeWanted.current = nextLiked
 
         patchArticle((current) => ({
@@ -163,8 +154,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
 
         flushLike()
     }
-
-    // ===================== СОХРАНЁННЫЕ =====================
 
     const flushSave = async () => {
         if (savedBusy.current || !article?._id || !profile?._id) {
@@ -193,7 +182,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
                     }))
                     showToast({ message: wantSaved ? "Сохранено!" : "Убрано из сохранённых!", type: "success" })
                 } else if (result.statusCode === 409) {
-                    // сервер говорит, что состояние уже совпадает с желаемым — считаем ок
                     setProfile((prev) => ({
                         ...prev,
                         saved_posts: wantSaved
@@ -201,7 +189,6 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
                             : withoutId(prev.saved_posts, article._id)
                     }))
                 } else {
-                    // реальная ошибка — откатываем оптимистичное обновление
                     setIsSaved(!wantSaved)
                     if (result.statusCode === 401) {
                         showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
@@ -235,7 +222,7 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
         const nextSaved = !currentlyWantedSaved
 
         savedWanted.current = nextSaved
-        setIsSaved(nextSaved) // оптимистично обновляем иконку сразу
+        setIsSaved(nextSaved)
 
         flushSave()
     }
