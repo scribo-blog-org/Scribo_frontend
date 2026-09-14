@@ -12,5 +12,18 @@
     @media screen and (max-width: 768px) {
         padding-top: 40px;
         padding-bottom: 10px;
-    }  
+    }
+
+    &:has(.messages_page) {
+        height: calc(100dvh - var(--header-height));
+        max-height: calc(100dvh - var(--header-height));
+        min-height: 0;
+        overflow: hidden;
+
+        @include screen() {
+            height: 100dvh;
+            max-height: 100dvh;
+            padding-bottom: 80px;
+        }
+    }
 }

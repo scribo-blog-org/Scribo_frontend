@@ -80,18 +80,13 @@ const AppLayout = ({ children }) => {
             return;
         }
 
-        document.body.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-
         const path = location.pathname;
         setProfileData();
 
         if (!SKIP_TRACKING.test(path)) {
             trackVisit(path);
         }
-    }, [setProfileData, authReady]);
+    }, [setProfileData, authReady, location.pathname]);
 
     return (
         <div className="app-layout app-transition" id="app-layout">

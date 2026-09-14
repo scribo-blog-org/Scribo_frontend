@@ -20,6 +20,7 @@ import Support from './pages/Support/index.jsx';
 import SupportMine from './pages/Support/Mine.jsx';
 import SupportRequestPage from './pages/Support/Request.jsx';
 import Notifications from './pages/Notifications/index.jsx';
+import Messages from './pages/Messages/index.jsx';
 import RequestDetailPage from './pages/AdminPanel/RequestDetail.jsx';
 
 import AppLayout from './layouts/AppLayout/index.jsx';
@@ -32,6 +33,7 @@ import Footer from './components/Footer/index.jsx';
 import Toast from './components/Ui/Toast/index.jsx';
 
 import MobileNavigationBar from './components/MobileNavigationBar/index.jsx';
+import ScrollToTop from './components/ScrollToTop/index.jsx';
 
 import { CATEGORY_COLORS } from './styles/constants.js';
 import { getAccessToken, setAccessToken, subscribeAccessToken, refreshAccessToken } from './api/http.js';
@@ -125,6 +127,7 @@ function App() {
   return (
     <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow, requestCloseModal, accessToken, setAccessToken, authReady }}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ScrollToTop />
           <div className={"App"} id="app-root">
             <AppLayout>
               <AppModals
@@ -165,6 +168,8 @@ function App() {
                           </Route>
 
                           <Route element={<FullContainer/>}>
+                              <Route path="/messages" Component={Messages}/>
+                              <Route path="/messages/:conversationId" Component={Messages}/>
                               <Route path="/settings" Component={Settings}/>
                               <Route path="admin-panel" Component={AdminPanel}/>
                               <Route path="admin-panel/requests/:id" Component={RequestDetailPage}/>

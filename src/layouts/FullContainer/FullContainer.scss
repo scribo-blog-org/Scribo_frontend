@@ -8,9 +8,14 @@
     display: flex;
     flex: 1;
     flex-direction: column;
+    min-height: 0;
 
 
     @include screen() {
         padding: 0 16px;
+    }
+
+    &:has(.messages_page) {
+        overflow: hidden;
     }
 }

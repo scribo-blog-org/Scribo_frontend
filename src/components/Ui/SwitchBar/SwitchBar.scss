@@ -24,12 +24,15 @@
     background: var(--switcher-bar-active-item-background-color);
 
     transition:
-        transform .3s cubic-bezier(.2,.8,.2,1),
-        width .3s cubic-bezier(.2,.8,.2,1),
+        transform .3s cubic-bezier(.2, .8, .2, 1),
+        width .3s cubic-bezier(.2, .8, .2, 1),
+        opacity .2s ease,
         background-color .3s ease,
         background .3s ease;
 
     z-index: 0;
+    pointer-events: none;
+    will-change: transform, width;
 }
 
 .switcher_bar_item {

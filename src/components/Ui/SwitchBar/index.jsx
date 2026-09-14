@@ -42,8 +42,21 @@ export default function SwitchBar({
     useEffect(() => {
         window.addEventListener("resize", updateIndicator);
 
-        return () =>
+        const container = containerRef.current;
+        const observer = container
+            ? new ResizeObserver(() => {
+                  updateIndicator();
+              })
+            : null;
+
+        if (container && observer) {
+            observer.observe(container);
+        }
+
+        return () => {
             window.removeEventListener("resize", updateIndicator);
+            observer?.disconnect();
+        };
     }, [updateIndicator]);
 
     return (
@@ -52,10 +65,11 @@ export default function SwitchBar({
             className={`switcher_bar app-transition ${className}`}
         >
             <div
-                className="switcher_bar_indicator app-transition"
+                className="switcher_bar_indicator"
                 style={{
                     width: indicator.width,
                     transform: `translateX(${indicator.left}px)`,
+                    opacity: indicator.width > 0 ? 1 : 0,
                 }}
             />
 

@@ -1,0 +1,19 @@
+.message_status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    line-height: 1;
+    color: var(--light-text-color);
+    min-width: 14px;
+
+    svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    &_read {
+        color: var(--light-text-color);
+        letter-spacing: -2px;
+    }
+}

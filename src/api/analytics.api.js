@@ -1,38 +1,14 @@
 import { API_URL } from "../config"
 import { apiFetch } from "./http"
-import { getVisitorGeo } from "./geo.client"
-
-const getVisitorId = () => {
-    const key = "scribo_visitor_id"
-
-    try {
-        const existing = localStorage.getItem(key)
-
-        if (existing && /^[a-zA-Z0-9-]{8,64}$/.test(existing)) {
-            return existing
-        }
-
-        const created = crypto.randomUUID()
-        localStorage.setItem(key, created)
-        return created
-    }
-    catch {
-        return `anon-${Date.now().toString(36)}`
-    }
-}
 
 const trackVisit = async (path) => {
     try {
-        const geo = await getVisitorGeo()
-
         await apiFetch(`${API_URL}/api/analytics/visit`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 pagePath: path,
-                visitorId: getVisitorId(),
                 pageReferrer: typeof document === "undefined" ? "" : document.referrer,
-                ...geo
             })
         })
     }

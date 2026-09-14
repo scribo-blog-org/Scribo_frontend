@@ -17,6 +17,8 @@ import Clock from "../../assets/svg/clock.svg?react";
 import PostIcon from "../../assets/svg/post.svg?react";
 import BookmarkOutline from "../../assets/svg/bookmark-outline.svg?react";
 import SettingsIcon from "../../assets/svg/settings.svg?react";
+import CommentIcon from "../../assets/svg/comment.svg?react";
+import { startConversationWithUser } from "../Messages/index.jsx";
 
 import Sceleton from "../../components/Ui/Sceleton/Sceleton.jsx";
 
@@ -33,7 +35,7 @@ import RelativeTime from "../../components/RelativeTime/index.jsx";
 const Profile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { profile, setProfile, showModalWindow } = useContext(AppContext);
+    const { profile, setProfile, showModalWindow, showToast } = useContext(AppContext);
     const [ isProfileLoading, setIsProfileLoading ] = useState(true);
     const [ activeTab, setActiveTab ] = useState(0);
     const [user, setUser] = useState(null);
@@ -403,11 +405,28 @@ const Profile = () => {
                                     Настройки
                                 </ActionButton>
                                 :
-                                <FollowButton
-                                    setNewData={setFollowThisUser}
-                                    authorId={user?._id}
-                                    className="profile_info_action"
-                                />
+                                <div className="profile_info_actions">
+                                    <FollowButton
+                                        setNewData={setFollowThisUser}
+                                        authorId={user?._id}
+                                        className="profile_info_action"
+                                    />
+                                    {profile ? (
+                                        <ActionButton
+                                            className="profile_info_action"
+                                            onClick={() =>
+                                                startConversationWithUser(
+                                                    user?._id,
+                                                    navigate,
+                                                    showToast,
+                                                )
+                                            }
+                                        >
+                                            <CommentIcon className="profile_info_action_icon" />
+                                            Начать общение
+                                        </ActionButton>
+                                    ) : null}
+                                </div>
                         }
                     </Sceleton>
                 </div>
