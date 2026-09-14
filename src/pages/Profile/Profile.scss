@@ -50,6 +50,13 @@
             min-width: 0;
         }
 
+        &_actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
         &_nick {
             display: flex;
             align-items: center;

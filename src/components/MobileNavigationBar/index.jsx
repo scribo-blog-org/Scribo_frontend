@@ -1,13 +1,16 @@
 import "./MobileNavigationBar.scss";
 
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../App";
+import { getUnreadCount } from "../../api/chat.api";
+import { socketService } from "../../sockets/socket.service";
 
 import HomeIcon from "../../assets/svg/home-icon.svg?react";
 import SearchIcon from "../../assets/svg/search.svg?react";
 import NotificationsIcon from "../../assets/svg/notification.svg?react";
+import CommentIcon from "../../assets/svg/comment.svg?react";
 import PlusIcon from "../../assets/svg/plus-icon.svg?react";
 import MoonIcon from "../../assets/svg/moon.svg?react";
 import SunIcon from "../../assets/svg/sun.svg?react";
@@ -26,7 +29,32 @@ const MobileNavigationBar = () => {
     const navigate = useNavigate();
     const { profile, setProfile, showToast, isDarkTheme, setIsDarkTheme } = useContext(AppContext);
 
+    const [unreadMessages, setUnreadMessages] = useState(0);
     const hasUnread = Boolean(profile?.notifications?.some((item) => item.is_read === false));
+
+    useEffect(() => {
+        if (!profile) {
+            setUnreadMessages(0);
+            return;
+        }
+
+        let cancelled = false;
+
+        getUnreadCount().then((result) => {
+            if (!cancelled && result?.status) {
+                setUnreadMessages(result.data?.unread || 0);
+            }
+        });
+
+        const unsubscribe = socketService.on("chat:unread", (unread) => {
+            setUnreadMessages(Number(unread) || 0);
+        });
+
+        return () => {
+            cancelled = true;
+            unsubscribe();
+        };
+    }, [profile?._id]);
     const ThemeIcon = isDarkTheme ? MoonIcon : SunIcon;
     const canCreate = Boolean(profile?.permissions?.includes("create_post"));
 
@@ -59,6 +87,22 @@ const MobileNavigationBar = () => {
                 </>
             ),
             onClick: () => navigateOrScrollTop(navigate, location.pathname, "/notifications"),
+        };
+
+        const messages = {
+            id: "messages",
+            path: "/messages",
+            node: (
+                <>
+                    {unreadMessages > 0 ? (
+                        <span className="navigation_bar_count_badge">
+                            {unreadMessages > 99 ? "99+" : unreadMessages}
+                        </span>
+                    ) : null}
+                    <CommentIcon />
+                </>
+            ),
+            onClick: () => navigateOrScrollTop(navigate, location.pathname, "/messages"),
         };
 
         const create = {
@@ -110,7 +154,7 @@ const MobileNavigationBar = () => {
         const left = [home, search];
 
         if (profile) {
-            left.push(notifications);
+            left.push(notifications, messages);
         }
 
         const right = [theme, profileSlot];
@@ -124,6 +168,7 @@ const MobileNavigationBar = () => {
         profile,
         navigate,
         hasUnread,
+        unreadMessages,
         isDarkTheme,
         setIsDarkTheme,
         canCreate,

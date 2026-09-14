@@ -20,6 +20,7 @@
     }
 
     .switcher_bar_item {
+        position: relative;
         padding: 10px 20px;
         min-width: 0;
 
@@ -76,8 +77,10 @@
 
     &_badge {
         position: absolute;
-        top: 12px;
-        right: 14px;
+        top: 8px;
+        right: 12px;
+        z-index: 2;
+        pointer-events: none;
 
         &_dot {
             display: block;
@@ -85,6 +88,38 @@
             height: 6px;
             border-radius: 50%;
             background-color: var(--red-f5, #c62828);
+        }
+    }
+
+    &_count_badge {
+        position: absolute;
+        top: 4px;
+        right: 8px;
+        z-index: 2;
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
+        border-radius: 999px;
+        background: var(--red-f5);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 16px;
+        text-align: center;
+        pointer-events: none;
+    }
+
+    &_compact {
+        .switcher_bar_item {
+            padding: 10px 12px;
+        }
+
+        .navigation_bar_badge {
+            right: 8px;
+        }
+
+        .navigation_bar_count_badge {
+            right: 4px;
         }
     }
 }

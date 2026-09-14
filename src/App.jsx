@@ -20,6 +20,7 @@ import Support from './pages/Support/index.jsx';
 import SupportMine from './pages/Support/Mine.jsx';
 import SupportRequestPage from './pages/Support/Request.jsx';
 import Notifications from './pages/Notifications/index.jsx';
+import Messages from './pages/Messages/index.jsx';
 import RequestDetailPage from './pages/AdminPanel/RequestDetail.jsx';
 
 import AppLayout from './layouts/AppLayout/index.jsx';
@@ -167,6 +168,8 @@ function App() {
                           </Route>
 
                           <Route element={<FullContainer/>}>
+                              <Route path="/messages" Component={Messages}/>
+                              <Route path="/messages/:conversationId" Component={Messages}/>
                               <Route path="/settings" Component={Settings}/>
                               <Route path="admin-panel" Component={AdminPanel}/>
                               <Route path="admin-panel/requests/:id" Component={RequestDetailPage}/>

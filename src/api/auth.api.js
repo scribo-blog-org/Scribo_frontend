@@ -1,5 +1,5 @@
 import { API_URL } from "../config";
-import { apiFetch, setAccessToken } from "./http";
+import { apiFetch, setAccessToken, setSocketToken } from "./http";
 import { getVisitorGeo } from "./geo.client";
 
 const verificationGoogle = async (token) => {
@@ -26,10 +26,11 @@ const verificationGoogle = async (token) => {
 
 const applyAuthResult = (result) => {
     if (result?.status && result?.data?.accessToken) {
-        setAccessToken(result.data.accessToken)
+        setAccessToken(result.data.accessToken);
+        setSocketToken(result.data.socketToken);
     }
-    return result
-}
+    return result;
+};
 
 const loginGoogle = async (token) => {
     try {

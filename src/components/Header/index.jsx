@@ -1,7 +1,9 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { AppContext } from "../../App";
+import { getUnreadCount } from "../../api/chat.api";
+import { socketService } from "../../sockets/socket.service";
 
 import "./Header.scss";
 
@@ -12,6 +14,7 @@ import MoonIcon from "../../assets/svg/moon.svg?react";
 import MainLogo from "../../assets/svg/full-logo-icon.svg?react";
 import DefaultProfileIcon from "../../assets/svg/profile.svg?react";
 import NotificationIcon from "../../assets/svg/notification.svg?react";
+import CommentIcon from "../../assets/svg/comment.svg?react";
 import SearchIcon from "../../assets/svg/search.svg?react";
 import PlusIcon from "../../assets/svg/plus-icon.svg?react";
 import ArrowDownIcon from "../../assets/svg/chevron-down.svg?react";
@@ -30,6 +33,31 @@ function Header() {
 
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [unreadMessages, setUnreadMessages] = useState(0);
+
+	useEffect(() => {
+		if (!profile) {
+			setUnreadMessages(0);
+			return;
+		}
+
+		let cancelled = false;
+
+		getUnreadCount().then((result) => {
+			if (!cancelled && result?.status) {
+				setUnreadMessages(result.data?.unread || 0);
+			}
+		});
+
+		const unsubscribe = socketService.on("chat:unread", (unread) => {
+			setUnreadMessages(Number(unread) || 0);
+		});
+
+		return () => {
+			cancelled = true;
+			unsubscribe();
+		};
+	}, [profile?._id]);
 
 	return (
 		<header className="header blurred app-transition">
@@ -88,6 +116,21 @@ function Header() {
 					) : (
 						<></>
 					)}
+					{profile ? (
+						<Link
+							to="/messages"
+							className={`header_item header_notification app-transition ${location.pathname.startsWith("/messages") ? "header_item_active" : ""}`}
+							aria-label="Сообщения"
+							onClick={(event) => handleSameRouteClick(event, location.pathname, "/messages")}
+						>
+							{unreadMessages > 0 ? (
+								<div className="header_messages_badge">
+									{unreadMessages > 99 ? "99+" : unreadMessages}
+								</div>
+							) : null}
+							<CommentIcon className="header_item_icon app-transition" />
+						</Link>
+					) : null}
 					<Link
 						to="/search"
 						className={`header_item app-transition ${location.pathname.startsWith("/search") ? "header_item_active" : ""}`}

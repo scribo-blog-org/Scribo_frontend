@@ -24,6 +24,7 @@ class SocketService {
 
         this.currentUser = user;
 
+        console.log("[SocketService] init", { userId: user._id });
         await socketClient.setAuth(socketToken);
 
         socketEvents.subscribeUserNotifications(
@@ -33,10 +34,20 @@ class SocketService {
             }
         );
 
+        socketEvents.subscribeChatUnread(user._id, (unread) => {
+            this.emit("chat:unread", unread);
+        });
+
+        socketEvents.subscribeChatConversation(user._id, (conversation) => {
+            this.emit("chat:conversation", conversation);
+        });
+
         this.isConnected = true;
+        console.log("[SocketService] ready", { userId: user._id });
     }
 
     async disconnect() {
+        console.log("[SocketService] disconnect");
         await socketClient.disconnect();
 
         this.isConnected = false;
