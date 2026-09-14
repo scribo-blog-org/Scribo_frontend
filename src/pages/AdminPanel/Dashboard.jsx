@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { AppContext } from "../../App";
 import { getDashboard } from "../../api/analytics.api";
 import { hashtagSearchPath } from "../../utils/hashtags";
-import { format_date_time } from "../../utils/format";
 
 import ChipButton from "../../components/Ui/ChipButton";
 import Loading from "../../components/Ui/Loading";
@@ -13,46 +12,9 @@ import "./Dashboard.scss";
 
 const RANGES = [7, 14, 30];
 
-const ACTIVITY_LABELS = {
-    create_post: "Публикации",
-    update_post: "Изменения постов",
-    delete_post: "Удаления постов",
-    register: "Регистрации",
-    create_category: "Новые категории",
-    update_category: "Изменения категорий",
-    delete_category: "Удаления категорий",
-    update_role: "Смена ролей",
-    create_support_request: "Обращения в поддержку",
-    reply_support_request: "Ответы в тикетах",
-    update_support_status: "Статусы тикетов",
-    like_post: "Лайки",
-    comment_post: "Комментарии",
-    reply_comment: "Ответы на комментарии",
-};
-
 const TRAFFIC_KEYS = [
-    { key: "visits", label: "Просмотры", color: "var(--text-color)" },
+    { key: "visitors", label: "Посетители", color: "var(--text-color)" },
 ];
-
-const TRAFFIC_TOOLTIP_KEYS = [
-    { key: "visits", label: "Просмотры" },
-    { key: "visitors", label: "Посетители" },
-];
-
-const locationLabel = (item) => {
-    const city = String(item.city || "").trim();
-    const country = String(item.country || "").trim();
-
-    if (city && country && city !== country && city !== "Локально" && city !== "Неизвестно") {
-        return `${city}, ${country}`;
-    }
-
-    if (city && city !== "Локально" && city !== "Неизвестно") {
-        return city;
-    }
-
-    return country || city;
-};
 
 const formatDay = (iso) => {
     const date = new Date(`${iso}T00:00:00Z`);
@@ -107,7 +69,7 @@ const deltaLabel = (current, previous) => {
     };
 };
 
-const TrendChart = ({ series, keys, tooltipKeys }) => {
+const TrendChart = ({ series, keys }) => {
     const [hover, setHover] = useState(null);
     const [cursor, setCursor] = useState(null);
     const width = 720;
@@ -115,7 +77,6 @@ const TrendChart = ({ series, keys, tooltipKeys }) => {
     const pad = { top: 16, right: 12, bottom: 32, left: 36 };
     const innerWidth = width - pad.left - pad.right;
     const innerHeight = height - pad.top - pad.bottom;
-    const details = tooltipKeys || keys;
 
     const maxValue = Math.max(
         1,
@@ -266,7 +227,7 @@ const TrendChart = ({ series, keys, tooltipKeys }) => {
             {active && cursor ? (
                 <div className="analytics_chart_tooltip" style={tooltipStyle}>
                     <p>{formatDay(active.date)}</p>
-                    {details.map((item) => (
+                    {keys.map((item) => (
                         <p key={item.key}>
                             {item.label}: {formatNumber(active[item.key])}
                         </p>
@@ -285,8 +246,8 @@ const TrendChart = ({ series, keys, tooltipKeys }) => {
     );
 };
 
-const BarChart = ({ items, empty, wideLabel }) => {
-    const maxValue = Math.max(1, ...items.map((item) => item.count));
+const RankedBars = ({ items, empty, wideLabel, showPercent = true }) => {
+    const maxValue = Math.max(1, ...items.map((item) => item.count || item.visits || 0));
 
     if (!items.length) {
         return <p className="analytics_empty">{empty || "Нет данных за период"}</p>;
@@ -295,9 +256,14 @@ const BarChart = ({ items, empty, wideLabel }) => {
     return (
         <div className={`analytics_bars${wideLabel ? " analytics_bars_wide" : ""}`}>
             {items.map((item) => {
-                const label = ACTIVITY_LABELS[item.type] || item.type;
+                const label = item.label || item.type || item.path || item.query || item.tag || item.title;
+                const value = item.count ?? item.visits ?? item.views_count ?? 0;
+                const note = item.note
+                    || (showPercent && item.percent != null ? `${item.percent}%` : null)
+                    || (item.uses != null ? `${formatNumber(item.uses)} исп.` : null);
+
                 return (
-                    <div className="analytics_bars_row" key={item.key || item.type}>
+                    <div className="analytics_bars_row" key={item.key || label}>
                         {item.href ? (
                             <Link
                                 className={`analytics_bars_label${item.hashtag ? " hashtag" : ""}`}
@@ -312,12 +278,12 @@ const BarChart = ({ items, empty, wideLabel }) => {
                         <div className="analytics_bars_track">
                             <div
                                 className="analytics_bars_fill app-transition"
-                                style={{ width: `${Math.max(6, (item.count / maxValue) * 100)}%` }}
+                                style={{ width: `${Math.max(6, (value / maxValue) * 100)}%` }}
                             />
                         </div>
                         <p className="analytics_bars_value">
-                            {formatNumber(item.count)}
-                            {item.note ? <span> · {item.note}</span> : null}
+                            {formatNumber(value)}
+                            {note ? <span> · {note}</span> : null}
                         </p>
                     </div>
                 );
@@ -326,9 +292,12 @@ const BarChart = ({ items, empty, wideLabel }) => {
     );
 };
 
-const AnalyticsGroup = ({ title, className, children }) => (
+const AnalyticsGroup = ({ title, hint, className, children }) => (
     <section className={`analytics_group ${className || ""}`.trim()}>
-        <h2 className="kicker">{title}</h2>
+        <div className="analytics_group_head">
+            <h2 className="kicker">{title}</h2>
+            {hint ? <p className="analytics_group_hint">{hint}</p> : null}
+        </div>
         {children}
     </section>
 );
@@ -345,6 +314,83 @@ const StatCard = ({ label, value, previous, hint }) => {
                 <p className={`analytics_stat_delta analytics_stat_delta_${delta.tone}`}>{delta.text}</p>
             ) : null}
         </div>
+    );
+};
+
+const ActivityMetric = ({ label, value }) => (
+    <div className="analytics_activity_metric">
+        <p className="analytics_activity_metric_label">{label}</p>
+        <p className="analytics_activity_metric_value">{formatNumber(value)}</p>
+    </div>
+);
+
+const ActivityPanel = ({ activity }) => (
+    <section className="analytics_block analytics_activity app-transition">
+        <div className="analytics_activity_group">
+            <h3 className="analytics_block_title">Посты</h3>
+            <div className="analytics_activity_metrics">
+                <ActivityMetric label="Написано" value={activity?.posts?.created} />
+                <ActivityMetric label="Изменено" value={activity?.posts?.updated} />
+                <ActivityMetric label="Удалено" value={activity?.posts?.deleted} />
+            </div>
+        </div>
+        <div className="analytics_activity_group">
+            <h3 className="analytics_block_title">Пользователи</h3>
+            <div className="analytics_activity_metrics">
+                <ActivityMetric label="Новые" value={activity?.users?.registered} />
+                <ActivityMetric label="Авторизации" value={activity?.users?.logins} />
+            </div>
+        </div>
+        <div className="analytics_activity_group">
+            <h3 className="analytics_block_title">Комментарии</h3>
+            <div className="analytics_activity_metrics">
+                <ActivityMetric label="Написано" value={activity?.comments?.created} />
+                <ActivityMetric label="Изменено" value={activity?.comments?.updated} />
+                <ActivityMetric label="Удалено" value={activity?.comments?.deleted} />
+            </div>
+        </div>
+        <div className="analytics_activity_group">
+            <h3 className="analytics_block_title">Лайки</h3>
+            <div className="analytics_activity_metrics">
+                <ActivityMetric label="На посты" value={activity?.likes?.posts} />
+            </div>
+        </div>
+    </section>
+);
+
+const AudienceRatio = ({ audience }) => {
+    const authorized = Number(audience?.authorized_percent || 0);
+    const anonymous = Number(audience?.anonymous_percent || 0);
+
+    return (
+        <section className="analytics_block analytics_audience app-transition">
+            <div className="analytics_audience_bar">
+                {authorized > 0 ? (
+                    <div
+                        className="analytics_audience_bar_auth app-transition"
+                        style={{ width: `${authorized}%` }}
+                    />
+                ) : null}
+            </div>
+            <div className="analytics_audience_legend">
+                <div className="analytics_audience_item">
+                    <span className="analytics_audience_swatch analytics_audience_swatch_auth" />
+                    <span>Авторизованные</span>
+                    <strong>{authorized}%</strong>
+                    <span className="analytics_audience_count">
+                        {formatNumber(audience?.authorized_visits)}
+                    </span>
+                </div>
+                <div className="analytics_audience_item">
+                    <span className="analytics_audience_swatch analytics_audience_swatch_anon" />
+                    <span>Анонимные</span>
+                    <strong>{anonymous}%</strong>
+                    <span className="analytics_audience_count">
+                        {formatNumber(audience?.anonymous_visits)}
+                    </span>
+                </div>
+            </div>
+        </section>
     );
 };
 
@@ -383,52 +429,51 @@ const DashboardPage = () => {
         };
     }, [days, showToast]);
 
-    const totals = {
-        ...(data?.totals || {}),
-        visits: data?.totals?.visits ?? data?.totals?.pageviews,
-        visits_prev: data?.totals?.visits_prev ?? data?.totals?.pageviews_prev,
-        visitors: data?.totals?.unique_visitors,
-        visitors_prev: data?.totals?.unique_visitors_prev,
-        auth_users: data?.totals?.unique_users ?? data?.totals?.authorized_visits,
-        auth_users_prev: data?.totals?.unique_users_prev ?? data?.totals?.authorized_visits_prev,
-    };
-    const series = (data?.series || []).map((point) => ({
-        ...point,
-        visits: point.visits ?? point.pageviews,
-        visitors: point.visitors ?? point.unique_visitors,
-    }));
-    const activity = useMemo(() => (data?.activity || []).slice(0, 8), [data]);
-    const periodLikes = useMemo(
-        () => (data?.activity || []).find((item) => item.type === "like_post")?.count || 0,
+    const totals = data?.totals || {};
+    const series = data?.series || [];
+    const topPosts = useMemo(
+        () =>
+            (data?.top_posts || []).map((item) => ({
+                key: String(item._id),
+                title: item.title,
+                count: item.views_count || 0,
+                href: `/posts/${item._id}`,
+            })),
         [data],
     );
-    const cities = useMemo(
+    const topPaths = useMemo(
         () =>
-            (data?.cities || [])
-                .map((item) => ({
-                    type: locationLabel(item),
-                    count: item.visits ?? item.entries ?? 0,
-                }))
-                .filter((item) => item.type && item.count > 0),
-        [data],
-    );
-    const devices = useMemo(
-        () =>
-            (data?.devices || []).map((item) => ({
-                type: item.kind,
+            (data?.top_paths || []).map((item) => ({
+                key: item.path,
+                path: item.path,
                 count: item.visits || 0,
+                percent: item.percent,
             })),
         [data],
     );
-    const categories = useMemo(
+    const topQueries = useMemo(
         () =>
-            (data?.categories || []).map((item) => ({
-                type: item.name,
-                count: item.posts || 0,
+            (data?.top_queries || []).map((item) => ({
+                key: item.query,
+                query: item.query,
+                count: item.count || 0,
+                percent: item.percent,
             })),
         [data],
     );
-    const searchWithHits = Math.max(0, Number(totals.searches || 0) - Number(totals.empty_searches || 0));
+    const topHashtags = useMemo(
+        () =>
+            (data?.top_hashtags || []).map((item) => ({
+                key: item.tag,
+                tag: item.tag,
+                count: item.uses || 0,
+                percent: item.percent,
+                uses: item.uses,
+                href: hashtagSearchPath(item.tag),
+                hashtag: true,
+            })),
+        [data],
+    );
 
     return (
         <div className="analytics">
@@ -452,200 +497,75 @@ const DashboardPage = () => {
                 <Loading size={40} />
             ) : (
                 <>
-                    <AnalyticsGroup title="Обзор">
-                        <div className="analytics_stats">
-                            <StatCard label="Просмотры" value={totals.visits} previous={totals.visits_prev} />
+                    <AnalyticsGroup title="Трафик" hint="Уникальные посетители за выбранный период">
+                        <div className="analytics_traffic">
                             <StatCard
-                                label="Уникальные посетители"
-                                value={totals.visitors}
-                                previous={totals.visitors_prev}
+                                label="Посетители"
+                                value={totals.unique_visitors}
+                                previous={totals.unique_visitors_prev}
                             />
-                            <StatCard
-                                label="Авторизованные пользователи"
-                                value={totals.auth_users}
-                                previous={totals.auth_users_prev}
-                            />
-                            <StatCard label="Новые пользователи" value={totals.new_users} />
+                            <section className="analytics_block analytics_block_chart app-transition">
+                                {series.length ? (
+                                    <TrendChart series={series} keys={TRAFFIC_KEYS} />
+                                ) : (
+                                    <p className="analytics_empty">Нет посещений за период</p>
+                                )}
+                            </section>
                         </div>
                     </AnalyticsGroup>
 
-                    <AnalyticsGroup title="Трафик">
-                        <section className="analytics_block app-transition">
-                            {series.length ? (
-                                <TrendChart
-                                    series={series}
-                                    keys={TRAFFIC_KEYS}
-                                    tooltipKeys={TRAFFIC_TOOLTIP_KEYS}
-                                />
-                            ) : (
-                                <p className="analytics_empty">Нет просмотров за период</p>
-                            )}
-                        </section>
+                    <AnalyticsGroup title="Активность" hint="События за выбранный период">
+                        <ActivityPanel activity={data?.activity} />
+                    </AnalyticsGroup>
+
+                    <AnalyticsGroup title="Аудитория" hint="Доля авторизованных и анонимных просмотров страниц">
+                        <AudienceRatio audience={data?.audience} />
                     </AnalyticsGroup>
 
                     <div className="analytics_grid">
-                        <AnalyticsGroup title="Источники трафика">
+                        <AnalyticsGroup title="Популярные страницы" hint="Топ-5 по просмотрам">
                             <section className="analytics_block app-transition">
-                                <h3 className="analytics_block_title">География</h3>
-                                <BarChart
-                                    items={cities}
-                                    wideLabel
-                                    empty="География появится после первых визитов"
-                                />
-                            </section>
-                        </AnalyticsGroup>
-
-                        <AnalyticsGroup title="Устройства">
-                            <section className="analytics_block app-transition">
-                                <BarChart items={devices} wideLabel empty="Нет данных по устройствам" />
-                            </section>
-                        </AnalyticsGroup>
-                    </div>
-
-                    <div className="analytics_grid">
-                        <AnalyticsGroup title="Популярные страницы">
-                            <section className="analytics_block app-transition">
-                                <BarChart
+                                <RankedBars
+                                    items={topPaths}
                                     wideLabel
                                     empty="Нет просмотров страниц за период"
-                                    items={(data?.top_paths || []).map((item) => ({
-                                        type: item.path,
-                                        count: item.visits || 0,
-                                        note: `${formatNumber(item.unique_visitors)} чел.`,
-                                    }))}
                                 />
                             </section>
                         </AnalyticsGroup>
 
-                        <AnalyticsGroup title="Топ постов">
+                        <AnalyticsGroup title="Топ постов" hint="По просмотрам">
                             <section className="analytics_block app-transition">
-                                <BarChart
+                                <RankedBars
+                                    items={topPosts}
                                     wideLabel
+                                    showPercent={false}
                                     empty="Пока нет просмотров постов"
-                                    items={(data?.top_posts || [])
-                                        .filter((item) => Number(item.views_count) > 0)
-                                        .map((item) => ({
-                                            key: String(item._id),
-                                            type: item.title,
-                                            count: item.views_count || 0,
-                                            href: `/posts/${item._id}`,
-                                        }))}
                                 />
                             </section>
                         </AnalyticsGroup>
                     </div>
 
-                    <AnalyticsGroup title="Поиск">
-                        <div className="analytics_stats">
-                            <StatCard
-                                label="Поисковые запросы"
-                                value={totals.searches}
-                                previous={totals.searches_prev}
-                                hint={
-                                    totals.hashtag_searches
-                                        ? `${formatNumber(totals.hashtag_searches)} по тегам`
-                                        : null
-                                }
-                            />
-                            <StatCard label="Уникальные запросы" value={totals.unique_search_queries} />
-                            <StatCard label="С результатами" value={searchWithHits} />
-                            <StatCard
-                                label="Без результатов"
-                                value={totals.empty_searches}
-                                previous={totals.empty_searches_prev}
-                            />
-                        </div>
-                        <section className="analytics_block app-transition">
-                            <h3 className="analytics_block_title">Популярные запросы</h3>
-                            <BarChart
-                                wideLabel
-                                empty="Пока нет поисковых запросов"
-                                items={(data?.top_queries || []).map((item) => ({
-                                    type: item.query,
-                                    count: item.count,
-                                    note: item.empty ? "пусто" : "есть",
-                                }))}
-                            />
-                        </section>
-                    </AnalyticsGroup>
-
-                    <AnalyticsGroup title="Контент">
-                        <div className="analytics_stats">
-                            <StatCard label="Посты" value={totals.posts} />
-                            <StatCard label="Комментарии" value={totals.comments} />
-                            <StatCard label="Лайки" value={totals.likes} />
-                            <StatCard label="Категории" value={totals.categories} />
-                            <StatCard
-                                label="Посты с тегами"
-                                value={totals.posts_with_hashtags}
-                                hint={
-                                    totals.unique_hashtags
-                                        ? `${formatNumber(totals.unique_hashtags)} тегов`
-                                        : null
-                                }
-                            />
-                            <StatCard label="Аккаунты" value={totals.registered_users} />
-                        </div>
-                        <h3 className="analytics_block_title">Активность за период</h3>
-                        <div className="analytics_stats">
-                            <StatCard label="Опубликовано постов" value={totals.new_posts} />
-                            <StatCard label="Написано комментариев" value={totals.new_comments} />
-                            <StatCard label="Получено лайков" value={periodLikes} />
-                        </div>
-                        <div className="analytics_grid">
+                    <div className="analytics_grid">
+                        <AnalyticsGroup title="Поиск" hint="Топ-5 запросов в процентах">
                             <section className="analytics_block app-transition">
-                                <h3 className="analytics_block_title">Посты по категориям</h3>
-                                <BarChart
-                                    items={categories}
+                                <RankedBars
+                                    items={topQueries}
                                     wideLabel
-                                    empty="Пока нет постов в категориях"
+                                    empty="Пока нет поисковых запросов"
                                 />
                             </section>
+                        </AnalyticsGroup>
+
+                        <AnalyticsGroup title="Теги" hint="Топ-5 по использованию">
                             <section className="analytics_block app-transition">
-                                <h3 className="analytics_block_title">Популярные теги</h3>
-                                <BarChart
+                                <RankedBars
+                                    items={topHashtags}
                                     wideLabel
                                     empty="В контенте пока нет тегов"
-                                    items={(data?.top_hashtags || []).map((item) => ({
-                                        type: item.tag,
-                                        count: item.posts || 0,
-                                        href: hashtagSearchPath(item.tag),
-                                        hashtag: true,
-                                        note: item.comments ? `${formatNumber(item.comments)} комм.` : null,
-                                    }))}
                                 />
                             </section>
-                        </div>
-                    </AnalyticsGroup>
-
-                    <AnalyticsGroup title="Последняя активность">
-                        <section className="analytics_block app-transition">
-                            {(data?.recent_users || []).length ? (
-                                <div className="analytics_table">
-                                    {(data.recent_users || []).map((item) => (
-                                        <Link
-                                            key={String(item._id)}
-                                            className="analytics_table_row"
-                                            to={`/users/${item.nick_name}`}
-                                        >
-                                            <span className="analytics_table_path">{item.nick_name}</span>
-                                            <span className="analytics_table_muted">
-                                                {format_date_time(item.last_activity_at)}
-                                            </span>
-                                        </Link>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="analytics_empty">Пока нет пользователей</p>
-                            )}
-                        </section>
-                    </AnalyticsGroup>
-
-                    <AnalyticsGroup title="Активность" className="analytics_group_compact">
-                        <section className="analytics_block app-transition">
-                            <BarChart items={activity} />
-                        </section>
-                    </AnalyticsGroup>
+                        </AnalyticsGroup>
+                    </div>
                 </>
             )}
         </div>

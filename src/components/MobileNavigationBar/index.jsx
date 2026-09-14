@@ -19,18 +19,7 @@ import SwitchBar from "../Ui/SwitchBar";
 import Popup from "../Ui/Popup";
 import CurrentUserBadge from "../CurrentUserBadge/index";
 import { getAccountMenuBody } from "../AccountMenu/getAccountMenuBody";
-
-const isPathActive = (pathname, path) => {
-    if (!path) {
-        return false;
-    }
-
-    if (path === "/posts") {
-        return pathname === "/posts" || pathname === "/posts/";
-    }
-
-    return pathname === path || pathname.startsWith(`${path}/`);
-};
+import { isPathActive, navigateOrScrollTop } from "../../utils/navigation.js";
 
 const MobileNavigationBar = () => {
     const location = useLocation();
@@ -46,14 +35,14 @@ const MobileNavigationBar = () => {
             id: "home",
             path: "/posts",
             node: <HomeIcon />,
-            onClick: () => navigate("/posts"),
+            onClick: () => navigateOrScrollTop(navigate, location.pathname, "/posts"),
         };
 
         const search = {
             id: "search",
             path: "/search",
             node: <SearchIcon />,
-            onClick: () => navigate("/search"),
+            onClick: () => navigateOrScrollTop(navigate, location.pathname, "/search"),
         };
 
         const notifications = {
@@ -69,7 +58,7 @@ const MobileNavigationBar = () => {
                     <NotificationsIcon />
                 </>
             ),
-            onClick: () => navigate("/notifications"),
+            onClick: () => navigateOrScrollTop(navigate, location.pathname, "/notifications"),
         };
 
         const create = {

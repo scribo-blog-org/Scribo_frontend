@@ -9,6 +9,7 @@
     background-color: var(--header-background);
     z-index: 1000;
     box-shadow: 0 0 10px 1px rgba(0,0,0, .3);
+    padding: 0 40px;
 
     @include screen() {
         display: none;
@@ -16,6 +17,7 @@
 
     &_content {
       display: flex;
+      width: 100%;
       justify-content: center; 
       align-items: center;
       height: var(--header-height); 
