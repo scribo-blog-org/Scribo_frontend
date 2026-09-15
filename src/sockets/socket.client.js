@@ -43,7 +43,7 @@ class SocketClient {
         const entry = { channel, status: "PENDING" };
         this.channels.set(roomName, entry);
 
-        channel.subscribe((status, err) => {
+        channel.subscribe((status) => {
             entry.status = status;
 
             if (status === "SUBSCRIBED") {
