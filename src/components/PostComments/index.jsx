@@ -22,12 +22,12 @@ import RedirectIcon from "../../assets/svg/redirect.svg?react";
 
 import CurrentUserBadge from "../CurrentUserBadge/index.jsx";
 import UserBadge from "../UserBadge/index.jsx";
-import HashtagField from "../Ui/HashtagField";
+import RichInputField from "../RichInputField";
 import PrimaryButton from "../Ui/PrimaryButton/index";
 import CancelButton from "../../components/Ui/CancelButton/index";
 import Tooltip from "../Ui/Tooltip/index";
 import Popup from "../Ui/Popup/index.jsx";
-import HashtagText from "../HashtagText";
+import RichText from "../RichText";
 
 const CommentForm = ({
     value,
@@ -57,6 +57,15 @@ const CommentForm = ({
         }
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key !== "Enter" || event.shiftKey || !value.trim() || isLoading) {
+            return;
+        }
+
+        event.preventDefault();
+        event.currentTarget.form?.requestSubmit();
+    };
+
     return (
         <form className="comment_form" onSubmit={onSubmit}>
             {title}
@@ -64,13 +73,15 @@ const CommentForm = ({
             <div className="comment_form_content">
                 <CurrentUserBadge asLink={false} />
 
-                <HashtagField
+                <RichInputField
+                    preset="social"
                     multilineRows={3}
                     length={FIELD_LIMITS.comment.max}
                     value={value}
                     onMouseDown={handleInputMouseDown}
                     placeholder={placeholder}
                     onChange={(e) => onChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
 
                 <div className="comment_form_actions">
@@ -319,7 +330,7 @@ const Comment = ({ comment, level = 0, isFirstRoot = false, replyCommentText, se
                                 }
                             </div>
                             <div className="comment_body_middle_side">
-                                <HashtagText
+                                <RichText
                                     className="comment_body_middle_side_text"
                                     id={`comment_${comment._id}`}
                                     text={comment.comment_text}
@@ -449,7 +460,7 @@ const PostComments = ({ postId, navigateTo, onCommentsChange }) => {
                 setCommentText('');
                 showToast({
                     type: "success",
-                    message: "Ответ опубликован"
+                    message: "Комментарий опубликован"
                 });
             }});
         }

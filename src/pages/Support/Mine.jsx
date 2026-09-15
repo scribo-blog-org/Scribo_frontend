@@ -8,8 +8,7 @@ import { SUPPORT_KINDS, kindLabel, statusLabel } from "./constants";
 import { format_back, format_date_time } from "../../utils/format";
 
 import Field from "../../components/Ui/Field/index";
-import InputField from "../../components/Ui/InputField/index";
-import DropDown from "../../components/Ui/DropDown";
+import RichInputField from "../../components/RichInputField";
 import PrimaryButton from "../../components/Ui/PrimaryButton";
 import Pagination from "../../components/Ui/Pagination";
 import Loading from "../../components/Ui/Loading";
@@ -159,7 +158,8 @@ const SupportMine = () => {
                     />
                 </Field>
                 <Field title="Сообщение" error={errors?.supportMessage ?? null}>
-                    <InputField
+                    <RichInputField
+                        preset="social"
                         isMultiline={true}
                         multilineRows={6}
                         length={FIELD_LIMITS.supportMessage.max}

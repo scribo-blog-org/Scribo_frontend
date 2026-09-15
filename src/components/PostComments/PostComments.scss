@@ -30,12 +30,12 @@
                 }
             }
 
-            .hashtag_field .input_field {
+            .rich_input_field .input_field {
                 padding: 10px;
                 font-size: 14px;
             }
 
-            .hashtag_field .input_field::placeholder {
+            .rich_input_field .input_field::placeholder {
                 font-size: 14px;
             }
 
@@ -55,12 +55,12 @@
             }
 
             @include screen() {
-                .hashtag_field .input_field {
+                .rich_input_field .input_field {
                     padding: 8px;
                     font-size: 12px;
                 }
 
-                .hashtag_field .input_field::placeholder {
+                .rich_input_field .input_field::placeholder {
                     font-size: 12px;
                 }
 
@@ -178,8 +178,14 @@
                         color: var(--post-text-color);
                         word-break: break-word;
 
-                        .hashtag {
+                        .hashtag,
+                        a.hashtag {
                             color: var(--hashtag-color);
+                        }
+
+                        .mention,
+                        a.mention {
+                            color: var(--mention-color);
                         }
                     }
                 }

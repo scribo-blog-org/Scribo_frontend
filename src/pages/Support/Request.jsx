@@ -8,7 +8,8 @@ import { SUPPORT_STATUSES, kindLabel, statusLabel } from "./constants";
 import { format_date_time } from "../../utils/format";
 
 import Field from "../../components/Ui/Field/index";
-import InputField from "../../components/Ui/InputField/index";
+import RichInputField from "../../components/RichInputField";
+import RichText from "../../components/RichText";
 import PrimaryButton from "../../components/Ui/PrimaryButton";
 import ActionButton from "../../components/Ui/ActionButton";
 import DropDown from "../../components/Ui/DropDown";
@@ -160,7 +161,7 @@ const SupportRequestPage = () => {
                 {isStaff ? <p className="support_request_detail_email">{item.email}</p> : null}
                 <p className="support_request_detail_date">{format_date_time(item.created_date)}</p>
                 <div className="support_request_detail_message">
-                    {item.message}
+                    <RichText text={item.message} />
                 </div>
                 {isStaff ? (
                     <Field title="Статус">
@@ -191,7 +192,7 @@ const SupportRequestPage = () => {
                                         )}
                                         <p>{format_date_time(entry.created_date)}</p>
                                     </div>
-                                    <p className="support_request_detail_reply_text">{entry.text}</p>
+                                    <RichText className="support_request_detail_reply_text" text={entry.text} />
                                 </div>
                             ))}
                         </div>
@@ -207,7 +208,8 @@ const SupportRequestPage = () => {
                     }}
                 >
                     <Field title={isStaff ? "Ответ" : "Сообщение"} error={error}>
-                        <InputField
+                        <RichInputField
+                            preset="social"
                             isMultiline={true}
                             multilineRows={6}
                             length={FIELD_LIMITS.supportReply.max}

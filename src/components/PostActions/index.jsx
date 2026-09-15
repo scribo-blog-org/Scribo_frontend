@@ -18,32 +18,12 @@ import FilledLikeIcon from "../../assets/svg/like-filled.svg?react";
 
 import Category from "../Category/index";
 import Tooltip from "../Ui/Tooltip/index";
+import SharePostModal from "../SharePostModal";
 
 import Sceleton from "../Ui/Sceleton/Sceleton";
 
-function isMobile() {
-    return navigator.maxTouchPoints > 0;
-}
-
-async function share(id, showToast) {
-    if(isMobile()){
-        navigator.share({
-            title: 'Заголовок',
-            text: 'Текст',
-            url: `https://${import.meta.env.VITE_APP_VERCEL_PROJECT_PRODUCTION_URL}/posts/${id}`
-        })
-    } else {
-        try {
-            await navigator.clipboard.writeText(`https://${import.meta.env.VITE_APP_VERCEL_PROJECT_PRODUCTION_URL}/posts/${id}`)
-            showToast({message: "Скопировано!", type: "success" })
-        } catch (err) {
-            console.error(`Failed to copy: /posts/${id}`, err)
-        }
-    }
-}
-
 const PostActions = ({ className, article, setArticle, isLoading=false, showCategory = true }) => {
-    const { profile, setProfile, showToast } = useContext(AppContext)
+    const { profile, setProfile, showToast, showModalWindow, requestCloseModal } = useContext(AppContext)
     const [isSaved, setIsSaved] = useState(hasId(profile?.saved_posts, article?._id));
 
     const likeBusy = useRef(false)
@@ -205,6 +185,25 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
         }
     }
 
+    const openShareModal = () => {
+        if (!article?._id) {
+            return;
+        }
+
+        showModalWindow({
+            title: "Поделиться",
+            size: "small",
+            content: (
+                <SharePostModal
+                    postId={article._id}
+                    postTitle={article.title}
+                    showToast={showToast}
+                    requestCloseModal={requestCloseModal}
+                />
+            ),
+        });
+    };
+
     const doSave = () => {
         if (!profile) {
             showToast({ message: "Чтобы сохранить пост, войдите в аккаунт!", type: "warning" })
@@ -266,8 +265,8 @@ const PostActions = ({ className, article, setArticle, isLoading=false, showCate
                             <p>{viewsCount}</p>
                         </span>
                     </Tooltip>
-                    <Tooltip text={isMobile() ? "Поделиться" : "Скопировать ссылку"} clickable={true}>
-                        <button className="post_actions_button app-transition" onClick={() => { share(article._id, showToast) }}>
+                    <Tooltip text="Поделиться" clickable={true}>
+                        <button type="button" className="post_actions_button app-transition" onClick={openShareModal}>
                             <ShareIcon />
                         </button>
                     </Tooltip>

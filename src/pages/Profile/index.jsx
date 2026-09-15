@@ -92,14 +92,16 @@ const Profile = () => {
     useEffect(() => {
         const getUser = async () => {
             setIsProfileLoading(true);
+            setUser(null);
             const findNeededUser = await getUsers([{ nick_name: id }]);
-            setActiveTab(0);
 
-            if (findNeededUser.status === false) {
+            if (findNeededUser.status !== true || !findNeededUser.data?.[0]) {
                 navigate('/404');
-            } else {
-                setUser(findNeededUser.data[0]);
+                return;
             }
+
+            setActiveTab(0);
+            setUser(findNeededUser.data[0]);
             setIsProfileLoading(false);
         };
         getUser();

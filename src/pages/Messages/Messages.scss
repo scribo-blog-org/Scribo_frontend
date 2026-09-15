@@ -287,7 +287,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
     max-width: min(100%, 640px);
 
     &_own {
@@ -300,6 +299,18 @@
             box-shadow: 0 0 0 2px var(--text-color);
         }
     }
+}
+
+.messages_bubble_wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+}
+
+.messages_item_own .messages_bubble_wrap {
+    flex-direction: row-reverse;
 }
 
 .messages_bubble {
@@ -386,6 +397,16 @@
     &_deleted {
         color: var(--light-text-color);
     }
+
+    .hashtag,
+    a.hashtag {
+        color: var(--hashtag-color);
+    }
+
+    .mention,
+    a.mention {
+        color: var(--mention-color);
+    }
 }
 
 .messages_body {
@@ -393,6 +414,23 @@
     align-items: flex-end;
     gap: 10px;
     min-width: 0;
+
+    &_with_post {
+        flex-direction: column;
+        align-items: stretch;
+
+        .messages_meta {
+            align-self: flex-end;
+        }
+    }
+}
+
+.messages_caption {
+    margin-bottom: 0;
+}
+
+.messages_post_share {
+    width: 100%;
 }
 
 .messages_meta {
@@ -422,7 +460,47 @@
 
 .messages_actions {
     display: flex;
-    gap: 6px;
+    gap: 4px;
+    flex-shrink: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+        .messages_item:hover &,
+        .messages_item:focus-within & {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+}
+
+.messages_actions_menu {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--light-text-color);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    @include hover {
+        background: var(--section-item-hover-background-color);
+        color: var(--text-color);
+    }
+
+    @media (hover: none), (pointer: coarse) {
+        display: inline-flex;
+    }
 }
 
 .messages_action {
@@ -446,6 +524,11 @@
         background: var(--section-item-hover-background-color);
         color: var(--text-color);
     }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
 }
 
 .messages_composer {
@@ -456,7 +539,7 @@
     border: 1px solid var(--input-outline-color);
     border-radius: 8px;
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
     @include use-transition();
 
     &:focus-within {
@@ -581,10 +664,17 @@
         background: transparent;
         line-height: 1.5;
         overflow-y: auto;
+        resize: none;
 
         &:focus {
             border: 0;
         }
+    }
+
+    .rich_input_field_mirror.messages_composer_input {
+        overflow: hidden;
+        min-height: 72px;
+        max-height: 72px;
     }
 }
 

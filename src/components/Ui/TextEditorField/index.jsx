@@ -19,8 +19,11 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { TextNode } from "lexical";
 import { HashtagNode } from "./HashtagNode";
+import { MentionNode } from "./MentionNode";
 import HashtagPlugin from "./HashtagPlugin";
 import HashtagSuggestPlugin from "./HashtagSuggestPlugin";
+import MentionPlugin from "./MentionPlugin";
+import MentionSuggestPlugin from "./MentionSuggestPlugin";
 
 import "./TextEditorField.scss";
 import SwitchBar from "../SwitchBar";
@@ -44,6 +47,7 @@ const editorConfig = {
     },
     link: "text_editor_link",
     hashtag: "hashtag",
+    mention: "mention",
     list: {
       ul: "text_editor_ul",
       ol: "text_editor_ol",
@@ -55,6 +59,7 @@ const editorConfig = {
   nodes: [
     TextNode,
     HashtagNode,
+    MentionNode,
     ListNode,
     ListItemNode,
     LinkNode,
@@ -172,6 +177,7 @@ const EditorToolbar = () => {
           <LinkText />
         </button>
       </Tooltip>
+
       {/* <button
         type="button"
         onClick={() => colorInputRef.current?.click()}
@@ -244,7 +250,9 @@ export default function TextEditor({
             <ListPlugin />
             <LinkPlugin />
             <HashtagPlugin />
+            <MentionPlugin />
             <HashtagSuggestPlugin enabled={switcherActiveIndex === 0} />
+            <MentionSuggestPlugin enabled={switcherActiveIndex === 0} />
 
             <OnChangePlugin
               onChange={(editorState, editor) => {

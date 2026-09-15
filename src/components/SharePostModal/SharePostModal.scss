@@ -1,0 +1,119 @@
+@use "../../styles/helpers" as *;
+
+.share_post_modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+
+    &_group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    &_label,
+    &_kicker {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-color);
+    }
+
+    &_hint {
+        font-size: 12px;
+        color: var(--light-text-color);
+    }
+
+    &_link_row {
+        display: flex;
+        gap: var(--space-2);
+        align-items: stretch;
+
+        .submit_button {
+            flex-shrink: 0;
+            min-width: 112px;
+        }
+
+        @include screen() {
+            flex-direction: column;
+
+            .submit_button {
+                width: 100%;
+            }
+        }
+    }
+
+    &_link {
+        flex: 1;
+        min-width: 0;
+        min-height: 36px;
+        padding: 8px 12px;
+        border: 1px solid var(--input-outline-color);
+        border-radius: 8px;
+        background: var(--input-background-color);
+        color: var(--input-text-color);
+        font-size: 14px;
+        line-height: 1.4;
+        user-select: all;
+
+        &:focus {
+            outline: none;
+            border-color: var(--text-color);
+        }
+    }
+
+    &_chats {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        max-height: 240px;
+        overflow-y: auto;
+    }
+
+    &_chat_item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--line-color);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-color);
+        text-align: left;
+        cursor: pointer;
+
+        @include hover() {
+            background: var(--section-item-hover-background-color);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .user_badge_info {
+            min-width: 0;
+        }
+    }
+
+    &_chat_status {
+        flex-shrink: 0;
+        font-size: 12px;
+        color: var(--light-text-color);
+    }
+
+    &_loader {
+        display: flex;
+        justify-content: center;
+        padding: var(--space-4) 0;
+    }
+
+    &_login {
+        width: fit-content;
+    }
+
+    &_native {
+        width: 100%;
+    }
+}
