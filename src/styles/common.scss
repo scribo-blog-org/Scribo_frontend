@@ -141,6 +141,7 @@ button {
     display: flex;
     flex-direction: column;
     color: var(--text-color);
+    min-height: 100dvh;
 }
 
 img, svg {

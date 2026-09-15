@@ -3,15 +3,15 @@
 .page-layout {
     min-height: calc(100vh - var(--header-height));
 
-    padding-top: 72px;
+    padding-top: 20px;
     padding-bottom: 72px;
     z-index: 1;
     display: flex;
     flex-direction: column;
     
     @media screen and (max-width: 768px) {
-        padding-top: 40px;
-        padding-bottom: 10px;
+        padding-top: var(--header-height-mobile);
+        padding-bottom: 80px;
     }
 
     &:has(.messages_page) {

@@ -1,0 +1,142 @@
+@use "../../styles/helpers" as *;
+
+.app-sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 var(--app-sidebar-width);
+    width: var(--app-sidebar-width);
+    min-width: var(--app-sidebar-width);
+    height: 100dvh;
+    padding: var(--space-5) var(--space-3);
+    border-right: 1px solid var(--line-color);
+    background: var(--main-background);
+    box-sizing: border-box;
+    z-index: 100;
+
+    @include screen() {
+        display: none;
+    }
+
+    &_logo {
+        display: flex;
+        align-items: center;
+        height: 32px;
+        margin-bottom: var(--space-5);
+        padding: 0 var(--space-2);
+        color: var(--text-color);
+
+        @include hover {
+            opacity: 0.8;
+        }
+    }
+
+    &_logo_icon {
+        height: 28px;
+        width: auto;
+
+        path {
+            fill: currentColor;
+        }
+    }
+
+    &_nav {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        flex: 1;
+        min-height: 0;
+    }
+
+    &_footer {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        margin-top: var(--space-3);
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--line-color);
+    }
+
+    &_item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        width: 100%;
+        padding: 10px var(--space-3);
+        border: 0;
+        border-radius: var(--radius-sm);
+        background: transparent;
+        color: var(--light-text-color);
+        font-size: var(--text-md);
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: left;
+        cursor: pointer;
+        font-family: inherit;
+
+        @include hover {
+            background: var(--section-item-hover-background-color);
+            color: var(--text-color);
+        }
+
+        &_active {
+            background: var(--section-item-hover-background-color);
+            color: var(--text-color);
+        }
+    }
+
+    &_item_icon {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        color: inherit;
+
+        *[fill] {
+            fill: currentColor;
+        }
+    }
+
+    &_badge {
+        position: absolute;
+        top: 6px;
+        left: 28px;
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
+        border-radius: 999px;
+        background: var(--red-f5);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 16px;
+        text-align: center;
+        z-index: 1;
+    }
+
+    &_dot {
+        position: absolute;
+        top: 10px;
+        left: 30px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--red-f5);
+        z-index: 1;
+    }
+
+    &_create,
+    &_login {
+        margin-top: var(--space-2);
+        width: 100%;
+        justify-content: center;
+        gap: var(--space-2);
+        font-size: var(--text-sm);
+
+        svg {
+            width: 16px;
+            height: 16px;
+        }
+    }
+}

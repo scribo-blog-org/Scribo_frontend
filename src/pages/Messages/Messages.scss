@@ -43,7 +43,6 @@
     min-width: 260px;
     min-height: 0;
     padding: 0 var(--space-5) 0 0;
-    border-right: 1px solid var(--line-color);
     box-sizing: border-box;
     overflow: hidden;
     @include use-transition();
@@ -65,7 +64,6 @@
     min-height: 0;
     padding: 0 0 0 var(--space-6);
     overflow: hidden;
-    gap: var(--space-3);
 
     @include screen() {
         padding: 0;
