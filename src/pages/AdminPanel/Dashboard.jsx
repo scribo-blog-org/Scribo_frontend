@@ -10,7 +10,12 @@ import Loading from "../../components/Ui/Loading";
 
 import "./Dashboard.scss";
 
-const RANGES = [7, 14, 30];
+const RANGES = [
+    { value: "24h", label: "24 часа" },
+    { value: 7, label: "7 дней" },
+    { value: 14, label: "14 дней" },
+    { value: 30, label: "30 дней" },
+];
 
 const TRAFFIC_KEYS = [
     { key: "visitors", label: "Посетители", color: "var(--text-color)" },
@@ -24,10 +29,25 @@ const formatDay = (iso) => {
     });
 };
 
-const formatRange = (days) => {
+const formatHour = (iso) => {
+    const date = new Date(`${iso}:00:00Z`);
+    return date.toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+};
+
+const formatRange = (range) => {
+    if (range === "24h") {
+        const end = new Date();
+        const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+        const options = { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" };
+        return `${start.toLocaleString("ru-RU", options)} — ${end.toLocaleString("ru-RU", options)}`;
+    }
+
     const end = new Date();
     const start = new Date();
-    start.setDate(end.getDate() - days + 1);
+    start.setDate(end.getDate() - range + 1);
     const options = { day: "numeric", month: "short" };
     return `${start.toLocaleDateString("ru-RU", options)} — ${end.toLocaleDateString("ru-RU", options)}`;
 };
@@ -69,7 +89,8 @@ const deltaLabel = (current, previous) => {
     };
 };
 
-const TrendChart = ({ series, keys }) => {
+const TrendChart = ({ series, keys, hourly = false }) => {
+    const formatTick = hourly ? formatHour : formatDay;
     const [hover, setHover] = useState(null);
     const [cursor, setCursor] = useState(null);
     const width = 720;
@@ -219,14 +240,14 @@ const TrendChart = ({ series, keys }) => {
                             y={height - 8}
                             textAnchor="middle"
                         >
-                            {formatDay(point.date)}
+                            {formatTick(point.date)}
                         </text>
                     );
                 })}
             </svg>
             {active && cursor ? (
                 <div className="analytics_chart_tooltip" style={tooltipStyle}>
-                    <p>{formatDay(active.date)}</p>
+                    <p>{formatTick(active.date)}</p>
                     {keys.map((item) => (
                         <p key={item.key}>
                             {item.label}: {formatNumber(active[item.key])}
@@ -299,6 +320,16 @@ const AnalyticsGroup = ({ title, hint, className, children }) => (
             {hint ? <p className="analytics_group_hint">{hint}</p> : null}
         </div>
         {children}
+    </section>
+);
+
+const AnalyticsScope = ({ title, hint, className, children }) => (
+    <section className={`analytics_scope ${className || ""}`.trim()}>
+        <header className="analytics_scope_head">
+            <h2 className="kicker">{title}</h2>
+            {hint ? <p className="analytics_scope_hint">{hint}</p> : null}
+        </header>
+        <div className="analytics_scope_body">{children}</div>
     </section>
 );
 
@@ -396,7 +427,7 @@ const AudienceRatio = ({ audience }) => {
 
 const DashboardPage = () => {
     const { showToast } = useContext(AppContext);
-    const [days, setDays] = useState(14);
+    const [range, setRange] = useState(14);
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -405,7 +436,7 @@ const DashboardPage = () => {
 
         const load = async () => {
             setIsLoading(true);
-            const result = await getDashboard(days);
+            const result = await getDashboard(range);
 
             if (cancelled) {
                 return;
@@ -427,10 +458,11 @@ const DashboardPage = () => {
         return () => {
             cancelled = true;
         };
-    }, [days, showToast]);
+    }, [range, showToast]);
 
     const totals = data?.totals || {};
     const series = data?.series || [];
+    const isHourlyRange = range === "24h";
     const topPosts = useMemo(
         () =>
             (data?.top_posts || []).map((item) => ({
@@ -475,97 +507,124 @@ const DashboardPage = () => {
         [data],
     );
 
+    const activeRange = RANGES.find((item) => item.value === range);
+
     return (
         <div className="analytics">
-            <div className="analytics_toolbar">
-                <div className="analytics_toolbar_ranges">
-                    {RANGES.map((range) => (
-                        <ChipButton
-                            key={range}
-                            variant="quiet"
-                            isActive={days === range}
-                            onClick={() => setDays(range)}
-                        >
-                            {range} дней
-                        </ChipButton>
-                    ))}
+            <div className="analytics_period_panel">
+                <div className="analytics_period_controls">
+                    <p className="analytics_period_label">Период</p>
+                    <div className="analytics_period_ranges">
+                        {RANGES.map((item) => (
+                            <ChipButton
+                                key={item.value}
+                                variant="quiet"
+                                isActive={range === item.value}
+                                onClick={() => setRange(item.value)}
+                            >
+                                {item.label}
+                            </ChipButton>
+                        ))}
+                    </div>
                 </div>
-                <p className="analytics_toolbar_hint">{formatRange(days)}</p>
+                <p className="analytics_period_bounds">
+                    <span className="analytics_period_bounds_label">Границы</span>
+                    {formatRange(range)}
+                </p>
             </div>
 
             {isLoading ? (
                 <Loading size={40} />
             ) : (
                 <>
-                    <AnalyticsGroup title="Трафик" hint="Уникальные посетители за выбранный период">
-                        <div className="analytics_traffic">
-                            <StatCard
-                                label="Посетители"
-                                value={totals.unique_visitors}
-                                previous={totals.unique_visitors_prev}
-                            />
-                            <section className="analytics_block analytics_block_chart app-transition">
-                                {series.length ? (
-                                    <TrendChart series={series} keys={TRAFFIC_KEYS} />
-                                ) : (
-                                    <p className="analytics_empty">Нет посещений за период</p>
-                                )}
-                            </section>
+                    <AnalyticsScope
+                        title="За выбранный период"
+                        hint={`Метрики ниже считаются только за ${activeRange?.label?.toLowerCase() || "период"}`}
+                        className="analytics_scope_period"
+                    >
+                        <AnalyticsGroup title="Трафик" hint="Уникальные посетители и динамика">
+                            <div className="analytics_traffic">
+                                <StatCard
+                                    label="Посетители"
+                                    value={totals.unique_visitors}
+                                    previous={totals.unique_visitors_prev}
+                                />
+                                <section className="analytics_block analytics_block_chart app-transition">
+                                    {series.length ? (
+                                        <TrendChart
+                                            series={series}
+                                            keys={TRAFFIC_KEYS}
+                                            hourly={isHourlyRange}
+                                        />
+                                    ) : (
+                                        <p className="analytics_empty">Нет посещений за период</p>
+                                    )}
+                                </section>
+                            </div>
+                        </AnalyticsGroup>
+
+                        <AnalyticsGroup title="Активность" hint="Посты, пользователи, комментарии и лайки">
+                            <ActivityPanel activity={data?.activity} />
+                        </AnalyticsGroup>
+
+                        <AnalyticsGroup
+                            title="Аудитория"
+                            hint="Доля авторизованных и анонимных просмотров страниц"
+                        >
+                            <AudienceRatio audience={data?.audience} />
+                        </AnalyticsGroup>
+
+                        <div className="analytics_grid">
+                            <AnalyticsGroup title="Популярные страницы" hint="Топ-5 по просмотрам">
+                                <section className="analytics_block app-transition">
+                                    <RankedBars
+                                        items={topPaths}
+                                        wideLabel
+                                        empty="Нет просмотров страниц за период"
+                                    />
+                                </section>
+                            </AnalyticsGroup>
+
+                            <AnalyticsGroup title="Поиск" hint="Топ-5 запросов в процентах">
+                                <section className="analytics_block app-transition">
+                                    <RankedBars
+                                        items={topQueries}
+                                        wideLabel
+                                        empty="Пока нет поисковых запросов"
+                                    />
+                                </section>
+                            </AnalyticsGroup>
                         </div>
-                    </AnalyticsGroup>
+                    </AnalyticsScope>
 
-                    <AnalyticsGroup title="Активность" hint="События за выбранный период">
-                        <ActivityPanel activity={data?.activity} />
-                    </AnalyticsGroup>
+                    <AnalyticsScope
+                        title="Общая статистика"
+                        hint="Не зависит от выбранного периода"
+                        className="analytics_scope_overall"
+                    >
+                        <div className="analytics_grid">
+                            <AnalyticsGroup title="Топ постов" hint="Суммарные просмотры постов">
+                                <section className="analytics_block app-transition">
+                                    <RankedBars
+                                        items={topPosts}
+                                        wideLabel
+                                        showPercent={false}
+                                        empty="Пока нет просмотров постов"
+                                    />
+                                </section>
+                            </AnalyticsGroup>
 
-                    <AnalyticsGroup title="Аудитория" hint="Доля авторизованных и анонимных просмотров страниц">
-                        <AudienceRatio audience={data?.audience} />
-                    </AnalyticsGroup>
-
-                    <div className="analytics_grid">
-                        <AnalyticsGroup title="Популярные страницы" hint="Топ-5 по просмотрам">
-                            <section className="analytics_block app-transition">
-                                <RankedBars
-                                    items={topPaths}
-                                    wideLabel
-                                    empty="Нет просмотров страниц за период"
-                                />
-                            </section>
-                        </AnalyticsGroup>
-
-                        <AnalyticsGroup title="Топ постов" hint="По просмотрам">
-                            <section className="analytics_block app-transition">
-                                <RankedBars
-                                    items={topPosts}
-                                    wideLabel
-                                    showPercent={false}
-                                    empty="Пока нет просмотров постов"
-                                />
-                            </section>
-                        </AnalyticsGroup>
-                    </div>
-
-                    <div className="analytics_grid">
-                        <AnalyticsGroup title="Поиск" hint="Топ-5 запросов в процентах">
-                            <section className="analytics_block app-transition">
-                                <RankedBars
-                                    items={topQueries}
-                                    wideLabel
-                                    empty="Пока нет поисковых запросов"
-                                />
-                            </section>
-                        </AnalyticsGroup>
-
-                        <AnalyticsGroup title="Теги" hint="Топ-5 по использованию">
-                            <section className="analytics_block app-transition">
-                                <RankedBars
-                                    items={topHashtags}
-                                    wideLabel
-                                    empty="В контенте пока нет тегов"
-                                />
-                            </section>
-                        </AnalyticsGroup>
-                    </div>
+                            <AnalyticsGroup title="Теги" hint="По всему контенту на сайте">
+                                <section className="analytics_block app-transition">
+                                    <RankedBars
+                                        items={topHashtags}
+                                        wideLabel
+                                        empty="В контенте пока нет тегов"
+                                    />
+                                </section>
+                            </AnalyticsGroup>
+                        </div>
+                    </AnalyticsScope>
                 </>
             )}
         </div>
