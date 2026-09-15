@@ -4,7 +4,9 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../../App";
 import {
     createConversation,
+    deleteConversation,
     deleteMessage,
+    editMessage,
     getConversation,
     getConversations,
     getMessages,
@@ -13,12 +15,13 @@ import {
 } from "../../api/chat.api";
 import { socketEvents } from "../../sockets/socket.events";
 import { socketService } from "../../sockets/socket.service";
-import { format_date_time } from "../../utils/format";
+import { format_date_time, format_message_date_label, format_time, is_same_calendar_day } from "../../utils/format";
 import { scrollTo } from "../../utils/navigation";
 
 import UserBadge from "../../components/UserBadge";
 import MessageStatus from "../../components/MessageStatus";
 import ActionButton from "../../components/Ui/ActionButton";
+import DangerButton from "../../components/Ui/DangerButton";
 import PrimaryButton from "../../components/Ui/PrimaryButton";
 import InputField from "../../components/Ui/InputField";
 import Loading from "../../components/Ui/Loading";
@@ -26,6 +29,7 @@ import { FIELD_LIMITS } from "../../constants/fieldLimits";
 
 import ReplyIcon from "../../assets/svg/reply.svg?react";
 import DeleteIcon from "../../assets/svg/delete.svg?react";
+import EditIcon from "../../assets/svg/edit.svg?react";
 import CrossIcon from "../../assets/svg/cross-icon.svg?react";
 
 import "./Messages.scss";
@@ -40,40 +44,45 @@ const getQuoteContent = (preview) => {
     };
 };
 
+const resolveReplyQuote = (message, messageById) => {
+    const parentId = message.reply_to || message.reply_preview?._id;
+    if (!parentId) {
+        return null;
+    }
+
+    const parent = messageById.get(String(parentId));
+    const source = parent || message.reply_preview;
+
+    if (!source) {
+        return null;
+    }
+
+    return getQuoteContent(
+        parent
+            ? {
+                  _id: parent._id,
+                  text: parent.text,
+                  deleted_at: parent.deleted_at,
+                  sender: parent.sender,
+              }
+            : source,
+    );
+};
+
 const normalizeIncomingMessage = (message, userId) => ({
     ...message,
     is_own: String(message.sender?._id) === String(userId),
 });
 
-const propagateDeletedReplyPreview = (list, messageId) =>
-    list.map((item) =>
-        item.reply_preview?._id === messageId
-            ? {
-                  ...item,
-                  reply_preview: {
-                      ...item.reply_preview,
-                      deleted: true,
-                      text: "",
-                  },
-              }
-            : item,
-    );
-
 const mergeMessage = (list, message) => {
     const index = list.findIndex((item) => item._id === message._id);
-    let next;
 
     if (index === -1) {
-        next = [...list, message];
-    } else {
-        next = [...list];
-        next[index] = { ...next[index], ...message };
+        return [...list, message];
     }
 
-    if (message.deleted_at) {
-        return propagateDeletedReplyPreview(next, message._id);
-    }
-
+    const next = [...list];
+    next[index] = { ...next[index], ...message };
     return next;
 };
 
@@ -92,9 +101,7 @@ const mergeIncomingMessage = (list, message, profileId) => {
             const next = [...list];
             next[pendingIndex] = message;
 
-            return message.deleted_at
-                ? propagateDeletedReplyPreview(next, message._id)
-                : next;
+            return mergeMessage(next, message);
         }
     }
 
@@ -112,6 +119,32 @@ const sortConversations = (list) =>
         return bTime - aTime;
     });
 
+const buildMessageTimeline = (list) => {
+    const items = [];
+
+    list.forEach((message, index) => {
+        const previous = list[index - 1];
+        if (
+            !previous ||
+            !is_same_calendar_day(previous.created_at, message.created_at)
+        ) {
+            items.push({
+                type: "date",
+                key: `date-${message.created_at}-${index}`,
+                label: format_message_date_label(message.created_at),
+            });
+        }
+
+        items.push({
+            type: "message",
+            key: message._id,
+            message,
+        });
+    });
+
+    return items;
+};
+
 const upsertConversationInList = (list, conversation) => {
     const index = list.findIndex((item) => item._id === conversation._id);
     let next;
@@ -126,23 +159,113 @@ const upsertConversationInList = (list, conversation) => {
     return sortConversations(next);
 };
 
+const DeleteChatModalActions = ({
+    conversationId,
+    profile,
+    requestCloseModal,
+    showToast,
+    onDeleted,
+    disabled,
+}) => {
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        if (!conversationId || isDeleting || disabled) {
+            return;
+        }
+
+        setIsDeleting(true);
+
+        try {
+            const result = await deleteConversation(conversationId);
+
+            if (!result?.status) {
+                showToast?.({
+                    type: "error",
+                    message: result?.message || "Не удалось удалить чат",
+                });
+                return;
+            }
+
+            socketEvents.unsubscribeConversation(profile._id, conversationId);
+            onDeleted(conversationId);
+            showToast?.({
+                type: "success",
+                message: "Чат удалён",
+            });
+            requestCloseModal();
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    return (
+        <div className="modal_delete_post_content_bottom">
+            <ActionButton
+                type="button"
+                disabled={isDeleting}
+                onClick={requestCloseModal}
+                className="modal_delete_post_content_button"
+            >
+                Отмена
+            </ActionButton>
+            <DangerButton
+                type="button"
+                isActive
+                isLoading={isDeleting}
+                disabled={disabled || isDeleting}
+                onClick={handleDelete}
+                className="modal_delete_post_content_button"
+            >
+                Удалить
+            </DangerButton>
+        </div>
+    );
+};
+
+const getDeleteChatModalContent = ({
+    participant,
+    conversationId,
+    profile,
+    requestCloseModal,
+    showToast,
+    onDeleted,
+    disabled,
+}) => (
+    <div className="messages_delete_modal">
+        <p className="messages_delete_modal_text">
+            Диалог с {participant?.nick_name || "пользователем"} и все сообщения
+            будут удалены безвозвратно. Это действие нельзя отменить.
+        </p>
+        <DeleteChatModalActions
+            conversationId={conversationId}
+            profile={profile}
+            requestCloseModal={requestCloseModal}
+            showToast={showToast}
+            onDeleted={onDeleted}
+            disabled={disabled}
+        />
+    </div>
+);
+
 const MessagesPage = () => {
     const { conversationId } = useParams();
     const navigate = useNavigate();
-    const { profile, showToast } = useContext(AppContext);
+    const { profile, showToast, showModalWindow, requestCloseModal } =
+        useContext(AppContext);
 
     const [conversations, setConversations] = useState([]);
     const [activeConversation, setActiveConversation] = useState(null);
     const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState("");
     const [replyTo, setReplyTo] = useState(null);
+    const [editingMessage, setEditingMessage] = useState(null);
     const [isListLoading, setIsListLoading] = useState(true);
     const [isChatLoading, setIsChatLoading] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
     const listRef = useRef(null);
     const stickToBottomRef = useRef(true);
-    const messageMapRef = useRef(new Map());
 
     const scrollMessagesToBottom = useCallback(() => {
         const el = listRef.current;
@@ -179,6 +302,19 @@ const MessagesPage = () => {
             ),
         );
     }, []);
+
+    const removeConversationFromState = useCallback((id) => {
+        setConversations((current) => current.filter((item) => item._id !== id));
+
+        if (String(conversationId) === String(id)) {
+            setActiveConversation(null);
+            setMessages([]);
+            setDraft("");
+            setReplyTo(null);
+            setEditingMessage(null);
+            navigate("/messages");
+        }
+    }, [conversationId, navigate]);
 
     const markChatAsRead = useCallback(async (id) => {
         const result = await markConversationRead(id);
@@ -231,8 +367,26 @@ const MessagesPage = () => {
     }, [profile?._id]);
 
     useEffect(() => {
-        messageMapRef.current = new Map(messages.map((item) => [item._id, item]));
-    }, [messages]);
+        if (!profile) {
+            return;
+        }
+
+        const unsubscribe = socketService.on(
+            "chat:conversation-deleted",
+            (deletedConversationId) => {
+                if (profile?._id && deletedConversationId) {
+                    socketEvents.unsubscribeConversation(
+                        profile._id,
+                        deletedConversationId,
+                    );
+                }
+
+                removeConversationFromState(deletedConversationId);
+            },
+        );
+
+        return unsubscribe;
+    }, [profile, removeConversationFromState]);
 
     useEffect(() => {
         if (!conversationId || !profile) {
@@ -240,6 +394,7 @@ const MessagesPage = () => {
             setMessages([]);
             setDraft("");
             setReplyTo(null);
+            setEditingMessage(null);
             return;
         }
 
@@ -249,6 +404,7 @@ const MessagesPage = () => {
             setIsChatLoading(true);
             setDraft("");
             setReplyTo(null);
+            setEditingMessage(null);
 
             const [conversationResult, messagesResult] = await Promise.all([
                 getConversation(conversationId),
@@ -286,11 +442,21 @@ const MessagesPage = () => {
                     mergeIncomingMessage(current, normalized, profile._id),
                 );
  
-                if (message.deleted_at) {
-                    setReplyTo((current) =>
-                        current?._id === message._id ? null : current,
-                    );
-                }
+                setReplyTo((current) => {
+                    if (!current || String(current._id) !== String(message._id)) {
+                        return current;
+                    }
+
+                    if (message.deleted_at) {
+                        return null;
+                    }
+
+                    return {
+                        ...current,
+                        text: message.text,
+                        edited_at: message.edited_at || null,
+                    };
+                });
 
                 if (
                     !message.deleted_at &&
@@ -342,7 +508,19 @@ const MessagesPage = () => {
     }, [messages, isChatLoading, scrollMessagesToBottom]);
 
     const handleStartReply = (message) => {
+        setEditingMessage(null);
         setReplyTo(message);
+    };
+
+    const handleStartEdit = (message) => {
+        setReplyTo(null);
+        setEditingMessage(message);
+        setDraft(message.text || "");
+    };
+
+    const handleCancelEdit = () => {
+        setEditingMessage(null);
+        setDraft("");
     };
 
     const handleReplyPreviewClick = (preview) => {
@@ -361,6 +539,37 @@ const MessagesPage = () => {
     const handleSend = async () => {
         const text = draft.trim();
         if (!text || !conversationId || isSending || isChatLoading) {
+            return;
+        }
+
+        if (editingMessage) {
+            setIsSending(true);
+            const result = await editMessage(editingMessage._id, { text });
+            setIsSending(false);
+
+            if (!result?.status) {
+                showToast?.({
+                    type: "error",
+                    message: result?.message || "Не удалось изменить сообщение",
+                });
+                return;
+            }
+
+            upsertMessage(result.data);
+            setEditingMessage(null);
+            setDraft("");
+            setConversations((current) => {
+                const existing = current.find((item) => item._id === conversationId);
+                if (!existing) {
+                    return current;
+                }
+
+                return upsertConversationInList(current, {
+                    ...existing,
+                    last_message_text: result.data.text,
+                    last_message_at: result.data.created_at,
+                });
+            });
             return;
         }
 
@@ -472,6 +681,47 @@ const MessagesPage = () => {
     const participant =
         activeConversation?.participant || activeListItem?.participant;
 
+    const messageTimeline = useMemo(
+        () => buildMessageTimeline(messages),
+        [messages],
+    );
+
+    const messageById = useMemo(
+        () => new Map(messages.map((item) => [String(item._id), item])),
+        [messages],
+    );
+
+    const openDeleteChatModal = useCallback(() => {
+        if (!conversationId || !profile) {
+            return;
+        }
+
+        showModalWindow({
+            title: "Удалить чат?",
+            size: "small",
+            showCloseButton: false,
+            closeFunc: () => {},
+            content: getDeleteChatModalContent({
+                participant,
+                conversationId,
+                profile,
+                requestCloseModal,
+                showToast,
+                onDeleted: removeConversationFromState,
+                disabled: isChatLoading,
+            }),
+        });
+    }, [
+        conversationId,
+        profile,
+        participant,
+        showModalWindow,
+        requestCloseModal,
+        showToast,
+        removeConversationFromState,
+        isChatLoading,
+    ]);
+
     if (!profile) {
         return (
             <div className="messages_page">
@@ -550,11 +800,20 @@ const MessagesPage = () => {
                                 <Link to="/messages" className="messages_back app-transition">
                                     Назад
                                 </Link>
-                                {participant ? (
-                                    <UserBadge data={participant} />
-                                ) : (
-                                    <h1 className="messages_title">Сообщения</h1>
-                                )}
+                                <div className="messages_chat_head_row">
+                                    {participant ? (
+                                        <UserBadge data={participant} />
+                                    ) : (
+                                        <h1 className="messages_title">Сообщения</h1>
+                                    )}
+                                    <ActionButton
+                                        type="button"
+                                        disabled={isChatLoading}
+                                        onClick={openDeleteChatModal}
+                                    >
+                                        Удалить чат
+                                    </ActionButton>
+                                </div>
                             </header>
 
                             <div
@@ -567,9 +826,26 @@ const MessagesPage = () => {
                                         <Loading size={36} />
                                     </div>
                                 ) : (
-                                    messages.map((message) => {
+                                    messageTimeline.map((item) => {
+                                    if (item.type === "date") {
+                                        return (
+                                            <div
+                                                key={item.key}
+                                                className="messages_date_divider"
+                                            >
+                                                <span className="messages_date_label">
+                                                    {item.label}
+                                                </span>
+                                            </div>
+                                        );
+                                    }
+
+                                    const message = item.message;
                                     const isOwn = message.is_own;
                                     const isDeleted = Boolean(message.deleted_at);
+                                    const replyQuote = resolveReplyQuote(message, messageById);
+                                    const replyTargetId =
+                                        message.reply_to || message.reply_preview?._id;
 
                                     return (
                                         <article
@@ -580,21 +856,17 @@ const MessagesPage = () => {
                                             }`}
                                         >
                                             <div className="messages_bubble">
-                                                {message.reply_preview ? (() => {
-                                                    const quote = getQuoteContent(
-                                                        message.reply_preview,
-                                                    );
-
-                                                    if (quote.deleted) {
+                                                {replyQuote ? (() => {
+                                                    if (replyQuote.deleted) {
                                                         return (
                                                             <div
                                                                 className="messages_quote messages_quote_deleted app-transition"
                                                             >
                                                                 <span className="messages_quote_author">
-                                                                    {quote.author}
+                                                                    {replyQuote.author}
                                                                 </span>
                                                                 <span className="messages_quote_text">
-                                                                    {quote.text}
+                                                                    {replyQuote.text}
                                                                 </span>
                                                             </div>
                                                         );
@@ -605,32 +877,42 @@ const MessagesPage = () => {
                                                             type="button"
                                                             className="messages_quote app-transition"
                                                             onClick={() =>
-                                                                handleReplyPreviewClick(
-                                                                    message.reply_preview,
-                                                                )
+                                                                handleReplyPreviewClick({
+                                                                    _id: replyTargetId,
+                                                                    deleted: replyQuote.deleted,
+                                                                })
                                                             }
                                                         >
                                                             <span className="messages_quote_author">
-                                                                {quote.author}
+                                                                {replyQuote.author}
                                                             </span>
                                                             <span className="messages_quote_text">
-                                                                {quote.text}
+                                                                {replyQuote.text}
                                                             </span>
                                                         </button>
                                                     );
                                                 })() : null}
 
-                                                <p className={`messages_text${isDeleted ? " messages_text_deleted" : ""}`}>
-                                                    {isDeleted
-                                                        ? "Сообщение удалено"
-                                                        : message.text}
-                                                </p>
+                                                <div className="messages_body">
+                                                    <p className={`messages_text${isDeleted ? " messages_text_deleted" : ""}`}>
+                                                        {isDeleted
+                                                            ? "Сообщение удалено"
+                                                            : message.text}
+                                                    </p>
 
-                                                <div className="messages_meta">
-                                                    <span>{format_date_time(message.created_at)}</span>
-                                                    {isOwn ? (
-                                                        <MessageStatus status={message.status} />
-                                                    ) : null}
+                                                    <div className="messages_meta">
+                                                        <span className="messages_time">
+                                                            {format_time(message.created_at)}
+                                                        </span>
+                                                        {message.edited_at ? (
+                                                            <span className="messages_edited">
+                                                                изменено
+                                                            </span>
+                                                        ) : null}
+                                                        {isOwn ? (
+                                                            <MessageStatus status={message.status} />
+                                                        ) : null}
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -646,15 +928,26 @@ const MessagesPage = () => {
                                                         <ReplyIcon />
                                                     </button>
                                                     {isOwn ? (
-                                                        <button
-                                                            type="button"
-                                                            className="messages_action app-transition"
-                                                            onClick={() => handleDelete(message._id)}
-                                                            aria-label="Удалить"
-                                                            disabled={isChatLoading}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </button>
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                className="messages_action app-transition"
+                                                                onClick={() => handleStartEdit(message)}
+                                                                aria-label="Редактировать"
+                                                                disabled={isChatLoading || Boolean(editingMessage)}
+                                                            >
+                                                                <EditIcon />
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="messages_action app-transition"
+                                                                onClick={() => handleDelete(message._id)}
+                                                                aria-label="Удалить"
+                                                                disabled={isChatLoading || Boolean(editingMessage)}
+                                                            >
+                                                                <DeleteIcon />
+                                                            </button>
+                                                        </>
                                                     ) : null}
                                                 </div>
                                             ) : null}
@@ -667,12 +960,30 @@ const MessagesPage = () => {
                             <form
                                 className={`messages_composer${
                                     replyTo ? " messages_composer_replying" : ""
+                                }${
+                                    editingMessage ? " messages_composer_editing" : ""
                                 }${isChatLoading ? " messages_composer_loading" : ""}`}
                                 onSubmit={(event) => {
                                     event.preventDefault();
                                     handleSend();
                                 }}
                             >
+                                {editingMessage ? (
+                                    <div className="messages_composer_edit app-transition">
+                                        <span className="messages_composer_edit_label">
+                                            Редактирование
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className="messages_composer_reply_close app-transition"
+                                            onClick={handleCancelEdit}
+                                            aria-label="Отменить редактирование"
+                                            disabled={isChatLoading}
+                                        >
+                                            <CrossIcon />
+                                        </button>
+                                    </div>
+                                ) : null}
                                 {replyTo ? (() => {
                                     const quote = getQuoteContent(replyTo);
 
@@ -725,7 +1036,7 @@ const MessagesPage = () => {
                                         disabled={!draft.trim() || isChatLoading}
                                         isLoading={isSending}
                                     >
-                                        Отправить
+                                        {editingMessage ? "Сохранить" : "Отправить"}
                                     </PrimaryButton>
                                 </div>
                             </form>

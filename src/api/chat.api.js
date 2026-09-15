@@ -28,6 +28,13 @@ const createConversation = async (userId) => {
     return parse(response);
 };
 
+const deleteConversation = async (conversationId) => {
+    const response = await apiFetch(`${API_URL}/api/chat/conversations/${conversationId}`, {
+        method: "DELETE",
+    });
+    return parse(response);
+};
+
 const getConversation = async (conversationId) => {
     const response = await apiFetch(`${API_URL}/api/chat/conversations/${conversationId}`);
     return parse(response);
@@ -81,13 +88,24 @@ const deleteMessage = async (messageId) => {
     return parse(response);
 };
 
+const editMessage = async (messageId, payload) => {
+    const response = await apiFetch(`${API_URL}/api/chat/messages/${messageId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: payload.text }),
+    });
+    return parse(response);
+};
+
 export {
     getUnreadCount,
     getConversations,
     createConversation,
+    deleteConversation,
     getConversation,
     getMessages,
     sendMessage,
     markConversationRead,
     deleteMessage,
+    editMessage,
 };
