@@ -18,6 +18,8 @@ const InputField = forwardRef(
     placeholder,
     required = false,
     confirmed = false,
+    blocked = false,
+    disabled = false,
     isMultiline = false,
     multilineRows = 1,
     length = 120,
@@ -25,14 +27,18 @@ const InputField = forwardRef(
   },
   ref
 ) => {
-  
+  const isBlocked = blocked || disabled;
   const InputComponent = isMultiline ? "textarea" : "input";
 
   return (
-    <div className="input_field_wrapper">
+    <div
+      className={`input_field_wrapper${
+        isBlocked ? " input_field_wrapper_blocked" : ""
+      }`}
+    >
       <InputComponent
           ref={ref}
-          className={`input_field ${error ? "incorrect_field" : ""} app-transition ${className ?? ""} ${confirmed ? "confirmed" : ""}`}
+          className={`input_field ${error ? "incorrect_field" : ""} app-transition ${className ?? ""} ${confirmed ? "confirmed" : ""}${isBlocked ? " input_field_blocked" : ""}`}
           type={type}
           onChange={onChange}
           onFocus={onFocus}
@@ -44,7 +50,9 @@ const InputField = forwardRef(
           wrap="hard"
           maxLength={length}
           value={value}
-          readOnly={confirmed}
+          readOnly={confirmed && !isBlocked}
+          disabled={isBlocked}
+          aria-disabled={isBlocked}
           {...props}
       />
 

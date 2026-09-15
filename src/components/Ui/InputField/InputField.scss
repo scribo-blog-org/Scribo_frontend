@@ -39,6 +39,18 @@
         border: 1px solid var(--input-outline-active-color);
     }
 
+    &.input_field_blocked,
+    &:disabled {
+        cursor: not-allowed;
+        color: var(--light-text-color);
+        border-color: var(--input-outline-color);
+        opacity: 0.55;
+
+        &:focus {
+            border-color: var(--input-outline-color);
+        }
+    }
+
     &[type="search"]::-webkit-search-decoration,
     &[type="search"]::-webkit-search-cancel-button,
     &[type="search"]::-webkit-search-results-button,
@@ -52,6 +64,10 @@
         color: var(--input-placeholder-color);
         transition: .3s;
     }
+}
+
+.input_field_wrapper_blocked {
+    cursor: not-allowed;
 }
 
 .incorrect_field {

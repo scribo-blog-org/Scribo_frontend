@@ -209,12 +209,12 @@ const MessagesPage = () => {
     }, [showToast]);
 
     useEffect(() => {
-        if (!profile) {
+        if (!profile?._id) {
             return;
         }
 
         loadConversations();
-    }, [profile, loadConversations]);
+    }, [profile?._id, loadConversations]);
 
     useEffect(() => {
         if (!profile) {
@@ -238,6 +238,8 @@ const MessagesPage = () => {
         if (!conversationId || !profile) {
             setActiveConversation(null);
             setMessages([]);
+            setDraft("");
+            setReplyTo(null);
             return;
         }
 
@@ -245,6 +247,8 @@ const MessagesPage = () => {
 
         const loadChat = async () => {
             setIsChatLoading(true);
+            setDraft("");
+            setReplyTo(null);
 
             const [conversationResult, messagesResult] = await Promise.all([
                 getConversation(conversationId),
@@ -356,7 +360,7 @@ const MessagesPage = () => {
 
     const handleSend = async () => {
         const text = draft.trim();
-        if (!text || !conversationId || isSending) {
+        if (!text || !conversationId || isSending || isChatLoading) {
             return;
         }
 
@@ -540,11 +544,6 @@ const MessagesPage = () => {
                                 <p>Выберите диалог или начните общение из профиля.</p>
                             </div>
                         </>
-                    ) : isChatLoading ? (
-                        <>
-                            <h1 className="messages_title">Сообщения</h1>
-                            <Loading size={36} />
-                        </>
                     ) : (
                         <>
                             <header className="messages_chat_head">
@@ -563,7 +562,12 @@ const MessagesPage = () => {
                                 ref={listRef}
                                 onScroll={handleListScroll}
                             >
-                                {messages.map((message) => {
+                                {isChatLoading ? (
+                                    <div className="messages_list_loader">
+                                        <Loading size={36} />
+                                    </div>
+                                ) : (
+                                    messages.map((message) => {
                                     const isOwn = message.is_own;
                                     const isDeleted = Boolean(message.deleted_at);
 
@@ -637,6 +641,7 @@ const MessagesPage = () => {
                                                         className="messages_action app-transition"
                                                         onClick={() => handleStartReply(message)}
                                                         aria-label="Ответить"
+                                                        disabled={isChatLoading}
                                                     >
                                                         <ReplyIcon />
                                                     </button>
@@ -646,6 +651,7 @@ const MessagesPage = () => {
                                                             className="messages_action app-transition"
                                                             onClick={() => handleDelete(message._id)}
                                                             aria-label="Удалить"
+                                                            disabled={isChatLoading}
                                                         >
                                                             <DeleteIcon />
                                                         </button>
@@ -654,13 +660,14 @@ const MessagesPage = () => {
                                             ) : null}
                                         </article>
                                     );
-                                })}
+                                })
+                                )}
                             </div>
 
                             <form
                                 className={`messages_composer${
                                     replyTo ? " messages_composer_replying" : ""
-                                }`}
+                                }${isChatLoading ? " messages_composer_loading" : ""}`}
                                 onSubmit={(event) => {
                                     event.preventDefault();
                                     handleSend();
@@ -694,6 +701,7 @@ const MessagesPage = () => {
                                                 className="messages_composer_reply_close app-transition"
                                                 onClick={() => setReplyTo(null)}
                                                 aria-label="Отменить ответ"
+                                                disabled={isChatLoading}
                                             >
                                                 <CrossIcon />
                                             </button>
@@ -710,10 +718,11 @@ const MessagesPage = () => {
                                         onChange={(event) => setDraft(event.target.value)}
                                         onKeyDown={handleComposerKeyDown}
                                         placeholder="Сообщение"
+                                        blocked={isChatLoading}
                                     />
                                     <PrimaryButton
                                         type="submit"
-                                        disabled={!draft.trim()}
+                                        disabled={!draft.trim() || isChatLoading}
                                         isLoading={isSending}
                                     >
                                         Отправить

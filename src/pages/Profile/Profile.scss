@@ -174,10 +174,9 @@
 
             @include hover {
                 background: transparent;
-
                 .profile_info_stat_value,
                 .profile_info_stat_label {
-                    text-decoration: underline;
+                    color: var(--text-color);
                     text-underline-offset: 3px;
                 }
             }
