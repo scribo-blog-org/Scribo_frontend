@@ -16,8 +16,46 @@ import {
 import "./Popup.scss";
 
 import ChevronRightIcon from "../../../assets/svg/chevron-right.svg?react";
+import { useOverlayEnter } from "../useOverlayEnter";
 
 const MENU_ROOT_DEFAULT = "app-layout";
+
+function resolveLayer(explicitLayer, anchorEl) {
+    if (explicitLayer === "header" || explicitLayer === "content") {
+        return explicitLayer;
+    }
+
+    return anchorEl?.closest(".header") ? "header" : "content";
+}
+
+function popupLayerClass(layer, nested = false) {
+    const classes = ["popup_menu"];
+
+    if (layer === "header") {
+        classes.push("popup_menu_header");
+    }
+
+    if (nested) {
+        classes.push("popup_menu_nested");
+    }
+
+    return classes.join(" ");
+}
+
+function popupMenuShellProps({ layer, nested = false, placement }) {
+    return {
+        className: popupLayerClass(layer, nested),
+        "data-popup-placement": placement,
+    };
+}
+
+function PopupMenuSurface({ visible, children }) {
+    return (
+        <div className={`popup_menu_surface float_section blurred${visible ? " popup_menu_surface_visible" : ""}`}>
+            {children}
+        </div>
+    );
+}
 
 function normalizeSections(body) {
     if (!Array.isArray(body) || body.length === 0) {
@@ -50,24 +88,18 @@ function findActiveItem(sections) {
 
 function useFloatingPosition(refs, x, y) {
     useLayoutEffect(() => {
-        const node = refs.floating.current;
-
-        if (!node) {
-            return;
-        }
-
-        node.style.setProperty("--popup-x", `${Math.round(x ?? 0)}px`);
-        node.style.setProperty("--popup-y", `${Math.round(y ?? 0)}px`);
+        setPopupPosition(refs.floating.current, x, y);
     }, [refs, x, y]);
 }
 
-function MenuItem({ item, onItemSelect, portalRootId }) {
+function MenuItem({ item, onItemSelect, portalRootId, layer }) {
     if (item.type === "submenu" || item.type === "dropdown") {
         return (
             <FlyoutItem
                 item={item}
                 onItemSelect={onItemSelect}
                 portalRootId={portalRootId}
+                layer={layer}
             />
         );
     }
@@ -91,7 +123,7 @@ function MenuItem({ item, onItemSelect, portalRootId }) {
     );
 }
 
-function MenuBody({ sections, onItemSelect, portalRootId }) {
+function MenuBody({ sections, onItemSelect, portalRootId, layer }) {
     return sections.map((section, sectionIndex) => (
         <Fragment key={sectionIndex}>
             {sectionIndex > 0 && <div className="popup_menu_separator" role="separator" />}
@@ -102,6 +134,7 @@ function MenuBody({ sections, onItemSelect, portalRootId }) {
                         item={item}
                         onItemSelect={onItemSelect}
                         portalRootId={portalRootId}
+                        layer={layer}
                     />
                 ))}
             </div>
@@ -109,14 +142,15 @@ function MenuBody({ sections, onItemSelect, portalRootId }) {
     ));
 }
 
-function FlyoutItem({ item, onItemSelect, portalRootId = MENU_ROOT_DEFAULT }) {
+function FlyoutItem({ item, onItemSelect, portalRootId = MENU_ROOT_DEFAULT, layer = "content" }) {
     const nodeId = useFloatingNodeId();
     const [open, setOpen] = useState(false);
+    const visible = useOverlayEnter(open);
     const sections = normalizeSections(item.items);
     const isDropdown = item.type === "dropdown";
     const valueLabel = item.valueLabel ?? findActiveItem(sections)?.title;
 
-    const { refs, x, y, context } = useFloating({
+    const { refs, x, y, placement, context } = useFloating({
         nodeId,
         open,
         onOpenChange: setOpen,
@@ -175,19 +209,23 @@ function FlyoutItem({ item, onItemSelect, portalRootId = MENU_ROOT_DEFAULT }) {
                         {...getFloatingProps({
                             ref: (node) => {
                                 refs.setFloating(node);
-                                if (node) {
-                                    node.style.setProperty("--popup-x", `${Math.round(x ?? 0)}px`);
-                                    node.style.setProperty("--popup-y", `${Math.round(y ?? 0)}px`);
-                                }
+                                setPopupPosition(node, x, y);
                             },
-                            className: "popup_menu popup_menu_nested float_section blurred",
+                            ...popupMenuShellProps({
+                                layer,
+                                nested: true,
+                                placement,
+                            }),
                         })}
                     >
-                        <MenuBody
-                            sections={sections}
-                            onItemSelect={onItemSelect}
-                            portalRootId={portalRootId}
-                        />
+                        <PopupMenuSurface visible={visible}>
+                            <MenuBody
+                                sections={sections}
+                                onItemSelect={onItemSelect}
+                                portalRootId={portalRootId}
+                                layer={layer}
+                            />
+                        </PopupMenuSurface>
                     </div>
                 </FloatingPortal>
             )}
@@ -195,8 +233,18 @@ function FlyoutItem({ item, onItemSelect, portalRootId = MENU_ROOT_DEFAULT }) {
     );
 }
 
-function PopupMenu({ anchorRef, children, onClose, portalRootId }) {
-    const { refs, x, y } = useFloating({
+function setPopupPosition(node, x, y) {
+    if (!node) {
+        return;
+    }
+
+    node.style.setProperty("--popup-x", `${Math.round(x ?? 0)}px`);
+    node.style.setProperty("--popup-y", `${Math.round(y ?? 0)}px`);
+}
+
+function PopupMenu({ anchorRef, children, onClose, portalRootId, layer }) {
+    const visible = useOverlayEnter(true);
+    const { refs, x, y, placement } = useFloating({
         elements: {
             reference: anchorRef.current,
         },
@@ -228,30 +276,40 @@ function PopupMenu({ anchorRef, children, onClose, portalRootId }) {
             <div
                 ref={(node) => {
                     refs.setFloating(node);
-                    if (node) {
-                        node.style.setProperty("--popup-x", `${Math.round(x ?? 0)}px`);
-                        node.style.setProperty("--popup-y", `${Math.round(y ?? 0)}px`);
-                    }
+                    setPopupPosition(node, x, y);
                 }}
-                className="popup_menu float_section blurred"
+                {...popupMenuShellProps({ layer, placement })}
             >
-                {children}
+                <PopupMenuSurface visible={visible}>
+                    {children}
+                </PopupMenuSurface>
             </div>
         </FloatingPortal>
     );
 }
 
-function Popup({ children, body, className, portalRootId = MENU_ROOT_DEFAULT }) {
+function Popup({ children, body, className, portalRootId = MENU_ROOT_DEFAULT, layer }) {
     const buttonRef = useRef(null);
     const [open, setOpen] = useState(false);
+    const [activeLayer, setActiveLayer] = useState("content");
     const sections = normalizeSections(body);
+
+    const handleToggle = () => {
+        setOpen((current) => {
+            if (!current) {
+                setActiveLayer(resolveLayer(layer, buttonRef.current));
+            }
+
+            return !current;
+        });
+    };
 
     return (
         <div className="popup">
             <div
                 className={`popup_trigger ${className || ""}`}
                 ref={buttonRef}
-                onClick={() => setOpen((current) => !current)}
+                onClick={handleToggle}
             >
                 {children}
             </div>
@@ -262,11 +320,13 @@ function Popup({ children, body, className, portalRootId = MENU_ROOT_DEFAULT }) 
                         anchorRef={buttonRef}
                         onClose={() => setOpen(false)}
                         portalRootId={portalRootId}
+                        layer={activeLayer}
                     >
                         <MenuBody
                             sections={sections}
                             onItemSelect={() => setOpen(false)}
                             portalRootId={portalRootId}
+                            layer={activeLayer}
                         />
                     </PopupMenu>
                 </FloatingTree>
