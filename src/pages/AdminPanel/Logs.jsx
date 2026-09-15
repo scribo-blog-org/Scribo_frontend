@@ -10,7 +10,6 @@ import { format_back, format_date_time } from "../../utils/format";
 import { getCategories } from "../../api/categories.api";
 import { getPosts } from "../../api/posts.api";
 
-import PostIcon from "../../assets/svg/post.svg?react";
 import EditIcon from "../../assets/svg/edit.svg?react";
 import PlusIcon from "../../assets/svg/plus-icon.svg?react";
 import DeleteIcon from "../../assets/svg/delete.svg?react";
@@ -29,6 +28,7 @@ import Category from "../../components/Category/index";
 import Popup from "../../components/Ui/Popup";
 import ChipButton from "../../components/Ui/ChipButton";
 import RoleBadge from "../../components/RoleBadge/index";
+import { PostEntityChip } from "../../components/PostEntity";
 import { kindLabel, statusLabel } from "../Support/constants";
 
 import Pagination from "../../components/Ui/Pagination";
@@ -145,18 +145,7 @@ const PostEntity = ({ id, data, setFilter }) => {
                 icon: <FilterIcon/>
             }
         ]}>
-            <div className="admin_panel_content_logs_page_item_entity admin_panel_content_logs_page_item_entity_post">
-                <PostIcon/>
-                {
-                    data ? 
-                        <p>{data.title}</p> :
-                    <>
-                        <div className="admin_panel_content_logs_page_item_entity_post_deleted">
-                            <p>No longer exists</p>
-                        </div>
-                    </>
-                }
-            </div>
+            <PostEntityChip title={data?.title} deleted={!data} />
         </Popup>
     )
 }

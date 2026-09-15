@@ -41,4 +41,18 @@ const searchHashtags = async (q) => {
     }
 };
 
-export { searchSite, searchHashtags };
+const searchUsers = async (q) => {
+    const query = String(q || "").trim().replace(/^@/, "");
+    if (query.length < 1) {
+        return [];
+    }
+
+    try {
+        const result = await searchSite(query);
+        return Array.isArray(result?.data?.users) ? result.data.users : [];
+    } catch {
+        return [];
+    }
+};
+
+export { searchSite, searchHashtags, searchUsers };

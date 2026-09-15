@@ -39,6 +39,28 @@ const NotificationMessage = ({ item }) => {
                     </Link>
                 </>
             );
+        case "mention_post":
+            return (
+                <>
+                    Упомянул(-а) вас в{" "}
+                    <Link className="notification_link app-transition" to={`/posts/${item.post}`}>
+                        посте
+                    </Link>
+                </>
+            );
+        case "mention_comment":
+            return (
+                <>
+                    Упомянул(-а) вас в{" "}
+                    <Link
+                        className="notification_link app-transition"
+                        to={`/posts/${item.post}`}
+                        state={{ comment: item.comment, time: Date.now() }}
+                    >
+                        комментарии
+                    </Link>
+                </>
+            );
         case "support_reply":
             return (
                 <>

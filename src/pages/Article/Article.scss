@@ -88,6 +88,12 @@
             cursor: pointer;
         }
 
+        a.mention,
+        .mention {
+            color: var(--mention-color);
+            cursor: pointer;
+        }
+
         @include screen(){
             font-size: 14px;
             line-height: 1.4;

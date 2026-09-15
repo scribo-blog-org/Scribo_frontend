@@ -29,6 +29,7 @@ body {
 
   --link-text-color: #80f;
   --hashtag-color: var(--blue-39);
+  --mention-color: var(--blue-39);
 
   --user-badge-name-color: var(--gray-1e);
   --user-badge-name-hover-color: var(--gray-16);
@@ -212,6 +213,7 @@ body.dark-theme {
 
   --link-text-color: #c583ff;
   --hashtag-color: var(--blue-8f);
+  --mention-color: var(--blue-8f);
 
   --user-badge-name-color: var(--gray-d7);
   --user-badge-name-hover-color: var(--gray-f1);

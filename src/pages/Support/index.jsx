@@ -7,7 +7,7 @@ import { FIELD_LIMITS } from "../../constants/fieldLimits";
 import { SUPPORT_KINDS } from "./constants";
 
 import Field from "../../components/Ui/Field/index";
-import InputField from "../../components/Ui/InputField/index";
+import RichInputField from "../../components/RichInputField";
 import DropDown from "../../components/Ui/DropDown";
 import PrimaryButton from "../../components/Ui/PrimaryButton";
 
@@ -131,7 +131,8 @@ const Support = () => {
                     />
                 </Field>
                 <Field title="Сообщение" error={errors?.supportMessage ?? null}>
-                    <InputField
+                    <RichInputField
+                        preset="social"
                         isMultiline={true}
                         multilineRows={8}
                         length={FIELD_LIMITS.supportMessage.max}

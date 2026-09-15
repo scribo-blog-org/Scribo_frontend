@@ -77,6 +77,41 @@
                 color: var(--hashtag-color);
                 cursor: pointer;
             }
+
+            span.mention,
+            .mention {
+                color: var(--mention-color);
+                cursor: pointer;
+            }
+        }
+
+        &_mention_picker {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 220px;
+            max-width: 280px;
+
+            &_input {
+                width: 100%;
+                min-height: 36px;
+                padding: 8px 12px;
+            }
+
+            &_list {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                max-height: 220px;
+                overflow: auto;
+            }
+
+            &_empty {
+                margin: 0;
+                padding: 8px 10px;
+                color: var(--light-text-color);
+                font-size: 13px;
+            }
         }
 
         &_input:focus-visible {

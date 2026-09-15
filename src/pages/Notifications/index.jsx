@@ -142,7 +142,7 @@ const Notifications = () => {
         <div className="notifications_page">
             <div className="notifications_page_intro">
                 <h1>Уведомления</h1>
-                <p>Лайки, комментарии, подписки и ответы по запросам.</p>
+                <p>Лайки, комментарии, упоминания, подписки и ответы по запросам.</p>
             </div>
 
             <div className="notifications_page_list app-transition">

@@ -2,26 +2,68 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://scribo-blog.vercel.app/posts</loc>
-    <lastmod>2026-09-15T18:33:32.200Z</lastmod>
+    <lastmod>2026-09-15T20:13:45.477Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://scribo-blog.vercel.app/search</loc>
-    <lastmod>2026-09-15T18:33:32.200Z</lastmod>
+    <lastmod>2026-09-15T20:13:45.477Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://scribo-blog.vercel.app/support</loc>
-    <lastmod>2026-09-15T18:33:32.200Z</lastmod>
+    <lastmod>2026-09-15T20:13:45.477Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://scribo-blog.vercel.app/api</loc>
-    <lastmod>2026-09-15T18:33:32.200Z</lastmod>
+    <lastmod>2026-09-15T20:13:45.477Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/Maks</loc>
+    <lastmod>2024-04-15T21:12:15.999Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/daun123</loc>
+    <lastmod>2024-04-17T18:52:42.021Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/alex971</loc>
+    <lastmod>2024-05-13T12:52:30.053Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/_13</loc>
+    <lastmod>2024-11-01T12:41:52.870Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/Dev</loc>
+    <lastmod>2024-12-05T19:52:43.215Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/Maksim</loc>
+    <lastmod>2026-01-22T17:11:26.222Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://scribo-blog.vercel.app/users/Vlad28925</loc>
+    <lastmod>2026-06-01T12:54:50.477Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>

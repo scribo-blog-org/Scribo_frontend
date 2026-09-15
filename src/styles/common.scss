@@ -121,6 +121,16 @@ a {
     cursor: pointer;
 }
 
+.mention,
+a.mention {
+    color: var(--mention-color);
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 button {
     outline: none;
     border: none;

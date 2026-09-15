@@ -1,0 +1,25 @@
+.message_content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+    flex: 1;
+
+    .message_link {
+        color: var(--accent-color);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        overflow-wrap: anywhere;
+    }
+
+    &_embeds {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+}
+
+.messages_post_share,
+.messages_link_preview {
+    width: 100%;
+}

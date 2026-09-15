@@ -69,8 +69,19 @@ const follow = async ({method="POST", user_id}) => {
     }
 }
 
+const getUsersByIds = async (ids = []) => {
+    const unique = [...new Set((ids || []).map(String).filter(Boolean))];
+    if (!unique.length) {
+        return [];
+    }
+
+    const result = await getUsers([{ _id: unique.join(",") }]);
+    return result?.status && Array.isArray(result.data) ? result.data : [];
+};
+
 export {
     getUsers,
+    getUsersByIds,
     updateRole,
     read_notifications,
     follow
