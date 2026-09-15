@@ -12,8 +12,6 @@ import SearchIcon from "../../assets/svg/search.svg?react";
 import NotificationsIcon from "../../assets/svg/notification.svg?react";
 import CommentIcon from "../../assets/svg/comment.svg?react";
 import PlusIcon from "../../assets/svg/plus-icon.svg?react";
-import MoonIcon from "../../assets/svg/moon.svg?react";
-import SunIcon from "../../assets/svg/sun.svg?react";
 import DefaultProfileAvatar from "../../assets/images/default-profile-avatar.png";
 
 import { logout } from "../../api/auth.api";
@@ -27,7 +25,7 @@ import { isPathActive, navigateOrScrollTop } from "../../utils/navigation.js";
 const MobileNavigationBar = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { profile, setProfile, showToast, isDarkTheme, setIsDarkTheme } = useContext(AppContext);
+    const { profile, setProfile, showToast } = useContext(AppContext);
 
     const [unreadMessages, setUnreadMessages] = useState(0);
     const hasUnread = Boolean(profile?.notifications?.some((item) => item.is_read === false));
@@ -55,7 +53,7 @@ const MobileNavigationBar = () => {
             unsubscribe();
         };
     }, [profile?._id]);
-    const ThemeIcon = isDarkTheme ? MoonIcon : SunIcon;
+
     const canCreate = Boolean(profile?.permissions?.includes("create_post"));
 
     const slots = useMemo(() => {
@@ -112,12 +110,6 @@ const MobileNavigationBar = () => {
             onClick: () => navigate("/create-post"),
         };
 
-        const theme = {
-            id: "theme",
-            node: <ThemeIcon />,
-            onClick: () => setIsDarkTheme(!isDarkTheme),
-        };
-
         const profileSlot = profile
             ? {
                 id: "profile",
@@ -157,20 +149,16 @@ const MobileNavigationBar = () => {
             left.push(notifications, messages);
         }
 
-        const right = [theme, profileSlot];
-
         if (canCreate) {
-            return [...left, create, ...right];
+            return [...left, create, profileSlot];
         }
 
-        return [...left, ...right];
+        return [...left, profileSlot];
     }, [
         profile,
         navigate,
         hasUnread,
         unreadMessages,
-        isDarkTheme,
-        setIsDarkTheme,
         canCreate,
         location,
         setProfile,

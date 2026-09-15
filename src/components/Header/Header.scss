@@ -12,7 +12,7 @@
     padding: 0 40px;
 
     @include screen() {
-        display: none;
+        padding: 0 16px;
     }
 
     &_content {
@@ -96,6 +96,14 @@
 
       &.header_left_side {
         left: 0;
+      }
+
+      &.header_mobile_logo {
+        display: none;
+
+        @include screen() {
+          display: flex;
+        }
       }
 
       &.header_right_side {

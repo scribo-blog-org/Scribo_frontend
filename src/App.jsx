@@ -24,6 +24,7 @@ import Messages from './pages/Messages/index.jsx';
 import RequestDetailPage from './pages/AdminPanel/RequestDetail.jsx';
 
 import AppLayout from './layouts/AppLayout/index.jsx';
+import AppShell from './layouts/AppShell/index.jsx';
 import FullContainer from './layouts/FullContainer/index.jsx';
 import PageLayout from './layouts/PageLayout/index.jsx';
 
@@ -135,50 +136,52 @@ function App() {
                 showModalWindow={showModalWindow}
                 modalCloseRequest={modalCloseRequest}
               />
-              <Header/>
-              <MobileNavigationBar/>
-              
-              <Suspense fallback={null}>
-                  <Routes>
-                      <Route element={<PageLayout/>}>
-                          <Route element={<DefaultContainer/>}>
+              <AppShell>
+                <Header/>
+                <MobileNavigationBar/>
 
-                              <Route
-                                  path="/"
-                                  element={<Navigate to="/posts" replace />}
-                              />
+                <Suspense fallback={null}>
+                    <Routes>
+                        <Route element={<PageLayout/>}>
+                            <Route element={<DefaultContainer/>}>
 
-                              <Route path="posts/:id/edit" Component={EditPost}/>
-                              <Route path="/auth/login" Component={Login}/>
-                              <Route path="/auth/forgot-password" Component={ForgotPassword}/>
-                              <Route path="/api" Component={ApiDocs}/>
-                              <Route path="/auth/register" Component={Register}/>
-                              <Route path="/404" Component={PageNotFound}/>
-                              <Route path="/posts/" Component={HomePage}/>
-                              <Route path="/search" Component={SearchPage}/>
-                              <Route path="/create-post" Component={CreatePost}/>
-                              <Route path="/users/:id" Component={Profile}/>
-                              <Route path="/posts/:id" Component={Article}/>
-                              <Route path="/notifications" Component={Notifications}/>
-                              <Route path="/support" Component={Support}/>
-                              <Route path="/support/mine" Component={SupportMine}/>
-                              <Route path="/support/:key" Component={SupportRequestPage}/>
-                              <Route path="*" Component={PageNotFound}/>
+                                <Route
+                                    path="/"
+                                    element={<Navigate to="/posts" replace />}
+                                />
 
-                          </Route>
+                                <Route path="posts/:id/edit" Component={EditPost}/>
+                                <Route path="/auth/login" Component={Login}/>
+                                <Route path="/auth/forgot-password" Component={ForgotPassword}/>
+                                <Route path="/api" Component={ApiDocs}/>
+                                <Route path="/auth/register" Component={Register}/>
+                                <Route path="/404" Component={PageNotFound}/>
+                                <Route path="/posts/" Component={HomePage}/>
+                                <Route path="/search" Component={SearchPage}/>
+                                <Route path="/create-post" Component={CreatePost}/>
+                                <Route path="/users/:id" Component={Profile}/>
+                                <Route path="/posts/:id" Component={Article}/>
+                                <Route path="/notifications" Component={Notifications}/>
+                                <Route path="/support" Component={Support}/>
+                                <Route path="/support/mine" Component={SupportMine}/>
+                                <Route path="/support/:key" Component={SupportRequestPage}/>
+                                <Route path="*" Component={PageNotFound}/>
 
-                          <Route element={<FullContainer/>}>
-                              <Route path="/messages" Component={Messages}/>
-                              <Route path="/messages/:conversationId" Component={Messages}/>
-                              <Route path="/settings" Component={Settings}/>
-                              <Route path="admin-panel" Component={AdminPanel}/>
-                              <Route path="admin-panel/requests/:id" Component={RequestDetailPage}/>
-                          </Route>
-                      </Route>
-                  </Routes>
-              </Suspense>            
-              <Footer></Footer>
-              <Toast toast={toast} showToast={showToast}/>
+                            </Route>
+
+                            <Route element={<FullContainer/>}>
+                                <Route path="/messages" Component={Messages}/>
+                                <Route path="/messages/:conversationId" Component={Messages}/>
+                                <Route path="/settings" Component={Settings}/>
+                                <Route path="admin-panel" Component={AdminPanel}/>
+                                <Route path="admin-panel/requests/:id" Component={RequestDetailPage}/>
+                            </Route>
+                        </Route>
+                    </Routes>
+                </Suspense>
+                <Footer></Footer>
+                <Toast toast={toast} showToast={showToast}/>
+              </AppShell>
             </AppLayout>
           </div>
       </Router>
