@@ -64,6 +64,16 @@ function AppModals({ modalWindow, showModalWindow, modalCloseRequest }) {
   );
 }
 
+function AppFooter() {
+  const location = useLocation();
+
+  if (location.pathname.startsWith("/messages")) {
+    return null;
+  }
+
+  return <Footer />;
+}
+
 function App() {
   let lsTheme = localStorage.getItem('theme');
   const [ profile, setProfile ] = useState(null)
@@ -179,7 +189,7 @@ function App() {
                         </Route>
                     </Routes>
                 </Suspense>
-                <Footer></Footer>
+                <AppFooter />
                 <Toast toast={toast} showToast={showToast}/>
               </AppShell>
             </AppLayout>

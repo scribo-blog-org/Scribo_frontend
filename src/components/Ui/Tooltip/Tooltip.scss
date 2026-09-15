@@ -2,75 +2,31 @@
 
 .tooltip_wrapper {
     position: relative;
-
     display: inline-flex;
     align-items: center;
-
     width: fit-content;
     height: fit-content;
+}
 
-    .tooltip {
-        position: absolute;
-        left: 50%;
+.tooltip_shell {
+    z-index: var(--z-tooltip);
+    pointer-events: none;
+}
 
-        white-space: nowrap;
+.tooltip {
+    white-space: nowrap;
+    background-color: var(--tooltip-background-color);
+    border: 1px solid var(--line-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    will-change: opacity, transform;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
 
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-
-        background-color: var(--tooltip-background-color);
-        border: 1px solid var(--line-color);
-        padding: 6px 12px;
-        border-radius: 6px;
-
-        z-index: 100;
-
-        transition:
-            opacity 0.2s ease,
-            transform 0.2s ease,
-            visibility 0.2s;
-
-        &_text {
-            font-size: 12px;
-            color: var(--tooltip-text-color);
-        }
-
-        &_top {
-            bottom: 100%;
-            margin-bottom: 8px;
-
-            transform:
-                translateX(-50%)
-                translateY(4px);
-        }
-
-        &_bottom {
-            top: 100%;
-            margin-top: 8px;
-
-            transform:
-                translateX(-50%)
-                translateY(-4px);
-        }
-    }
-
-    @include hover {
-        .tooltip_top,
-        .tooltip_bottom {
-            opacity: 1;
-            visibility: visible;
-            transform:
-                translateX(-50%)
-                translateY(0);
-        }
-    }
-
-    &.non_clickable {
-        @include screen {
-            .tooltip {
-                display: none;
-            }
-        }
+    &_text {
+        font-size: 12px;
+        color: var(--tooltip-text-color);
     }
 }
