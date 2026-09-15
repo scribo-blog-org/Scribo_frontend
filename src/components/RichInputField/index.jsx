@@ -24,7 +24,6 @@ const RichInputField = ({
     disabled,
     onFocus,
     onKeyDown,
-    isMultiline: _isMultiline,
     ...props
 }) => {
     const {
