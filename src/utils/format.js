@@ -10,6 +10,71 @@ function format_date_time(date) {
     return `${hours}:${minutes} - ${day}.${month}.${year}`;
 }
 
+function format_time(date) {
+    date = new Date(date);
+
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${hours}:${minutes}`;
+}
+
+const MESSAGE_DATE_MONTHS = [
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря',
+];
+
+function startOfDay(date) {
+    const value = new Date(date);
+    value.setHours(0, 0, 0, 0);
+    return value;
+}
+
+function format_message_date_label(date) {
+    const target = startOfDay(date);
+    const today = startOfDay(new Date());
+    const diffDays = Math.round((today - target) / (24 * 60 * 60 * 1000));
+
+    if (diffDays === 0) {
+        return 'Сегодня';
+    }
+
+    if (diffDays === 1) {
+        return 'Вчера';
+    }
+
+    const day = target.getDate();
+    const month = MESSAGE_DATE_MONTHS[target.getMonth()];
+    const year = target.getFullYear();
+
+    if (year === today.getFullYear()) {
+        return `${day} ${month}`;
+    }
+
+    return `${day} ${month} ${year}`;
+}
+
+function is_same_calendar_day(left, right) {
+    const leftDate = new Date(left);
+    const rightDate = new Date(right);
+
+    return (
+        leftDate.getFullYear() === rightDate.getFullYear() &&
+        leftDate.getMonth() === rightDate.getMonth() &&
+        leftDate.getDate() === rightDate.getDate()
+    );
+}
+
 const format_back = (date_time) => {
     if (!date_time) return "";
 
@@ -75,6 +140,9 @@ function getCategoryColorType(categoryName) {
 }
 export {
     format_date_time,
+    format_time,
+    format_message_date_label,
+    is_same_calendar_day,
     format_back,
     getCategoryColorType
 }

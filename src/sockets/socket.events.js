@@ -50,6 +50,22 @@ class SocketEvents {
     );
   }
 
+  subscribeChatConversationDeleted(userId, callback) {
+    const roomName = `user:${userId}`;
+
+    socketClient.subscribe(
+      roomName,
+      "chat:conversation-deleted",
+      (message) => {
+        if (!message.payload?.conversation_id) {
+          return;
+        }
+        callback(message.payload.conversation_id);
+      },
+      { private: true },
+    );
+  }
+
   chatRoom(conversationId) {
     return `chat:${conversationId}`;
   }

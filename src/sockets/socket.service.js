@@ -41,6 +41,10 @@ class SocketService {
             this.emit("chat:conversation", conversation);
         });
 
+        socketEvents.subscribeChatConversationDeleted(user._id, (conversationId) => {
+            this.emit("chat:conversation-deleted", conversationId);
+        });
+
         this.isConnected = true;
     }
 

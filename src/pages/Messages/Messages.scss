@@ -195,6 +195,30 @@
     padding-bottom: var(--space-3);
     border-bottom: 1px solid var(--line-color);
     @include use-transition();
+
+    &_row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--space-3);
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+.modal_window_body_content {
+    .messages_delete_modal {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+    }
+
+    .messages_delete_modal_text {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-color);
+    }
 }
 
 .messages_back {
@@ -224,6 +248,51 @@
         justify-content: center;
         min-height: 120px;
     }
+}
+
+.messages_date_divider {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 6px 0 10px;
+    margin-top: -4px;
+    pointer-events: none;
+    isolation: isolate;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 40px;
+        background: linear-gradient(
+            to bottom,
+            var(--main-background) 45%,
+            transparent
+        );
+        pointer-events: none;
+        z-index: -1;
+    }
+}
+
+.messages_date_label {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: color-mix(
+        in srgb,
+        var(--main-background) 82%,
+        var(--text-color) 18%
+    );
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--text-color) 10%, transparent);
+    font-size: 12px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--light-text-color);
+    white-space: nowrap;
+    pointer-events: auto;
 }
 
 .messages_item {
@@ -323,17 +392,43 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     color: var(--text-color);
+    min-width: 0;
+    flex: 1;
 
     &_deleted {
         color: var(--light-text-color);
     }
 }
 
-.messages_meta {
+.messages_body {
     display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    min-width: 0;
+}
+
+.messages_meta {
+    display: inline-flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 6px;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding-top: 2px;
     font-size: 11px;
+    line-height: 1.2;
+    color: var(--light-text-color);
+    white-space: nowrap;
+}
+
+.messages_time,
+.messages_edited {
+    color: var(--light-text-color);
+}
+
+.messages_edited::before {
+    content: "·";
+    margin-right: 6px;
     color: var(--light-text-color);
 }
 
@@ -390,6 +485,31 @@
 
     &_replying {
         border-color: var(--input-outline-color);
+    }
+
+    &_editing {
+        border-color: var(--input-outline-color);
+    }
+
+    &_edit {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line-color);
+        background: color-mix(
+            in srgb,
+            var(--text-color) 4%,
+            var(--main-background)
+        );
+        @include use-transition();
+    }
+
+    &_edit_label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-color);
     }
 
     &_reply {
