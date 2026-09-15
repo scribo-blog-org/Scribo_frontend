@@ -57,35 +57,14 @@ class SocketEvents {
   subscribeConversation(userId, conversationId, handlers) {
     const roomName = this.chatRoom(conversationId);
 
-    console.log("[ChatRealtime] subscribe conversation", {
-      userId,
-      conversationId,
-      room: roomName,
-      events: [
-        handlers.onMessage ? "chat:message" : null,
-        handlers.onRead ? "chat:read" : null,
-      ].filter(Boolean),
-    });
-
     if (handlers.onMessage) {
       socketClient.subscribe(
         roomName,
         "chat:message",
         (message) => {
           if (!message.payload?.message) {
-            console.warn("[ChatRealtime] empty message payload", {
-              conversationId,
-              message,
-            });
             return;
           }
-
-          console.log("[ChatRealtime] message", {
-            conversationId,
-            messageId: message.payload.message._id,
-            senderId: message.payload.message.sender?._id,
-            text: message.payload.message.text,
-          });
           handlers.onMessage(message.payload.message);
         },
         { private: true },
@@ -97,10 +76,6 @@ class SocketEvents {
         roomName,
         "chat:read",
         (message) => {
-          console.log("[ChatRealtime] read", {
-            conversationId,
-            payload: message.payload,
-          });
           handlers.onRead(message.payload);
         },
         { private: true },
@@ -110,11 +85,6 @@ class SocketEvents {
 
   unsubscribeConversation(userId, conversationId) {
     const roomName = this.chatRoom(conversationId);
-    console.log("[ChatRealtime] unsubscribe conversation", {
-      userId,
-      conversationId,
-      room: roomName,
-    });
     return socketClient.removeChannel(roomName);
   }
 }

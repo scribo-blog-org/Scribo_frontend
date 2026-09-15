@@ -20,7 +20,9 @@ import UserBadge from "../../components/UserBadge";
 import MessageStatus from "../../components/MessageStatus";
 import ActionButton from "../../components/Ui/ActionButton";
 import PrimaryButton from "../../components/Ui/PrimaryButton";
+import InputField from "../../components/Ui/InputField";
 import Loading from "../../components/Ui/Loading";
+import { FIELD_LIMITS } from "../../constants/fieldLimits";
 
 import ReplyIcon from "../../assets/svg/reply.svg?react";
 import DeleteIcon from "../../assets/svg/delete.svg?react";
@@ -699,12 +701,15 @@ const MessagesPage = () => {
                                     );
                                 })() : null}
                                 <div className="messages_composer_body">
-                                    <textarea
+                                    <InputField
+                                        isMultiline
+                                        multilineRows={2}
+                                        length={FIELD_LIMITS.chatMessage.max}
+                                        className="messages_composer_input"
                                         value={draft}
                                         onChange={(event) => setDraft(event.target.value)}
                                         onKeyDown={handleComposerKeyDown}
                                         placeholder="Сообщение"
-                                        rows={2}
                                     />
                                     <PrimaryButton
                                         type="submit"

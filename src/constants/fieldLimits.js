@@ -10,4 +10,5 @@ export const FIELD_LIMITS = {
     categoryName: { min: 1, max: 40 },
     supportMessage: { min: 10, max: 4_000 },
     supportReply: { min: 1, max: 4_000 },
+    chatMessage: { min: 1, max: 4_000 },
 };

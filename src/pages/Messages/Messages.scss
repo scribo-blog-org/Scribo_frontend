@@ -445,28 +445,23 @@
         padding: 8px;
     }
 
-    textarea {
+    .input_field_wrapper {
         width: 100%;
+        min-width: 0;
+    }
+
+    .messages_composer_input {
         min-height: 72px;
         max-height: 72px;
-        resize: none;
         padding: 4px 4px 4px 8px;
         border: 0;
         border-radius: 0;
         background: transparent;
-        color: var(--text-color);
-        font: inherit;
-        font-size: 14px;
         line-height: 1.5;
         overflow-y: auto;
-        @include use-transition();
 
-        &::placeholder {
-            color: var(--input-placeholder-color);
-        }
-
-        &:focus-visible {
-            outline: none;
+        &:focus {
+            border: 0;
         }
     }
 }
