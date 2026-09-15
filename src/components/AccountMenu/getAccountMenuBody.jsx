@@ -27,7 +27,7 @@ export function getAccountMenuBody({
                 onClick: () => { navigate(`/settings`) }
             },
             {
-                title: "Мои запросы",
+                title: "Поддержка",
                 icon: <CommentIcon />,
                 onClick: () => { navigate("/support/mine") }
             },

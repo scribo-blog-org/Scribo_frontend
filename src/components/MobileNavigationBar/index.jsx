@@ -12,20 +12,17 @@ import SearchIcon from "../../assets/svg/search.svg?react";
 import NotificationsIcon from "../../assets/svg/notification.svg?react";
 import CommentIcon from "../../assets/svg/comment.svg?react";
 import PlusIcon from "../../assets/svg/plus-icon.svg?react";
-import DefaultProfileAvatar from "../../assets/images/default-profile-avatar.png";
-
-import { logout } from "../../api/auth.api";
+import RedirectIcon from "../../assets/svg/redirect.svg?react";
 
 import SwitchBar from "../Ui/SwitchBar";
-import Popup from "../Ui/Popup";
 import CurrentUserBadge from "../CurrentUserBadge/index";
-import { getAccountMenuBody } from "../AccountMenu/getAccountMenuBody";
+import { isAdminRole } from "../AccountMenu/getAccountMenuBody";
 import { isPathActive, navigateOrScrollTop } from "../../utils/navigation.js";
 
 const MobileNavigationBar = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { profile, setProfile, showToast } = useContext(AppContext);
+    const { profile } = useContext(AppContext);
 
     const [unreadMessages, setUnreadMessages] = useState(0);
     const hasUnread = Boolean(profile?.notifications?.some((item) => item.is_read === false));
@@ -55,6 +52,8 @@ const MobileNavigationBar = () => {
     }, [profile?._id]);
 
     const canCreate = Boolean(profile?.permissions?.includes("create_post"));
+    const isAdmin = isAdminRole(profile?.role);
+    const onAdminPanel = location.pathname.startsWith("/admin-panel");
 
     const slots = useMemo(() => {
         const home = {
@@ -110,36 +109,34 @@ const MobileNavigationBar = () => {
             onClick: () => navigate("/create-post"),
         };
 
+        const admin = {
+            id: "admin",
+            path: "/admin-panel",
+            node: <RedirectIcon />,
+            onClick: () => {
+                if (onAdminPanel) {
+                    navigateOrScrollTop(navigate, location.pathname, "/posts");
+                    return;
+                }
+
+                navigate("/admin-panel?tab=dashboard");
+            },
+        };
+
         const profileSlot = profile
             ? {
                 id: "profile",
-                extraPaths: [`/users/${profile.nick_name}`, "/settings", "/support/mine", "/admin-panel"],
-                node: (
-                    <Popup
-                        body={getAccountMenuBody({
-                            profile,
-                            location,
-                            navigate,
-                            setProfile,
-                            showToast,
-                            logout,
-                        })}
-                    >
-                        <CurrentUserBadge asLink={false} avatarOnly />
-                    </Popup>
-                ),
+                path: `/users/${profile.nick_name}`,
+                extraPaths: ["/settings", "/support/mine"],
+                node: <CurrentUserBadge asLink={false} avatarOnly />,
+                onClick: () =>
+                    navigateOrScrollTop(navigate, location.pathname, `/users/${profile.nick_name}`),
             }
             : {
                 id: "login",
                 path: "/auth/login",
                 extraPaths: ["/auth/register"],
-                node: (
-                    <img
-                        src={DefaultProfileAvatar}
-                        alt=""
-                        className="navigation_bar_avatar"
-                    />
-                ),
+                node: <CurrentUserBadge asLink={false} avatarOnly />,
                 onClick: () => navigate("/auth/login"),
             };
 
@@ -149,20 +146,28 @@ const MobileNavigationBar = () => {
             left.push(notifications, messages);
         }
 
+        const right = [];
+
         if (canCreate) {
-            return [...left, create, profileSlot];
+            right.push(create);
         }
 
-        return [...left, profileSlot];
+        if (isAdmin) {
+            right.push(admin);
+        }
+
+        right.push(profileSlot);
+
+        return [...left, ...right];
     }, [
         profile,
         navigate,
         hasUnread,
         unreadMessages,
         canCreate,
+        isAdmin,
+        onAdminPanel,
         location,
-        setProfile,
-        showToast,
     ]);
 
     const isSlotActive = (item) => {

@@ -38,7 +38,7 @@ const Support = () => {
         }
 
         if (!fields.supportKind) {
-            next.supportKind = "Выберите тип обращения";
+            next.supportKind = "Выберите тему";
         }
 
         if (!fields.supportMessage.trim()) {
@@ -67,12 +67,12 @@ const Support = () => {
             });
 
             if (result.status === true && result.data?.access_key) {
-                showToast({ message: "Запрос отправлен. Мы напишем на указанную почту.", type: "success" });
+                showToast({ message: "Сообщение отправлено. Мы напишем на указанную почту.", type: "success" });
                 navigate(`/support/${result.data.access_key}`);
                 return;
             }
 
-            showToast({ message: result.message || "Не удалось отправить запрос", type: "error" });
+            showToast({ message: result.message || "Не удалось отправить сообщение", type: "error" });
 
             if (result?.errors?.body) {
                 setErrors(
@@ -83,7 +83,7 @@ const Support = () => {
             }
         }
         catch {
-            showToast({ message: "Не удалось отправить запрос", type: "error" });
+            showToast({ message: "Не удалось отправить сообщение", type: "error" });
         }
         finally {
             setIsLoading(false);
@@ -118,11 +118,11 @@ const Support = () => {
                         length={FIELD_LIMITS.email.max}
                     />
                 </Field>
-                <Field title="Тип" error={errors?.supportKind ?? null}>
+                <Field title="Тема" error={errors?.supportKind ?? null}>
                     <DropDown
                         options={SUPPORT_KINDS}
                         value={fields.supportKind}
-                        placeholder="Тип обращения"
+                        placeholder="Выберите тему"
                         error={Boolean(errors?.supportKind)}
                         onChange={(value) => {
                             handleFocus("supportKind");
