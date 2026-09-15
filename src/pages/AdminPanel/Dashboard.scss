@@ -11,22 +11,90 @@
         margin: 32px auto;
     }
 
-    &_toolbar {
+    &_period_panel {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding-bottom: var(--space-5);
+        border-bottom: 1px solid var(--line-color);
+    }
+
+    &_period_controls {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: var(--space-3);
         flex-wrap: wrap;
+        width: 100%;
+    }
 
-        &_hint {
-            font-size: 13px;
-            color: var(--light-text-color);
-            max-width: 420px;
+    &_period_label {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-color);
+        flex-shrink: 0;
+    }
+
+    &_period_ranges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    &_period_bounds {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin: 0;
+        padding: 8px 12px;
+        border: 1px solid var(--input-outline-color);
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--text-color);
+        max-width: 100%;
+    }
+
+    &_period_bounds_label {
+        flex-shrink: 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--light-text-color);
+    }
+
+    &_scope {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+        min-width: 0;
+
+        &_head {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        &_ranges {
+        &_head > .kicker {
+            margin: 0;
+        }
+
+        &_hint {
+            margin: 0;
+            font-size: 13px;
+            color: var(--light-text-color);
+        }
+
+        &_body {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: var(--space-6);
+            min-width: 0;
+        }
+
+        &_overall {
+            padding-top: var(--space-2);
+            border-top: 1px solid var(--line-color);
         }
     }
 
