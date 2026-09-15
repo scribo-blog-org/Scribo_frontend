@@ -75,6 +75,30 @@ const mergeMessage = (list, message) => {
     return next;
 };
 
+const mergeIncomingMessage = (list, message, profileId) => {
+    if (String(message.sender?._id) === String(profileId)) {
+        const pendingIndex = list.findIndex(
+            (item) =>
+                typeof item._id === "string" &&
+                item._id.startsWith("pending-") &&
+                item.status === "sending" &&
+                item.text === message.text &&
+                String(item.reply_to || "") === String(message.reply_to || ""),
+        );
+
+        if (pendingIndex !== -1) {
+            const next = [...list];
+            next[pendingIndex] = message;
+
+            return message.deleted_at
+                ? propagateDeletedReplyPreview(next, message._id)
+                : next;
+        }
+    }
+
+    return mergeMessage(list, message);
+};
+
 const sortConversations = (list) =>
     [...list].sort((a, b) => {
         const aTime = a.last_message_at
@@ -252,8 +276,10 @@ const MessagesPage = () => {
         socketEvents.subscribeConversation(profile._id, conversationId, {
             onMessage: (message) => {
                 const normalized = normalizeIncomingMessage(message, profile._id);
-                setMessages((current) => mergeMessage(current, normalized));
-
+                setMessages((current) =>
+                    mergeIncomingMessage(current, normalized, profile._id),
+                );
+ 
                 if (message.deleted_at) {
                     setReplyTo((current) =>
                         current?._id === message._id ? null : current,
