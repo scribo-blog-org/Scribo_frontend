@@ -1,3 +1,16 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+Disallow: /admin-panel
+Disallow: /settings
+Disallow: /messages
+Disallow: /notifications
+Disallow: /create-post
+Disallow: /posts/*/edit
+Disallow: /support/mine
+Disallow: /support/
+Allow: /support$
+Disallow: /auth/
+
+Sitemap: https://scribo-blog.vercel.app/sitemap.xml

@@ -8,6 +8,8 @@ import HashtagHtml from "../../components/HashtagHtml";
 import PostHeader from "../../components/PostHeader";
 
 import { getPostById } from "../../api/posts.api";
+import PageSeo from "../../components/Seo/index.jsx";
+import { plainTextExcerpt } from "../../seo/excerpt.js";
 
 const Article = () => {
     const {id} = useParams()
@@ -61,6 +63,13 @@ const Article = () => {
     return (
         (!isLoading && article?._id) ?
         <div>
+            <PageSeo
+                title={article.title}
+                description={plainTextExcerpt(article.content_text) || article.title}
+                path={`/posts/${article._id}`}
+                image={article.featured_image || undefined}
+                type="article"
+            />
             {
                 article._id ?
                 <div className="article">
