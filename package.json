@@ -35,8 +35,9 @@
     "lint:fix": "eslint . --fix",
     "start": "vite",
     "dev": "vite",
-    "prebuild": "npm run lint",
+    "prebuild": "npm run lint && npm run generate:sitemap",
     "build": "vite build",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "preview": "vite preview"
   },
   "repository": {

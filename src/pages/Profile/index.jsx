@@ -31,6 +31,7 @@ import SwitchBar from "../../components/Ui/SwitchBar";
 import Tooltip from "../../components/Ui/Tooltip/index";
 import RoleBadge from "../../components/RoleBadge/index";
 import RelativeTime from "../../components/RelativeTime/index.jsx";
+import PageSeo from "../../components/Seo/index.jsx";
 
 const Profile = () => {
     const { id } = useParams();
@@ -257,6 +258,15 @@ const Profile = () => {
 
     return (
         <div className="profile">
+            {user ? (
+                <PageSeo
+                    title={user.nick_name}
+                    description={user.description || `Профиль ${user.nick_name} на Scribo.`}
+                    path={`/users/${user.nick_name}`}
+                    image={user.avatar || undefined}
+                    type="website"
+                />
+            ) : null}
             <div className="profile_info app-transition">
                 <div className="profile_info_main">
                     <Sceleton

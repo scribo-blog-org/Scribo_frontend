@@ -56,7 +56,7 @@ Vite only exposes variables prefixed with `VITE_`. Restart the dev server after 
 | --- | --- | --- |
 | `VITE_APP_API_URL` | yes | API origin **without** a trailing slash, e.g. `http://localhost:3001` |
 | `VITE_GOOGLE_CLIENT_ID` | for Google login | OAuth web client id |
-| `VITE_APP_VERCEL_PROJECT_PRODUCTION_URL` | for share/copy | Host only, no `https://` — used when copying a post URL |
+| `VITE_APP_VERCEL_PROJECT_PRODUCTION_URL` | for share/copy, SEO, sitemap | Host only, no `https://` — e.g. `scribo-blog.vercel.app` |
 
 Example local file:
 
@@ -73,13 +73,23 @@ Requests use `credentials: 'include'` so the refresh cookie is sent. The API mus
 ```bash
 npm run dev        # Vite
 npm start          # same
-npm run build      # lint, then production bundle → dist/
+npm run build      # lint + sitemap, then production bundle → dist/
+npm run generate:sitemap
 npm run preview    # serve dist/
 npm run lint
 npm run lint:fix
 ```
 
-`prebuild` runs ESLint; `npm run build` fails if lint fails.
+`prebuild` runs ESLint and `generate:sitemap` (writes `public/sitemap.xml` and `public/robots.txt` from the API when it is reachable).
+
+## SEO (Google)
+
+- Per-page meta: title, description, canonical, Open Graph — `src/seo/`, `RouteSeo` in `App.jsx`, extra tags on article and profile pages
+- `public/robots.txt` — public pages allowed; admin, settings, messages, auth, etc. disallowed
+- `public/sitemap.xml` — regenerated on build via `npm run generate:sitemap` (static routes + posts and profiles from the API)
+- Google Search Console verification — meta tag in `index.html` (do not remove after confirm)
+
+After deploy, submit the sitemap in Search Console: `https://<your-domain>/sitemap.xml`.
 
 ## Layout
 

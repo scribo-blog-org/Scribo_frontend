@@ -35,6 +35,7 @@ import Toast from './components/Ui/Toast/index.jsx';
 
 import MobileNavigationBar from './components/MobileNavigationBar/index.jsx';
 import ScrollToTop from './components/ScrollToTop/index.jsx';
+import RouteSeo from './components/Seo/RouteSeo.jsx';
 
 import { CATEGORY_COLORS } from './styles/constants.js';
 import { getAccessToken, setAccessToken, subscribeAccessToken, refreshAccessToken } from './api/http.js';
@@ -139,6 +140,7 @@ function App() {
     <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow, requestCloseModal, accessToken, setAccessToken, authReady }}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ScrollToTop />
+          <RouteSeo />
           <div className={"App"} id="app-root">
             <AppLayout>
               <AppModals
