@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import "./SearchSelect.scss";
+import { useOverlayEnter } from "../useOverlayEnter";
 
 import InputField from "../InputField";
 
@@ -34,6 +35,7 @@ const SearchSelect = ({
     const wrapperRef = useRef(null);
     const optionRefs = useRef([]);
     const inputRef = useRef(null);
+    const listVisible = useOverlayEnter(isOpen);
 
     const selectedOption = useMemo(() => {
         return options.find(option => option.value === value);
@@ -243,7 +245,7 @@ const SearchSelect = ({
             </div>
 
             {isOpen && (
-                <div className="search_select_list blurred float_section app-transition">
+                <div className={`search_select_list blurred float_section${listVisible ? " search_select_list_visible" : ""}`}>
 
                     {filteredOptions.length ? (
 

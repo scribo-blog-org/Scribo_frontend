@@ -18,6 +18,7 @@ import NotificationIcon from "../../assets/svg/notification.svg?react";
 import PlusIcon from "../../assets/svg/plus-icon.svg?react";
 import RedirectIcon from "../../assets/svg/redirect.svg?react";
 import SettingsIcon from "../../assets/svg/settings.svg?react";
+import InfoIcon from "../../assets/svg/info.svg?react";
 
 import "./AppSidebar.scss";
 
@@ -135,6 +136,17 @@ function AppSidebar() {
                             <NotificationIcon className="app-sidebar_item_icon" />
                             <span>Уведомления</span>
                         </Link>
+
+                        <Link
+                            to="/support/mine"
+                            className={navClass("/support/mine")}
+                            onClick={(event) =>
+                                handleSameRouteClick(event, location.pathname, "/support/mine")
+                            }
+                        >
+                            <InfoIcon className="app-sidebar_item_icon" />
+                            <span>Поддержка</span>
+                        </Link>
                     </>
                 ) : null}
 
@@ -168,7 +180,7 @@ function AppSidebar() {
                 {profile ? (
                     <Link
                         to="/settings"
-                        className={navClass("/settings", ["/support/mine"])}
+                        className={navClass("/settings")}
                         onClick={(event) => handleSameRouteClick(event, location.pathname, "/settings")}
                     >
                         <SettingsIcon className="app-sidebar_item_icon" />

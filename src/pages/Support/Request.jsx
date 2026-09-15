@@ -146,7 +146,7 @@ const SupportRequestPage = () => {
                 <div className="support_request_detail_top">
                     <ActionButton disabled={sending || statusSaving} onClick={() => navigate(isStaff ? "/admin-panel?tab=requests" : item.is_owner ? "/support/mine" : "/support")}>
                         <ArrowLeftIcon />
-                        {isStaff ? "К запросам" : item.is_owner ? "Мои запросы" : "Поддержка"}
+                        {isStaff ? "К обращениям" : "Поддержка"}
                     </ActionButton>
                     <div className="support_request_detail_tags">
                         {showStatus ? (

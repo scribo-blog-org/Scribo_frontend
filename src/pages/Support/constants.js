@@ -1,6 +1,6 @@
 export const SUPPORT_KINDS = [
     { value: "complaint", name: "Жалоба" },
-    { value: "request", name: "Запрос" },
+    { value: "request", name: "Вопрос" },
     { value: "help", name: "Помощь" }
 ]
 

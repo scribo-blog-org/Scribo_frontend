@@ -74,7 +74,7 @@ const SupportMine = () => {
         const next = {};
 
         if (!fields.supportKind) {
-            next.supportKind = "Выберите тип обращения";
+            next.supportKind = "Выберите тему";
         }
 
         if (!fields.supportMessage.trim()) {
@@ -102,12 +102,12 @@ const SupportMine = () => {
             });
 
             if (result.status === true && result.data?.access_key) {
-                showToast({ message: "Запрос отправлен", type: "success" });
+                showToast({ message: "Сообщение отправлено", type: "success" });
                 navigate(`/support/${result.data.access_key}`);
                 return;
             }
 
-            showToast({ message: result.message || "Не удалось отправить запрос", type: "error" });
+            showToast({ message: result.message || "Не удалось отправить сообщение", type: "error" });
 
             if (result?.errors?.body) {
                 setErrors(
@@ -118,7 +118,7 @@ const SupportMine = () => {
             }
         }
         catch {
-            showToast({ message: "Не удалось отправить запрос", type: "error" });
+            showToast({ message: "Не удалось отправить сообщение", type: "error" });
         }
         finally {
             setIsLoading(false);
@@ -136,7 +136,7 @@ const SupportMine = () => {
     return (
         <div className="support_page support_page_mine">
             <div className="support_page_intro">
-                <h1>Мои запросы</h1>
+                <h1>Поддержка</h1>
                 <p>Обращения с аккаунта. Ответы и статусы приходят в уведомления на сайте.</p>
             </div>
             <form
@@ -146,11 +146,11 @@ const SupportMine = () => {
                     handleSubmit();
                 }}
             >
-                <Field title="Тип" error={errors?.supportKind ?? null}>
+                <Field title="Тема" error={errors?.supportKind ?? null}>
                     <DropDown
                         options={SUPPORT_KINDS}
                         value={fields.supportKind}
-                        placeholder="Тип обращения"
+                        placeholder="Выберите тему"
                         error={Boolean(errors?.supportKind)}
                         onChange={(value) => {
                             handleFocus("supportKind");
@@ -210,7 +210,7 @@ const SupportMine = () => {
                                     </button>
                                 ))
                             :
-                                <p className="admin_panel_content_requests_page_empty">Запросов пока нет</p>
+                                <p className="admin_panel_content_requests_page_empty">Обращений пока нет</p>
                         )}
                     </Pagination>
                 )}

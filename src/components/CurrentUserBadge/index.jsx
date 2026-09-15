@@ -3,8 +3,10 @@ import "./CurrentUserBadge.scss";
 import { useContext } from 'react';
 import { AppContext } from '../../App';
 import { Link } from 'react-router-dom';
-import DefaultProfileAvatar from "../../assets/images/default-profile-avatar.png"
+import ProfileIcon from "../../assets/svg/profile.svg?react";
 
+const guestIcon = (defaultAvatar) =>
+    defaultAvatar ?? <ProfileIcon className="user_badge_guest_icon" aria-hidden="true" />;
 
 const CurrentUserBadge = ({ className, asLink = true, defaultAvatar, avatarOnly = false }) => {
     const { profile } = useContext(AppContext)
@@ -16,15 +18,11 @@ const CurrentUserBadge = ({ className, asLink = true, defaultAvatar, avatarOnly 
         
         asLink ? 
             <Link to={"/auth/login"} className={`user_badge ${className ?? ''} app-transition`}>
-                {
-                    defaultAvatar ?? <img src={DefaultProfileAvatar} alt="Default Avatar" className='user_badge_default_avatar' />
-                }
+                {guestIcon(defaultAvatar)}
             </Link>
         :
             <div className={`user_badge ${className ?? ''} app-transition`}>
-                {
-                    defaultAvatar ?? <img src={DefaultProfileAvatar} alt="Default Avatar" className='user_badge_default_avatar' />
-                }
+                {guestIcon(defaultAvatar)}
             </div>
     )
 };

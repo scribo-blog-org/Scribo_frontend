@@ -33,7 +33,7 @@ function Footer(){
                     </div>
                     <div className="footer_links">
                         {profile ? (
-                            <Link to={'/support/mine'}><p>Мои запросы</p></Link>
+                            <Link to={'/support/mine'}><p>Поддержка</p></Link>
                         ) : (
                             <Link to={'/support'}><p>Поддержка</p></Link>
                         )}

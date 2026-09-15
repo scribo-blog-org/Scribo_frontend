@@ -1,0 +1,33 @@
+@mixin overlay-surface-enter(
+    $visible-class: "is-visible",
+    $origin: top center,
+    $offset-y: -8px,
+    $offset-x: 0px
+) {
+    opacity: 0;
+    transform: scale(0.96) translate($offset-x, $offset-y);
+    transform-origin: $origin;
+    pointer-events: none;
+    will-change: opacity, transform;
+    transition:
+        opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &.#{$visible-class} {
+        opacity: 1;
+        transform: scale(1) translate(0, 0);
+        pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+
+        &:not(.#{$visible-class}) {
+            transform: none;
+        }
+
+        &.#{$visible-class} {
+            transform: none;
+        }
+    }
+}

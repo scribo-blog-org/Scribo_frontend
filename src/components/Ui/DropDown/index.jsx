@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import "./DropDown.scss";
+import { useOverlayEnter } from "../useOverlayEnter";
 
 import ChevronDownIcon from "../../../assets/svg/chevron-down.svg?react";
 
@@ -16,6 +17,7 @@ const DropDown = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef(null);
+    const listVisible = useOverlayEnter(isOpen);
 
     const selectedOption = useMemo(
         () => options.find((option) => option.value === value),
@@ -72,7 +74,7 @@ const DropDown = ({
             </button>
 
             {isOpen ? (
-                <div className="dropdown_list blurred float_section app-transition">
+                <div className={`dropdown_list blurred float_section${listVisible ? " dropdown_list_visible" : ""}`}>
                     {options.map((option) => {
                         const selected = option.value === value;
 
