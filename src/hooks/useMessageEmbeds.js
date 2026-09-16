@@ -24,7 +24,9 @@ export function useMessageEmbeds(text) {
                     const postId = parseOwnPostUrl(url);
 
                     if (postId) {
-                        const result = await getPostById(postId, { expand: "author" });
+                        const result = await getPostById(postId, {
+                            expand: "author,category",
+                        });
 
                         if (result?.status === true && result.data) {
                             return {

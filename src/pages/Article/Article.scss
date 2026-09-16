@@ -78,8 +78,8 @@
             width: 100%;
         }
 
-        a{
-            color: var(--link-text-color);
+        a:not(.hashtag):not(.mention) {
+            color: var(--accent-color);
         }
 
         a.hashtag,

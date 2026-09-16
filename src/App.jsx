@@ -37,7 +37,7 @@ import MobileNavigationBar from './components/MobileNavigationBar/index.jsx';
 import ScrollToTop from './components/ScrollToTop/index.jsx';
 import RouteSeo from './components/Seo/RouteSeo.jsx';
 
-import { CATEGORY_COLORS } from './styles/constants.js';
+import { ACCENT_COLOR, CATEGORY_COLORS } from './styles/constants.js';
 import { getAccessToken, setAccessToken, subscribeAccessToken, refreshAccessToken } from './api/http.js';
 
 import "./styles/common.scss";
@@ -134,6 +134,11 @@ function App() {
             isDarkTheme ? color.dark : color.light
         );
     });
+
+    document.body.style.setProperty(
+        ACCENT_COLOR.variable,
+        isDarkTheme ? ACCENT_COLOR.dark : ACCENT_COLOR.light
+    );
   }, [isDarkTheme]);
 
   return (

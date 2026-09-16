@@ -251,18 +251,24 @@
     }
 }
 
+.messages_day_group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .messages_date_divider {
     position: sticky;
     top: 0;
     z-index: 2;
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
+    min-height: 36px;
     padding: 6px 0 10px;
     margin-top: -4px;
     pointer-events: none;
-    isolation: isolate;
-
 }
 
 .messages_date_label {
