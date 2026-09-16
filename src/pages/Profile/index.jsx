@@ -13,7 +13,6 @@ import { scrollTo } from "../../utils/navigation.js"
 
 import Verified from "../../assets/svg/verified.svg?react";
 import Calendar from "../../assets/svg/calendar-icon.svg?react";
-import Clock from "../../assets/svg/clock.svg?react";
 import PostIcon from "../../assets/svg/post.svg?react";
 import BookmarkOutline from "../../assets/svg/bookmark-outline.svg?react";
 import SettingsIcon from "../../assets/svg/settings.svg?react";
@@ -30,8 +29,8 @@ import ActionButton from "../../components/Ui/ActionButton";
 import SwitchBar from "../../components/Ui/SwitchBar";
 import Tooltip from "../../components/Ui/Tooltip/index";
 import RoleBadge from "../../components/RoleBadge/index";
-import RelativeTime from "../../components/RelativeTime/index.jsx";
 import PageSeo from "../../components/Seo/index.jsx";
+import UserActivityStatus from "../../components/UserActivityStatus/index.jsx";
 
 const Profile = () => {
     const { id } = useParams();
@@ -301,19 +300,17 @@ const Profile = () => {
                                         />
                                     </Tooltip>
                                 )}
-                                {(isProfileLoading || user?.last_activity_at) ? (
+                                {isProfileLoading || user ? (
                                     <Sceleton
                                         isLoading={isProfileLoading}
                                         rounded={true}
                                         section={false}
                                         className="profile_info_activity"
                                     >
-                                        <div className="profile_info_activity">
-                                            <Clock />
-                                            <Tooltip text={format_date_time(user?.last_activity_at)}>
-                                                <p><RelativeTime date={user?.last_activity_at} /></p>
-                                            </Tooltip>
-                                        </div>
+                                        <UserActivityStatus
+                                            user={user}
+                                            viewerId={profile?._id}
+                                        />
                                     </Sceleton>
                                 ) : null}
                             </div>

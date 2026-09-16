@@ -4,7 +4,7 @@ class SocketEvents {
   subscribeUserNotifications(userId, callback) {
     const roomName = `user:${userId}`;
 
-    socketClient.subscribe(
+    return socketClient.subscribe(
       roomName,
       "notification",
       (message) => {
@@ -64,6 +64,10 @@ class SocketEvents {
       },
       { private: true },
     );
+  }
+
+  userRoom(userId) {
+    return `user:${userId}`;
   }
 
   chatRoom(conversationId) {

@@ -15,11 +15,9 @@ const AppLayout = ({ children }) => {
     const location = useLocation();
     const { profile, setProfile, setProfileLoading, authReady } = useContext(AppContext);
     const profileRef = useRef(profile);
-    const authReadyRef = useRef(authReady);
     const requestIdRef = useRef(0);
 
     profileRef.current = profile;
-    authReadyRef.current = authReady;
 
     const setProfileData = useCallback(async () => {
         const requestId = ++requestIdRef.current;
@@ -81,9 +79,7 @@ const AppLayout = ({ children }) => {
                 return;
             }
 
-            if (authReadyRef.current) {
-                setProfileData();
-            }
+            setProfileData();
         });
     }, [setProfile, setProfileLoading, setProfileData]);
 

@@ -19,6 +19,11 @@ import { format_date_time, format_message_date_label, format_time, is_same_calen
 import { scrollTo } from "../../utils/navigation";
 
 import UserBadge from "../../components/UserBadge";
+import UserActivityStatus from "../../components/UserActivityStatus";
+import {
+    loadOnlineStatusForUsers,
+    subscribePresenceChanges,
+} from "../../sockets/presence.supabase";
 import MessageStatus from "../../components/MessageStatus";
 import ActionButton from "../../components/Ui/ActionButton";
 import DangerButton from "../../components/Ui/DangerButton";
@@ -268,6 +273,7 @@ const MessagesPage = () => {
     const [isChatLoading, setIsChatLoading] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [messageMenu, setMessageMenu] = useState(null);
+    const [onlineByUserId, setOnlineByUserId] = useState({});
 
     const listRef = useRef(null);
     const stickToBottomRef = useRef(true);
@@ -735,6 +741,47 @@ const MessagesPage = () => {
     const participant =
         activeConversation?.participant || activeListItem?.participant;
 
+    const watchedUserIds = useMemo(() => {
+        const ids = conversations
+            .map((item) => item.participant?._id)
+            .filter(Boolean)
+            .map(String);
+
+        if (participant?._id) {
+            ids.push(String(participant._id));
+        }
+
+        return [...new Set(ids)];
+    }, [conversations, participant?._id]);
+
+    useEffect(() => {
+        if (!watchedUserIds.length) {
+            return;
+        }
+
+        let cancelled = false;
+
+        void loadOnlineStatusForUsers(watchedUserIds).then((statusMap) => {
+            if (!cancelled) {
+                setOnlineByUserId(statusMap);
+            }
+        });
+
+        const unsubscribe = subscribePresenceChanges((userId, online) => {
+            if (!cancelled) {
+                setOnlineByUserId((current) => ({
+                    ...current,
+                    [userId]: online,
+                }));
+            }
+        });
+
+        return () => {
+            cancelled = true;
+            void unsubscribe();
+        };
+    }, [watchedUserIds.join(",")]);
+
     const messageDayGroups = useMemo(
         () => buildMessageDayGroups(messages),
         [messages],
@@ -808,10 +855,18 @@ const MessagesPage = () => {
                                                 : ""
                                         }`}
                                     >
-                                        <UserBadge
-                                            data={item.participant}
-                                            asLink={false}
-                                        />
+                                        <div className="messages_conversation_data">
+                                            <UserBadge
+                                                data={item.participant}
+                                                asLink={false}
+                                            />
+                                            <UserActivityStatus
+                                                user={item.participant}
+                                                viewerId={profile._id}
+                                                isOnline={onlineByUserId[String(item.participant?._id)] ?? false}
+                                                className="messages_activity_status"
+                                            />
+                                        </div>
                                         <div className="messages_conversation_copy">
                                             <p className="messages_conversation_preview">
                                                 {item.last_message_text || "Нет сообщений"}
@@ -856,7 +911,15 @@ const MessagesPage = () => {
                                 </Link>
                                 <div className="messages_chat_head_row">
                                     {participant ? (
-                                        <UserBadge data={participant} />
+                                        <div className="messages_chat_head_user">
+                                            <UserBadge data={participant} />
+                                            <UserActivityStatus
+                                                user={participant}
+                                                viewerId={profile._id}
+                                                isOnline={onlineByUserId[String(participant._id)] ?? false}
+                                                className="messages_activity_status"
+                                            />
+                                        </div>
                                     ) : (
                                         <h1 className="messages_title">Сообщения</h1>
                                     )}
