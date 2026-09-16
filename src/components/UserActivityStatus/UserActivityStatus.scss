@@ -1,0 +1,31 @@
+.user_activity_status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 16px;
+
+    p {
+        color: var(--light-text-color);
+        font-size: var(--text-xs);
+        font-weight: 400;
+    }
+
+    svg {
+        color: var(--light-text-color);
+        height: 14px;
+        width: 14px;
+        flex-shrink: 0;
+    }
+
+    &_dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        flex-shrink: 0;
+    }
+
+    &--online p {
+        color: #22c55e;
+    }
+}

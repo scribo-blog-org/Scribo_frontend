@@ -75,6 +75,7 @@ export async function refreshAccessToken() {
 
             if (!response.ok || !result?.data?.accessToken) {
                 setAccessToken(null);
+                setSocketToken(null);
                 return null;
             }
 
@@ -87,6 +88,7 @@ export async function refreshAccessToken() {
             }
 
             setAccessToken(null);
+            setSocketToken(null);
             return null;
         }
     })().finally(() => {
@@ -108,7 +110,7 @@ export async function apiFetch(url, options = {}) {
     const response = await fetch(url, {
         ...rest,
         headers,
-        credentials: "include"
+        credentials: "include",
     });
 
     if (

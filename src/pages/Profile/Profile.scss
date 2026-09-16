@@ -102,6 +102,18 @@
                 width: 14px;
                 flex-shrink: 0;
             }
+
+            &_dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #22c55e;
+                flex-shrink: 0;
+            }
+
+            &--online p {
+                color: #22c55e;
+            }
         }
 
         &_email,

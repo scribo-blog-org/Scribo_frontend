@@ -110,7 +110,6 @@
     box-sizing: border-box;
 
     .user_badge {
-        width: 100%;
         min-width: 0;
         padding: 0;
         cursor: inherit;
@@ -139,6 +138,21 @@
         background: var(--section-item-hover-background-color);
         color: var(--section-light-hover-color);
     }
+}
+
+.messages_chat_head_user {
+    display: flex;
+    align-items: flex-start;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.messages_conversation_data {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    width: 100%;
 }
 
 .messages_conversation_copy {
@@ -200,6 +214,7 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+        align-items: center;
         gap: var(--space-3);
         width: 100%;
         min-width: 0;
