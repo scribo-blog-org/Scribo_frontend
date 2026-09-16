@@ -42,6 +42,15 @@ async function parseJson(response) {
     }
 }
 
+function withTimeout(promise, ms) {
+    return Promise.race([
+        promise,
+        new Promise((resolve) => {
+            setTimeout(() => resolve(null), ms);
+        }),
+    ]);
+}
+
 export async function refreshAccessToken() {
     if (refreshPromise) {
         return refreshPromise;
@@ -50,27 +59,36 @@ export async function refreshAccessToken() {
     const generation = authGeneration;
 
     refreshPromise = (async () => {
-        const geo = await getVisitorGeo()
-        const response = await fetch(`${API_URL}/api/auth/refresh`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(geo)
-        });
-        const result = await parseJson(response);
+        try {
+            const geo = (await withTimeout(getVisitorGeo(), 2000)) || {};
+            const response = await fetch(`${API_URL}/api/auth/refresh`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(geo),
+            });
+            const result = await parseJson(response);
 
-        if (generation !== authGeneration) {
-            return getAccessToken();
-        }
+            if (generation !== authGeneration) {
+                return getAccessToken();
+            }
 
-        if (!response.ok || !result?.data?.accessToken) {
+            if (!response.ok || !result?.data?.accessToken) {
+                setAccessToken(null);
+                return null;
+            }
+
+            setAccessToken(result.data.accessToken);
+            setSocketToken(result.data.socketToken);
+            return result.data.accessToken;
+        } catch {
+            if (generation !== authGeneration) {
+                return getAccessToken();
+            }
+
             setAccessToken(null);
             return null;
         }
-
-        setAccessToken(result.data.accessToken);
-        setSocketToken(result.data.socketToken);
-        return result.data.accessToken;
     })().finally(() => {
         refreshPromise = null;
     });

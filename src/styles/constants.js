@@ -1,3 +1,9 @@
+export const ACCENT_COLOR = {
+    variable: "--accent-color",
+    light: "#1b73fb",
+    dark: "#4e93ff",
+};
+
 export const CATEGORY_COLORS = {
     1: {
         id: 1,

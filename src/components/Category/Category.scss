@@ -44,9 +44,22 @@
             background: var(--category-color, var(--light-text-color));
             flex-shrink: 0;
             opacity: 0.4;
+            transition: opacity 0.15s ease;
         }
 
         @include category-colors {
+            @include hover() {
+                color: var(--category-color);
+
+                .category_dot {
+                    opacity: 1;
+                }
+
+                p {
+                    color: var(--category-color);
+                }
+            }
+
             &.chip_button_active {
                 color: var(--text-color);
                 background: transparent;
@@ -62,6 +75,11 @@
 
                 @include hover() {
                     background: transparent;
+                    color: var(--category-color);
+
+                    p {
+                        color: var(--category-color);
+                    }
                 }
             }
         }
@@ -77,6 +95,7 @@
 
             p {
                 color: inherit;
+                transition: color 0.15s ease;
             }
         }
     }

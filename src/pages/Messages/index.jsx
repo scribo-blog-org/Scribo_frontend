@@ -124,30 +124,29 @@ const sortConversations = (list) =>
         return bTime - aTime;
     });
 
-const buildMessageTimeline = (list) => {
-    const items = [];
+const buildMessageDayGroups = (list) => {
+    const groups = [];
+    let current = null;
 
     list.forEach((message, index) => {
         const previous = list[index - 1];
+
         if (
             !previous ||
             !is_same_calendar_day(previous.created_at, message.created_at)
         ) {
-            items.push({
-                type: "date",
-                key: `date-${message.created_at}-${index}`,
+            current = {
+                key: `day-${message.created_at}-${index}`,
                 label: format_message_date_label(message.created_at),
-            });
+                messages: [],
+            };
+            groups.push(current);
         }
 
-        items.push({
-            type: "message",
-            key: message._id,
-            message,
-        });
+        current.messages.push(message);
     });
 
-    return items;
+    return groups;
 };
 
 const upsertConversationInList = (list, conversation) => {
@@ -736,8 +735,8 @@ const MessagesPage = () => {
     const participant =
         activeConversation?.participant || activeListItem?.participant;
 
-    const messageTimeline = useMemo(
-        () => buildMessageTimeline(messages),
+    const messageDayGroups = useMemo(
+        () => buildMessageDayGroups(messages),
         [messages],
     );
 
@@ -881,21 +880,25 @@ const MessagesPage = () => {
                                         <Loading size={36} />
                                     </div>
                                 ) : (
-                                    messageTimeline.map((item) => {
-                                    if (item.type === "date") {
-                                        return (
+                                    messageDayGroups.map((group, groupIndex) => (
+                                        <section
+                                            key={group.key}
+                                            className="messages_day_group"
+                                        >
                                             <div
-                                                key={item.key}
                                                 className="messages_date_divider"
+                                                style={{
+                                                    zIndex:
+                                                        messageDayGroups.length -
+                                                        groupIndex,
+                                                }}
                                             >
                                                 <span className="messages_date_label">
-                                                    {item.label}
+                                                    {group.label}
                                                 </span>
                                             </div>
-                                        );
-                                    }
 
-                                    const message = item.message;
+                                            {group.messages.map((message) => {
                                     const isOwn = message.is_own;
                                     const isDeleted = Boolean(message.deleted_at);
                                     const hasEmbeds =
@@ -1033,7 +1036,9 @@ const MessagesPage = () => {
                                         </div>
                                     </article>
                                     );
-                                })
+                                            })}
+                                        </section>
+                                    ))
                                 )}
                             </div>
 

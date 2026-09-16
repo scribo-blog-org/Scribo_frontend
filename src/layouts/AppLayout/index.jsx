@@ -15,9 +15,11 @@ const AppLayout = ({ children }) => {
     const location = useLocation();
     const { profile, setProfile, setProfileLoading, authReady } = useContext(AppContext);
     const profileRef = useRef(profile);
+    const authReadyRef = useRef(authReady);
     const requestIdRef = useRef(0);
 
     profileRef.current = profile;
+    authReadyRef.current = authReady;
 
     const setProfileData = useCallback(async () => {
         const requestId = ++requestIdRef.current;
@@ -34,19 +36,24 @@ const AppLayout = ({ children }) => {
             setProfileLoading(true);
         }
 
-        const result = await getProfile();
-        
-        if (requestId !== requestIdRef.current || !getAccessToken()) {
-            return;
-        }
-        if (result.status) {
-            setProfile(result.data);
-            socketService.init(result.data, getSocketToken());
-        } else if (result.unauthorized) {
-            setProfile(null);
-        }
+        try {
+            const result = await getProfile();
 
-        setProfileLoading(false);
+            if (requestId !== requestIdRef.current || !getAccessToken()) {
+                return;
+            }
+
+            if (result.status) {
+                setProfile(result.data);
+                socketService.init(result.data, getSocketToken());
+            } else if (result.unauthorized) {
+                setProfile(null);
+            }
+        } finally {
+            if (requestId === requestIdRef.current) {
+                setProfileLoading(false);
+            }
+        }
     }, [setProfile, setProfileLoading]);
 
     useEffect(() => {
@@ -71,9 +78,14 @@ const AppLayout = ({ children }) => {
                 setProfile(null);
                 setProfileLoading(false);
                 socketService.disconnect();
+                return;
+            }
+
+            if (authReadyRef.current) {
+                setProfileData();
             }
         });
-    }, [setProfile, setProfileLoading]);
+    }, [setProfile, setProfileLoading, setProfileData]);
 
     useEffect(() => {
         if (!authReady) {

@@ -1,4 +1,5 @@
 body {
+  /* fallback; synced from ACCENT_COLOR in styles/constants.js */
   --accent-color: #1b73fb;
 
   --main-background: var(--gray-f1);
@@ -27,8 +28,8 @@ body {
   --background-text-color: var(--gray-e7);
   --post-text-color: var(--gray-25);
 
-  --link-text-color: #80f;
-  --hashtag-color: var(--blue-39);
+  --link-text-color: var(--accent-color);
+  --hashtag-color: var(--accent-color);
   --mention-color: var(--blue-39);
 
   --user-badge-name-color: var(--gray-1e);
@@ -183,6 +184,7 @@ body {
 
 
 body.dark-theme {
+  /* fallback; synced from ACCENT_COLOR in styles/constants.js */
   --accent-color: #4e93ff;
 
   --main-background: var(--gray-16);
@@ -211,8 +213,8 @@ body.dark-theme {
   --background-text-color: var(--gray-25);
   --post-text-color: var(--gray-e7);
 
-  --link-text-color: #c583ff;
-  --hashtag-color: var(--blue-8f);
+  --link-text-color: var(--accent-color);
+  --hashtag-color: var(--accent-color);
   --mention-color: var(--blue-8f);
 
   --user-badge-name-color: var(--gray-d7);

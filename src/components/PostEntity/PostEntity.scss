@@ -50,9 +50,43 @@
     border-radius: 8px;
     background: var(--input-background-color);
     color: inherit;
-    text-decoration: none;
     min-width: 0;
     max-width: 100%;
+
+    &_header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 10px 12px 8px;
+        min-width: 0;
+    }
+
+    &_author {
+        min-height: 24px;
+        min-width: 0;
+
+        .user_badge_info_name {
+            font-size: 12px;
+        }
+    }
+
+    &_category {
+        min-height: 24px;
+
+        &.chip_button_quiet {
+            padding: 0;
+            font-size: var(--text-xs);
+        }
+    }
+
+    &_main {
+        display: flex;
+        flex-direction: column;
+        color: inherit;
+        text-decoration: none;
+        min-width: 0;
+    }
 
     @include hover() {
         border-color: var(--text-color);
@@ -75,15 +109,12 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
-        padding: 10px 12px;
+        padding: 0 12px 10px;
         min-width: 0;
     }
 
-    &_site {
-        font-size: 12px;
-        color: var(--light-text-color);
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
+    &_media + .post_message_card_body {
+        padding-top: 10px;
     }
 
     &_title {
@@ -105,14 +136,6 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-    }
-
-    &_author {
-        margin-top: 2px;
-
-        .user_badge_info_name {
-            font-size: 12px;
-        }
     }
 }
 
