@@ -18,7 +18,6 @@ const RichInputField = ({
     placeholder,
     length = 2000,
     className = "",
-    isMultiline = false,
     multilineRows = 3,
     error,
     blocked,
