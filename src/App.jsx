@@ -139,8 +139,8 @@ function App() {
                 <div className="app-shell_content">
                   <Suspense fallback={null}>
                       <Routes>
-                          <Route element={<PageLayout/>}>
-                              <Route element={<DefaultContainer/>}>
+                          <Route element={<PageLayout />}>
+                              <Route element={<DefaultContainer />}>
 
                                   <Route
                                       path="/"
@@ -166,7 +166,7 @@ function App() {
 
                               </Route>
 
-                              <Route element={<FullContainer/>}>
+                              <Route element={<FullContainer />}>
                                   <Route path="/messages" Component={Messages}/>
                                   <Route path="/messages/:conversationId" Component={Messages}/>
                                   <Route path="/settings" Component={Settings}/>

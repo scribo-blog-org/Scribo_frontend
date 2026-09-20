@@ -18,9 +18,18 @@ html, body {
     margin: 0;
     height: 100%;
     width: 100%;
-    scroll-behavior: smooth;
-    overflow-x: hidden;
+    overflow: hidden;
     scrollbar-color: var(--gray-4f) transparent;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    max-height: 100dvh;
+    overflow: hidden;
 }
 
 body {
@@ -153,8 +162,12 @@ button {
 .App {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    max-height: 100dvh;
+    overflow: hidden;
     color: var(--text-color);
-    min-height: 100dvh;
 }
 
 img, svg {

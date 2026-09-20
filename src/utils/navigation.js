@@ -13,11 +13,6 @@ const isPathActive = (pathname, path) => {
 const scrollToTop = () => {
     const opts = { top: 0, left: 0, behavior: "auto" };
 
-    window.scrollTo(opts);
-    document.documentElement.scrollTo(opts);
-    document.body.scrollTo(opts);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
     document.querySelector(".app-shell_content")?.scrollTo(opts);
 };
 
