@@ -18,6 +18,7 @@ const scrollToTop = () => {
     document.body.scrollTo(opts);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    document.querySelector(".app-shell_content")?.scrollTo(opts);
 };
 
 const scrollTo = (object, block = "center") => {

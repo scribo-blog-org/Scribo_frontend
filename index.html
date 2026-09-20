@@ -1,7 +1,19 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" style="background-color: #161616; color-scheme: dark">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var isDark = true;
+        try {
+          var stored = localStorage.getItem("theme");
+          if (stored !== null) isDark = JSON.parse(stored);
+        } catch (e) {}
+        var html = document.documentElement;
+        html.style.backgroundColor = isDark ? "#161616" : "#f1f1f1";
+        html.style.colorScheme = isDark ? "dark" : "light";
+      })();
+    </script>
 
     <meta
       name="viewport"
@@ -32,6 +44,16 @@
   </head>
 
   <body>
+    <script>
+      (function () {
+        var isDark = true;
+        try {
+          var stored = localStorage.getItem("theme");
+          if (stored !== null) isDark = JSON.parse(stored);
+        } catch (e) {}
+        document.body.classList.toggle("dark-theme", isDark);
+      })();
+    </script>
     <noscript>You need to enable JavaScript to run Scribo.</noscript>
 
     <div id="root"></div>

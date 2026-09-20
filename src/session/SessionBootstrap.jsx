@@ -7,11 +7,15 @@ import { trackVisit } from "../api/analytics.api";
 import {
     getAccessToken,
     getSocketToken,
+    probeBackend,
     refreshAccessToken,
     subscribeAccessToken,
+    subscribeBackendAvailability,
 } from "../api/http";
 import { socketService } from "../sockets/socket.service";
 import AppBootScreen from "./AppBootScreen";
+import AppUnavailableScreen from "./AppUnavailableScreen";
+import "./AppStatusScreen.scss";
 
 const SKIP_TRACKING = /^\/admin-panel/;
 const SOCKET_WAIT_MS = 8000;
@@ -29,11 +33,15 @@ const SessionBootstrap = ({ children }) => {
     const location = useLocation();
     const { profile, setProfile, setProfileLoading } = useContext(AppContext);
     const [sessionReady, setSessionReady] = useState(false);
+    const [backendDown, setBackendDown] = useState(false);
+    const [isRetrying, setIsRetrying] = useState(false);
     const profileRef = useRef(profile);
     const requestIdRef = useRef(0);
     const bootstrappedRef = useRef(false);
+    const backendDownRef = useRef(false);
 
     profileRef.current = profile;
+    backendDownRef.current = backendDown;
 
     const loadSession = useCallback(async ({ blocking = false } = {}) => {
         const requestId = ++requestIdRef.current;
@@ -75,6 +83,23 @@ const SessionBootstrap = ({ children }) => {
         }
     }, [setProfile, setProfileLoading]);
 
+    const startSession = useCallback(async () => {
+        const reachable = await probeBackend();
+
+        if (!reachable) {
+            bootstrappedRef.current = true;
+            setBackendDown(true);
+            setProfileLoading(false);
+            return false;
+        }
+
+        setBackendDown(false);
+        await refreshAccessToken();
+        await loadSession({ blocking: true });
+        bootstrappedRef.current = true;
+        return true;
+    }, [loadSession, setProfileLoading]);
+
     useEffect(() => {
         const unsubscribe = socketService.on("notification", (notifications) => {
             setProfile((prevProfile) => ({
@@ -87,17 +112,22 @@ const SessionBootstrap = ({ children }) => {
     }, [setProfile]);
 
     useEffect(() => {
+        return subscribeBackendAvailability((available) => {
+            setBackendDown(!available);
+
+            if (!available) {
+                setSessionReady(true);
+                setProfileLoading(false);
+            }
+        });
+    }, [setProfileLoading]);
+
+    useEffect(() => {
         let cancelled = false;
 
         const bootstrap = async () => {
             try {
-                await refreshAccessToken();
-
-                if (cancelled) {
-                    return;
-                }
-
-                await loadSession({ blocking: true });
+                await startSession();
             } finally {
                 if (!cancelled) {
                     bootstrappedRef.current = true;
@@ -111,11 +141,11 @@ const SessionBootstrap = ({ children }) => {
         return () => {
             cancelled = true;
         };
-    }, [loadSession]);
+    }, [startSession]);
 
     useEffect(() => {
         return subscribeAccessToken((token) => {
-            if (!bootstrappedRef.current) {
+            if (!bootstrappedRef.current || backendDownRef.current) {
                 return;
             }
 
@@ -138,7 +168,7 @@ const SessionBootstrap = ({ children }) => {
             setProfileLoading(true);
 
             loadSession({ blocking: true }).finally(() => {
-                if (bootstrappedRef.current) {
+                if (bootstrappedRef.current && !backendDownRef.current) {
                     setSessionReady(true);
                 }
             });
@@ -146,7 +176,7 @@ const SessionBootstrap = ({ children }) => {
     }, [loadSession, setProfile, setProfileLoading]);
 
     useEffect(() => {
-        if (!sessionReady) {
+        if (!sessionReady || backendDown) {
             return;
         }
 
@@ -155,13 +185,37 @@ const SessionBootstrap = ({ children }) => {
         if (!SKIP_TRACKING.test(path)) {
             trackVisit(path);
         }
-    }, [sessionReady, location.pathname]);
+    }, [sessionReady, backendDown, location.pathname]);
 
-    if (!sessionReady) {
-        return <AppBootScreen />;
-    }
+    const retry = async () => {
+        setIsRetrying(true);
+        setSessionReady(false);
+        setProfileLoading(true);
 
-    return children;
+        try {
+            await startSession();
+        } finally {
+            setIsRetrying(false);
+            setSessionReady(true);
+        }
+    };
+
+    const statusScreen = !sessionReady
+        ? <AppBootScreen />
+        : backendDown
+            ? (
+                <AppUnavailableScreen
+                    onRetry={retry}
+                    isRetrying={isRetrying}
+                />
+            )
+            : null;
+
+    return (
+        <div className="session-gate">
+            {statusScreen || children}
+        </div>
+    );
 };
 
 export default SessionBootstrap;

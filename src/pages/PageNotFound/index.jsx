@@ -1,10 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import PrimaryButton from "../../components/Ui/PrimaryButton";
 import "./PageNotFound.scss";
 
 const PageNotFound = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <div className="page_not_found">
@@ -22,17 +23,17 @@ const PageNotFound = () => {
                     4<span className="page_not_found_zero" />4
                 </p>
                 <p className="page_not_found_draft">
-                    Здесь должен был быть текст
+                    {`${import.meta.env.VITE_APP_API_URL}${location.pathname}`}
                     <span className="page_not_found_caret" />
                 </p>
             </div>
             <div className="page_not_found_copy">
-                <h1>Страница потерялась</h1>
+                <h1>Страница не найдена</h1>
                 <p className="page_not_found_lead">
-                    Этого адреса нет. Либо опечатка, либо черновик так и не стал постом.
+                    Здесь пока пусто. Возможно черновик навсегда остался в голове автора.
                 </p>
                 <PrimaryButton type="button" onClick={() => navigate("/posts")}>
-                    К ленте
+                    На главную
                 </PrimaryButton>
             </div>
         </div>

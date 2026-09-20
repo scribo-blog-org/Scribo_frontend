@@ -18,7 +18,7 @@ const RANGES = [
 ];
 
 const TRAFFIC_KEYS = [
-    { key: "visitors", label: "Посетители", color: "var(--text-color)" },
+    { key: "visits", label: "Посещения", color: "var(--text-color)" },
 ];
 
 const formatDay = (iso) => {
@@ -75,17 +75,9 @@ const deltaLabel = (current, previous) => {
         return { text: "без изменений", tone: "flat" };
     }
 
-    if (prev < 10) {
-        return {
-            text: `${abs > 0 ? "+" : ""}${formatNumber(abs)} к прошлому периоду`,
-            tone: abs > 0 ? "up" : "down",
-        };
-    }
-
-    const pct = Math.round((abs / prev) * 100);
     return {
-        text: `${pct > 0 ? "+" : ""}${pct}% к прошлому периоду`,
-        tone: pct > 0 ? "up" : "down",
+        text: `${abs > 0 ? "+" : ""}${formatNumber(abs)} к прошлому периоду`,
+        tone: abs > 0 ? "up" : "down",
     };
 };
 
@@ -255,19 +247,21 @@ const TrendChart = ({ series, keys, hourly = false }) => {
                     ))}
                 </div>
             ) : null}
-            <div className="analytics_legend">
-                {keys.map((item) => (
-                    <span className="analytics_legend_item" key={item.key}>
-                        <span className="analytics_legend_swatch" style={{ background: item.color }} />
-                        {item.label}
-                    </span>
-                ))}
-            </div>
+            {keys.length > 1 ? (
+                <div className="analytics_legend">
+                    {keys.map((item) => (
+                        <span className="analytics_legend_item" key={item.key}>
+                            <span className="analytics_legend_swatch" style={{ background: item.color }} />
+                            {item.label}
+                        </span>
+                    ))}
+                </div>
+            ) : null}
         </div>
     );
 };
 
-const RankedBars = ({ items, empty, wideLabel, showPercent = true }) => {
+const RankedBars = ({ items, empty, wideLabel }) => {
     const maxValue = Math.max(1, ...items.map((item) => item.count || item.visits || 0));
 
     if (!items.length) {
@@ -279,9 +273,7 @@ const RankedBars = ({ items, empty, wideLabel, showPercent = true }) => {
             {items.map((item) => {
                 const label = item.label || item.type || item.path || item.query || item.tag || item.title;
                 const value = item.count ?? item.visits ?? item.views_count ?? 0;
-                const note = item.note
-                    || (showPercent && item.percent != null ? `${item.percent}%` : null)
-                    || (item.uses != null ? `${formatNumber(item.uses)} исп.` : null);
+                const note = item.note || null;
 
                 return (
                     <div className="analytics_bars_row" key={item.key || label}>
@@ -303,7 +295,7 @@ const RankedBars = ({ items, empty, wideLabel, showPercent = true }) => {
                             />
                         </div>
                         <p className="analytics_bars_value">
-                            {formatNumber(value)}
+                            {item.valueLabel || formatNumber(value)}
                             {note ? <span> · {note}</span> : null}
                         </p>
                     </div>
@@ -390,16 +382,18 @@ const ActivityPanel = ({ activity }) => (
 );
 
 const AudienceRatio = ({ audience }) => {
-    const authorized = Number(audience?.authorized_percent || 0);
-    const anonymous = Number(audience?.anonymous_percent || 0);
+    const authorized = Number(audience?.authorized_visits || 0);
+    const anonymous = Number(audience?.anonymous_visits || 0);
+    const total = authorized + anonymous;
+    const authorizedShare = total ? (authorized / total) * 100 : 0;
 
     return (
         <section className="analytics_block analytics_audience app-transition">
             <div className="analytics_audience_bar">
-                {authorized > 0 ? (
+                {authorizedShare > 0 ? (
                     <div
                         className="analytics_audience_bar_auth app-transition"
-                        style={{ width: `${authorized}%` }}
+                        style={{ width: `${authorizedShare}%` }}
                     />
                 ) : null}
             </div>
@@ -407,17 +401,15 @@ const AudienceRatio = ({ audience }) => {
                 <div className="analytics_audience_item">
                     <span className="analytics_audience_swatch analytics_audience_swatch_auth" />
                     <span>Авторизованные</span>
-                    <strong>{authorized}%</strong>
                     <span className="analytics_audience_count">
-                        {formatNumber(audience?.authorized_visits)}
+                        {formatNumber(authorized)}
                     </span>
                 </div>
                 <div className="analytics_audience_item">
                     <span className="analytics_audience_swatch analytics_audience_swatch_anon" />
                     <span>Анонимные</span>
-                    <strong>{anonymous}%</strong>
                     <span className="analytics_audience_count">
-                        {formatNumber(audience?.anonymous_visits)}
+                        {formatNumber(anonymous)}
                     </span>
                 </div>
             </div>
@@ -479,7 +471,6 @@ const DashboardPage = () => {
                 key: item.path,
                 path: item.path,
                 count: item.visits || 0,
-                percent: item.percent,
             })),
         [data],
     );
@@ -489,7 +480,16 @@ const DashboardPage = () => {
                 key: item.query,
                 query: item.query,
                 count: item.count || 0,
-                percent: item.percent,
+            })),
+        [data],
+    );
+    const topCities = useMemo(
+        () =>
+            (data?.top_cities || []).map((item) => ({
+                key: `${item.city}|${item.country || ""}`,
+                label: item.country ? `${item.city}, ${item.country}` : item.city,
+                count: item.unique_visitors || 0,
+                valueLabel: `${item.percent ?? 0}%`,
             })),
         [data],
     );
@@ -499,8 +499,6 @@ const DashboardPage = () => {
                 key: item.tag,
                 tag: item.tag,
                 count: item.uses || 0,
-                percent: item.percent,
-                uses: item.uses,
                 href: hashtagSearchPath(item.tag),
                 hashtag: true,
             })),
@@ -542,13 +540,21 @@ const DashboardPage = () => {
                         hint={`Метрики ниже считаются только за ${activeRange?.label?.toLowerCase() || "период"}`}
                         className="analytics_scope_period"
                     >
-                        <AnalyticsGroup title="Трафик" hint="Уникальные посетители и динамика">
+                        <AnalyticsGroup title="Трафик" hint="Посещения и уникальные посетители по IP">
                             <div className="analytics_traffic">
-                                <StatCard
-                                    label="Посетители"
-                                    value={totals.unique_visitors}
-                                    previous={totals.unique_visitors_prev}
-                                />
+                                <div className="analytics_traffic_stats">
+                                    <StatCard
+                                        label="Посещения"
+                                        value={totals.visits}
+                                        previous={totals.visits_prev}
+                                    />
+                                    <StatCard
+                                        label="Уникальные посетители"
+                                        value={totals.unique_visitors}
+                                        previous={totals.unique_visitors_prev}
+                                        hint="по IP"
+                                    />
+                                </div>
                                 <section className="analytics_block analytics_block_chart app-transition">
                                     {series.length ? (
                                         <TrendChart
@@ -569,9 +575,22 @@ const DashboardPage = () => {
 
                         <AnalyticsGroup
                             title="Аудитория"
-                            hint="Доля авторизованных и анонимных просмотров страниц"
+                            hint="Авторизованные и анонимные просмотры страниц"
                         >
                             <AudienceRatio audience={data?.audience} />
+                        </AnalyticsGroup>
+
+                        <AnalyticsGroup
+                            title="Города"
+                            hint="Доля уникальных посетителей по IP"
+                        >
+                            <section className="analytics_block app-transition">
+                                <RankedBars
+                                    items={topCities}
+                                    wideLabel
+                                    empty="Нет городов за период"
+                                />
+                            </section>
                         </AnalyticsGroup>
 
                         <div className="analytics_grid">
@@ -585,7 +604,7 @@ const DashboardPage = () => {
                                 </section>
                             </AnalyticsGroup>
 
-                            <AnalyticsGroup title="Поиск" hint="Топ-5 запросов в процентах">
+                            <AnalyticsGroup title="Поиск" hint="Топ-5 запросов">
                                 <section className="analytics_block app-transition">
                                     <RankedBars
                                         items={topQueries}
@@ -608,7 +627,6 @@ const DashboardPage = () => {
                                     <RankedBars
                                         items={topPosts}
                                         wideLabel
-                                        showPercent={false}
                                         empty="Пока нет просмотров постов"
                                     />
                                 </section>

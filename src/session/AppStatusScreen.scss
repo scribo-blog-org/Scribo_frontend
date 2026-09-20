@@ -1,0 +1,119 @@
+@use "../styles/helpers.scss" as *;
+
+.session-gate {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100dvh;
+    min-width: 0;
+}
+
+.app-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+    max-width: 36em;
+    min-height: 0;
+    margin: 0 auto;
+    padding: var(--space-6) 0;
+    box-sizing: border-box;
+    gap: var(--space-6);
+
+    &_art {
+        width: 100%;
+        color: var(--text-color);
+
+        svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        svg,
+        svg * {
+            transition:
+                fill 0.3s ease,
+                stroke 0.3s ease,
+                color 0.3s ease;
+        }
+    }
+
+    &_copy {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+        max-width: 28em;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.04em;
+        color: var(--text-color);
+    }
+
+    &_lead {
+        margin: 0;
+        font-size: 14px;
+        color: var(--light-text-color);
+        line-height: 1.5;
+    }
+
+    &_actions {
+        margin-top: var(--space-2);
+    }
+}
+
+.session-gate > .app-status {
+    padding-left: 60px;
+    padding-right: 60px;
+
+    @include screen() {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+.scribo-illustration {
+    &_rules,
+    &_outline {
+        stroke: var(--light-text-color);
+        fill: none;
+    }
+
+    &_margin {
+        stroke: var(--red-f5);
+        fill: none;
+    }
+
+    &_surface {
+        fill: var(--main-background);
+        stroke: currentColor;
+    }
+
+    &_type {
+        fill: currentColor;
+        font-family: inherit;
+    }
+
+    &_spinner {
+        stroke: currentColor;
+        stroke-width: 6;
+    }
+
+    &_spin {
+        transform-origin: 255px 171px;
+        animation: scribo-illustration-spin 1.1s linear infinite;
+    }
+}
+
+@keyframes scribo-illustration-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -13,5 +13,30 @@
         flex: 1;
         min-width: 0;
         min-height: 100dvh;
+
+        @include screen() {
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+        }
+
+        > .header {
+            flex-shrink: 0;
+        }
+    }
+
+    &_content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+
+        @include screen() {
+            overflow: auto;
+
+            &:has(.messages_page) {
+                overflow: hidden;
+            }
+        }
     }
 }
