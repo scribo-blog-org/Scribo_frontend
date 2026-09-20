@@ -11,9 +11,7 @@ import {
     subscribeAccessToken,
 } from "../api/http";
 import { socketService } from "../sockets/socket.service";
-import Loading from "../components/Ui/Loading";
-
-import "./SessionBootstrap.scss";
+import AppBootScreen from "./AppBootScreen";
 
 const SKIP_TRACKING = /^\/admin-panel/;
 const SOCKET_WAIT_MS = 8000;
@@ -25,14 +23,6 @@ function waitWithTimeout(promise, ms) {
             setTimeout(resolve, ms);
         }),
     ]);
-}
-
-function AppBootScreen() {
-    return (
-        <div className="app-boot" role="status" aria-live="polite" aria-busy="true">
-            <Loading size={48} />
-        </div>
-    );
 }
 
 const SessionBootstrap = ({ children }) => {
