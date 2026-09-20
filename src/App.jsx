@@ -38,7 +38,8 @@ import ScrollToTop from './components/ScrollToTop/index.jsx';
 import RouteSeo from './components/Seo/RouteSeo.jsx';
 
 import { ACCENT_COLOR, CATEGORY_COLORS } from './styles/constants.js';
-import { getAccessToken, setAccessToken, subscribeAccessToken, refreshAccessToken } from './api/http.js';
+import { getAccessToken, setAccessToken, subscribeAccessToken } from './api/http.js';
+import SessionBootstrap from './session/SessionBootstrap.jsx';
 
 import "./styles/common.scss";
 
@@ -84,31 +85,10 @@ function App() {
   let [ modalWindow, showModalWindow ] = useState(false)
   const [ modalCloseRequest, setModalCloseRequest ] = useState(0)
   const [ accessToken, setAccessTokenState ] = useState(getAccessToken())
-  const [ authReady, setAuthReady ] = useState(false)
   const requestCloseModal = () => setModalCloseRequest(c => c + 1)
 
   useEffect(() => {
     return subscribeAccessToken(setAccessTokenState)
-  }, [])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const restoreSession = async () => {
-      try {
-        await refreshAccessToken()
-      } finally {
-        if (!cancelled) {
-          setAuthReady(true)
-        }
-      }
-    }
-
-    restoreSession()
-
-    return () => {
-      cancelled = true
-    }
   }, [])
 
 
@@ -142,7 +122,7 @@ function App() {
   }, [isDarkTheme]);
 
   return (
-    <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow, requestCloseModal, accessToken, setAccessToken, authReady }}>
+    <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow, requestCloseModal, accessToken, setAccessToken }}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ScrollToTop />
           <RouteSeo />
@@ -153,52 +133,55 @@ function App() {
                 showModalWindow={showModalWindow}
                 modalCloseRequest={modalCloseRequest}
               />
+              <SessionBootstrap>
               <AppShell>
                 <Header/>
+                <div className="app-shell_content">
+                  <Suspense fallback={null}>
+                      <Routes>
+                          <Route element={<PageLayout/>}>
+                              <Route element={<DefaultContainer/>}>
+
+                                  <Route
+                                      path="/"
+                                      element={<Navigate to="/posts" replace />}
+                                  />
+
+                                  <Route path="posts/:id/edit" Component={EditPost}/>
+                                  <Route path="/auth/login" Component={Login}/>
+                                  <Route path="/auth/forgot-password" Component={ForgotPassword}/>
+                                  <Route path="/api" Component={ApiDocs}/>
+                                  <Route path="/auth/register" Component={Register}/>
+                                  <Route path="/404" Component={PageNotFound}/>
+                                  <Route path="/posts/" Component={HomePage}/>
+                                  <Route path="/search" Component={SearchPage}/>
+                                  <Route path="/create-post" Component={CreatePost}/>
+                                  <Route path="/users/:id" Component={Profile}/>
+                                  <Route path="/posts/:id" Component={Article}/>
+                                  <Route path="/notifications" Component={Notifications}/>
+                                  <Route path="/support" Component={Support}/>
+                                  <Route path="/support/mine" Component={SupportMine}/>
+                                  <Route path="/support/:key" Component={SupportRequestPage}/>
+                                  <Route path="*" Component={PageNotFound}/>
+
+                              </Route>
+
+                              <Route element={<FullContainer/>}>
+                                  <Route path="/messages" Component={Messages}/>
+                                  <Route path="/messages/:conversationId" Component={Messages}/>
+                                  <Route path="/settings" Component={Settings}/>
+                                  <Route path="admin-panel" Component={AdminPanel}/>
+                                  <Route path="admin-panel/requests/:id" Component={RequestDetailPage}/>
+                              </Route>
+                          </Route>
+                      </Routes>
+                  </Suspense>
+                  <AppFooter />
+                </div>
                 <MobileNavigationBar/>
-
-                <Suspense fallback={null}>
-                    <Routes>
-                        <Route element={<PageLayout/>}>
-                            <Route element={<DefaultContainer/>}>
-
-                                <Route
-                                    path="/"
-                                    element={<Navigate to="/posts" replace />}
-                                />
-
-                                <Route path="posts/:id/edit" Component={EditPost}/>
-                                <Route path="/auth/login" Component={Login}/>
-                                <Route path="/auth/forgot-password" Component={ForgotPassword}/>
-                                <Route path="/api" Component={ApiDocs}/>
-                                <Route path="/auth/register" Component={Register}/>
-                                <Route path="/404" Component={PageNotFound}/>
-                                <Route path="/posts/" Component={HomePage}/>
-                                <Route path="/search" Component={SearchPage}/>
-                                <Route path="/create-post" Component={CreatePost}/>
-                                <Route path="/users/:id" Component={Profile}/>
-                                <Route path="/posts/:id" Component={Article}/>
-                                <Route path="/notifications" Component={Notifications}/>
-                                <Route path="/support" Component={Support}/>
-                                <Route path="/support/mine" Component={SupportMine}/>
-                                <Route path="/support/:key" Component={SupportRequestPage}/>
-                                <Route path="*" Component={PageNotFound}/>
-
-                            </Route>
-
-                            <Route element={<FullContainer/>}>
-                                <Route path="/messages" Component={Messages}/>
-                                <Route path="/messages/:conversationId" Component={Messages}/>
-                                <Route path="/settings" Component={Settings}/>
-                                <Route path="admin-panel" Component={AdminPanel}/>
-                                <Route path="admin-panel/requests/:id" Component={RequestDetailPage}/>
-                            </Route>
-                        </Route>
-                    </Routes>
-                </Suspense>
-                <AppFooter />
                 <Toast toast={toast} showToast={showToast}/>
               </AppShell>
+              </SessionBootstrap>
             </AppLayout>
           </div>
       </Router>

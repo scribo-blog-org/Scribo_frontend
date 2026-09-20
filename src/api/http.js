@@ -1,11 +1,55 @@
 import { API_URL } from "../config";
-import { getVisitorGeo } from "./geo.client";
 
 let accessToken = null;
 let socketToken = null;
 let refreshPromise = null;
 let authGeneration = 0;
+let backendAvailable = true;
 const listeners = new Set();
+const backendListeners = new Set();
+
+function isServerErrorStatus(status) {
+    return status >= 500 && status <= 599;
+}
+
+export function subscribeBackendAvailability(listener) {
+    backendListeners.add(listener);
+    return () => backendListeners.delete(listener);
+}
+
+export function markBackendUnavailable() {
+    if (backendAvailable) {
+        backendAvailable = false;
+        backendListeners.forEach((listener) => listener(false));
+    }
+}
+
+export function markBackendAvailable() {
+    if (!backendAvailable) {
+        backendAvailable = true;
+        backendListeners.forEach((listener) => listener(true));
+    }
+}
+
+export async function probeBackend() {
+    try {
+        const response = await fetch(`${API_URL}/health`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            markBackendUnavailable();
+            return false;
+        }
+
+        markBackendAvailable();
+        return true;
+    } catch {
+        markBackendUnavailable();
+        return false;
+    }
+}
 
 export function getAccessToken() {
     return accessToken;
@@ -42,15 +86,6 @@ async function parseJson(response) {
     }
 }
 
-function withTimeout(promise, ms) {
-    return Promise.race([
-        promise,
-        new Promise((resolve) => {
-            setTimeout(() => resolve(null), ms);
-        }),
-    ]);
-}
-
 export async function refreshAccessToken() {
     if (refreshPromise) {
         return refreshPromise;
@@ -60,13 +95,15 @@ export async function refreshAccessToken() {
 
     refreshPromise = (async () => {
         try {
-            const geo = (await withTimeout(getVisitorGeo(), 2000)) || {};
             const response = await fetch(`${API_URL}/api/auth/refresh`, {
                 method: "POST",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(geo),
             });
+            if (isServerErrorStatus(response.status)) {
+                markBackendUnavailable();
+                return getAccessToken();
+            }
+
             const result = await parseJson(response);
 
             if (generation !== authGeneration) {
@@ -87,9 +124,8 @@ export async function refreshAccessToken() {
                 return getAccessToken();
             }
 
-            setAccessToken(null);
-            setSocketToken(null);
-            return null;
+            markBackendUnavailable();
+            return getAccessToken();
         }
     })().finally(() => {
         refreshPromise = null;
@@ -107,11 +143,22 @@ export async function apiFetch(url, options = {}) {
         headers.set("Authorization", `Bearer ${token}`);
     }
 
-    const response = await fetch(url, {
-        ...rest,
-        headers,
-        credentials: "include",
-    });
+    let response;
+
+    try {
+        response = await fetch(url, {
+            ...rest,
+            headers,
+            credentials: "include",
+        });
+    } catch (error) {
+        markBackendUnavailable();
+        throw error;
+    }
+
+    if (isServerErrorStatus(response.status)) {
+        markBackendUnavailable();
+    }
 
     if (
         response.status === 401 &&

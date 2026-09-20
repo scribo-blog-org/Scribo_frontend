@@ -10,3 +10,22 @@ root.render(
         <App />
     </GoogleOAuthProvider>
 );
+
+function releaseHtmlBootBackground() {
+    const html = document.documentElement;
+
+    const tryRelease = () => {
+        const bodyBg = getComputedStyle(document.body).backgroundColor;
+
+        if (bodyBg === "rgba(0, 0, 0, 0)" || bodyBg === "transparent") {
+            requestAnimationFrame(tryRelease);
+            return;
+        }
+
+        html.style.backgroundColor = "";
+    };
+
+    requestAnimationFrame(tryRelease);
+}
+
+releaseHtmlBootBackground();

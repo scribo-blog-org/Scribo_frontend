@@ -1,0 +1,52 @@
+<svg
+    width="120"
+    height="100"
+    viewBox="0 0 120 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Back bubble -->
+    <path
+        d="M48 27H78C84.6274 27 90 32.3726 90 39V55C90 61.6274 84.6274 67 78 67H72L80 76L66 67H48C41.3726 67 36 61.6274 36 55V39C36 32.3726 41.3726 27 48 27Z"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+
+    <!-- Front bubble -->
+    <path
+        class="new-message_front"
+        d="M35 20H65C71.6274 20 77 25.3726 77 32V45C77 51.6274 71.6274 57 65 57H57L48 66V57H35C28.3726 57 23 51.6274 23 45V32C23 25.3726 28.3726 20 35 20Z"
+        fill="var(--main-background)"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+
+    <!-- Dots -->
+    <circle cx="36" cy="38.5" r="2.2" fill="currentColor"/>
+    <circle cx="50" cy="38.5" r="2.2" fill="currentColor"/>
+    <circle cx="64" cy="38.5" r="2.2" fill="currentColor"/>
+
+    <!-- Small accent lines -->
+    <path
+        d="M91 16V23"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+    />
+    <path
+        d="M98 21L93 26"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+    />
+    <path
+        d="M101 29H94"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+    />
+</svg>

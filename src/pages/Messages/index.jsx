@@ -38,7 +38,9 @@ import ReplyIcon from "../../assets/svg/reply.svg?react";
 import DeleteIcon from "../../assets/svg/delete.svg?react";
 import EditIcon from "../../assets/svg/edit.svg?react";
 import CrossIcon from "../../assets/svg/cross-icon.svg?react";
+import ArrowLeftIcon from "../../assets/svg/arrow-left.svg?react";
 import ThreeDotsVerticalIcon from "../../assets/svg/three-dots-vertical.svg?react";
+import NewMessageIllustration from "../../assets/svg/illustrations/new-message.svg?react";
 
 import MessageContextMenu from "./MessageContextMenu";
 import { getMessageActions } from "./messageActions";
@@ -897,18 +899,29 @@ const MessagesPage = () => {
 
                 <section className="messages_chat">
                     {!conversationId ? (
-                        <>
-                            <h1 className="messages_title">Сообщения</h1>
-                            <div className="messages_empty_state">
-                                <p>Выберите диалог или начните общение из профиля.</p>
+                        <div className="messages_blank">
+                            <div className="messages_blank_sheet" aria-hidden="true">
+                                
+                                <NewMessageIllustration />
                             </div>
-                        </>
+                            <div className="messages_blank_copy">
+                                <h1>Диалог ещё пустой</h1>
+                                <p className="messages_blank_lead">
+                                    Выберите чат слева. Или откройте профиль и нажмите
+                                    «Начать общение».
+                                </p>
+                            </div>
+                        </div>
                     ) : (
                         <>
                             <header className="messages_chat_head">
-                                <Link to="/messages" className="messages_back app-transition">
+                                <ActionButton
+                                    className="messages_back"
+                                    onClick={() => navigate("/messages")}
+                                >
+                                    <ArrowLeftIcon className="app-transition" />
                                     Назад
-                                </Link>
+                                </ActionButton>
                                 <div className="messages_chat_head_row">
                                     {participant ? (
                                         <div className="messages_chat_head_user">

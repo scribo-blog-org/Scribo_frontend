@@ -125,12 +125,18 @@
 
     &_traffic {
         display: grid;
-        grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+        grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
         gap: var(--space-4);
         align-items: stretch;
 
         @include screen() {
             grid-template-columns: 1fr;
+        }
+
+        &_stats {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
         }
     }
 
@@ -312,12 +318,6 @@
             align-items: center;
             font-size: 13px;
             color: var(--text-color);
-
-            strong {
-                font-size: 18px;
-                font-weight: 600;
-                letter-spacing: -0.02em;
-            }
         }
 
         &_swatch {
@@ -335,9 +335,10 @@
         }
 
         &_count {
-            grid-column: 2 / -1;
-            font-size: 12px;
-            color: var(--light-text-color);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-color);
         }
     }
 

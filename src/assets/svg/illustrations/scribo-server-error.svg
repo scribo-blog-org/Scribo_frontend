@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" fill="none">
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path class="scribo-illustration_rules" d="M75 42H475M75 78H475M75 114H475M75 150H475M75 186H475M75 222H475M75 258H475M75 294H475"/>
+    <path class="scribo-illustration_margin" d="M91 42V310"/>
+    <path class="scribo-illustration_surface" d="M171 113L354 113Q365 113 365 124V238H160V124Q160 113 171 113Z"/>
+    <path class="scribo-illustration_surface" d="M145 238H380L394 259H131L145 238Z"/>
+    <path d="M210 158l15 15M225 158l-15 15M286 158l15 15M301 158l-15 15"/>
+    <path d="M244 202Q263 184 282 202"/>
+    <circle class="scribo-illustration_margin" cx="369" cy="91" r="28" stroke-width="3"/>
+    <path class="scribo-illustration_margin" d="M369 77V96M369 105V106"/>
+    <path d="M117 232l-17-14M116 246l-22 4M393 213l18-15M401 229l23 3"/>
+    <path d="M410 169v-11M421 169v-16M432 169v-11"/>
+    <path d="M405 183q14 8 28 0"/>
+    <path d="M405 183v35H433V183"/>
+    <path d="M121 257q-7-15 8-24l9 5 10-7 12 8q8 11-1 20l-18 6Z"/>
+  </g>
+</svg>

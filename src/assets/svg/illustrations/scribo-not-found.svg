@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" fill="none">
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path class="scribo-illustration_rules" d="M75 28H475M75 64H475M75 100H475M75 136H475M75 172H475M75 208H475M75 244H475"/>
+    <path class="scribo-illustration_margin" d="M91 28V260"/>
+  </g>
+  <text class="scribo-illustration_type" x="104" y="177" font-size="92" font-weight="700">404</text>
+  <circle class="scribo-illustration_outline" cx="188" cy="145" r="29" fill="none" stroke="currentColor" stroke-width="3"/>
+</svg>

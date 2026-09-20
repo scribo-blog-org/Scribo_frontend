@@ -44,7 +44,7 @@
             background: var(--category-color, var(--light-text-color));
             flex-shrink: 0;
             opacity: 0.4;
-            transition: opacity 0.15s ease;
+            transition: opacity 0.15s ease, background 0.3s ease;
         }
 
         @include category-colors {

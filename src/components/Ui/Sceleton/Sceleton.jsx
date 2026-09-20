@@ -12,7 +12,7 @@ const Sceleton = ({
         return (
             <div
                 className={
-                    `sceleton ${className}` +
+                    `sceleton app-transition ${className}` +
                     (circle ? " circle" : "") +
                     (rounded ? " rounded" : "") +
                     (section ? " sceleton_section" : "")
