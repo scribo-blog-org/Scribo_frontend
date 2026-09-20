@@ -35,10 +35,13 @@
         min-width: 0;
         max-width: 100%;
         overflow-x: clip;
+        padding-top: 20px;
 
         @include screen() {
             overflow-x: hidden;
             overflow-y: auto;
+            padding-top: 20px;
+            padding-bottom: 70px;
 
             &:has(.messages_page) {
                 overflow: hidden;
