@@ -2,6 +2,7 @@
 
 .default-container {
     width: 100%;
+    min-width: 0;
     max-width: 992px;
     display: flex;
     flex-direction: column;
