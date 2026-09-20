@@ -130,9 +130,9 @@ body {
   --text-editor-toolbar-item-color: var(--gray-63);
 
   --switcher-bar-border-color: var(--gray-b5);
-  --switcher-bar-item-color: var(--gray-63);
+  --switcher-bar-item-color: var(--gray-99);
   --switcher-bar-item-hover-background-color: var(--gray-d7);
-  --switcher-bar-active-item-background-color: var(--gray-e7);
+  --switcher-bar-active-item-background-color: rgb(140 140 140 / 10%);
   --switcher-bar-active-item-color: var(--gray-16);
 
   --administrator-badge-background-color: var(--blue-de);
@@ -315,9 +315,9 @@ body.dark-theme {
   --text-editor-toolbar-item-color: var(--gray-79);
 
   --switcher-bar-border-color: var(--gray-33);
-  --switcher-bar-item-color: var(--gray-b5);
+  --switcher-bar-item-color: var(--gray-79);
   --switcher-bar-item-hover-background-color: var(--gray-25);
-  --switcher-bar-active-item-background-color: var(--gray-33);
+  --switcher-bar-active-item-background-color: rgb(152 152 152 / 10%);
   --switcher-bar-active-item-color: var(--gray-ff);
 
   --administrator-badge-background-color: var(--blue-2f);

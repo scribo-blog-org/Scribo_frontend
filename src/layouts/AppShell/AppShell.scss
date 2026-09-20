@@ -5,8 +5,11 @@
     flex: 1;
     width: 100%;
     max-width: 100%;
-    min-height: 100dvh;
+    min-height: 0;
+    height: 100%;
+    max-height: 100dvh;
     min-width: 0;
+    overflow: hidden;
 
     &_main {
         display: flex;
@@ -14,15 +17,17 @@
         flex: 1;
         min-width: 0;
         max-width: 100%;
-        min-height: 100dvh;
-
-        @include screen() {
-            height: 100dvh;
-            max-height: 100dvh;
-            overflow: hidden;
-        }
+        min-height: 0;
+        height: 100%;
+        max-height: 100dvh;
+        overflow: hidden;
+        overscroll-behavior: none;
 
         > .header {
+            flex-shrink: 0;
+        }
+
+        > .navigation_bar {
             flex-shrink: 0;
         }
     }
@@ -35,14 +40,35 @@
         min-width: 0;
         max-width: 100%;
         overflow-x: clip;
+        overflow-y: auto;
+        overscroll-behavior-y: none;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+
+        > *:first-child {
+            flex: 1 0 auto;
+            min-width: 0;
+        }
 
         @include screen() {
-            overflow-x: hidden;
-            overflow-y: auto;
+            padding-bottom: 70px;
+        }
 
-            &:has(.messages_page) {
-                overflow: hidden;
+        &:has(.messages_page) {
+            overflow: hidden;
+
+
+            > *:first-child {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 0%;
+                min-height: 0;
             }
         }
     }
+}
+
+body.no-scroll .app-shell_content {
+    overflow-y: hidden;
+    scrollbar-gutter: stable;
 }

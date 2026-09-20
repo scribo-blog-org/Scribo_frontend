@@ -16,8 +16,4 @@
     @include screen() {
         padding: 0 16px;
     }
-
-    &:has(.messages_page) {
-        overflow: hidden;
-    }
 }
