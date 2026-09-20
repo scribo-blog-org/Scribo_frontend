@@ -8,10 +8,6 @@
       <path d="M177 82H358"/>
       <path d="M177 287H358"/>
     </g>
-    <g class="scribo-illustration_spin">
-      <path class="scribo-illustration_spinner" d="M263 151a28 28 0 1 1-8 20"/>
-      <path d="M255 137l-2 34"/>
-    </g>
     <path d="M147 130l-18-10M151 150l-22 2M159 172l-18 11M392 112l16-13M397 134l22-1M392 155l18 11"/>
   </g>
 </svg>

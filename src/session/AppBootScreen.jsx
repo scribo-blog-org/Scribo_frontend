@@ -3,7 +3,14 @@ import AppStatusScreen from "./AppStatusScreen";
 
 const AppBootScreen = () => (
     <AppStatusScreen
-        illustration={<LoadingIllustration />}
+        illustration={(
+            <>
+                <LoadingIllustration />
+                <span className="app-boot-spinner" aria-hidden="true">
+                    <span className="app-boot-spinner_ring" />
+                </span>
+            </>
+        )}
         title="Загружаем..."
         busy
         label="Загрузка приложения"
