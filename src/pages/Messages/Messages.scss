@@ -722,6 +722,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: var(--space-6);
     flex: 1;
     min-height: 0;
@@ -729,18 +730,23 @@
     padding: var(--space-4) 0;
 
     &_sheet {
-        position: relative;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
-        flex: 1;
-        min-height: 220px;
-        padding: 28px 8px 20px 28px;
+        align-items: center;
         user-select: none;
+
+        svg {
+            width: 120px;
+            height: 100px;
+        }
 
         > :not(.messages_blank_rules) {
             position: relative;
             z-index: 1;
+        }
+
+        .new-message_front {
+            fill: var(--main-background);
         }
 
         @at-root .dark-theme #{&}::before {
@@ -809,7 +815,8 @@
     &_copy {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
         gap: var(--space-3);
         max-width: 28em;
         flex-shrink: 0;
@@ -840,4 +847,8 @@
     100% {
         opacity: 0;
     }
+}
+
+path {
+    transition: fill .3s ease;
 }

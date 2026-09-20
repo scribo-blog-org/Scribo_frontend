@@ -16,9 +16,9 @@
 
     <!-- Front bubble -->
     <path
+        class="new-message_front"
         d="M35 20H65C71.6274 20 77 25.3726 77 32V45C77 51.6274 71.6274 57 65 57H57L48 66V57H35C28.3726 57 23 51.6274 23 45V32C23 25.3726 28.3726 20 35 20Z"
-        fill="currentColor"
-        fill-opacity="0.04"
+        fill="var(--main-background)"
         stroke="currentColor"
         stroke-width="1.6"
         stroke-linecap="round"
