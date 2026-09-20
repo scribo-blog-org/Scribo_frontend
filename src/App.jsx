@@ -38,7 +38,8 @@ import ScrollToTop from './components/ScrollToTop/index.jsx';
 import RouteSeo from './components/Seo/RouteSeo.jsx';
 
 import { ACCENT_COLOR, CATEGORY_COLORS } from './styles/constants.js';
-import { getAccessToken, setAccessToken, subscribeAccessToken, refreshAccessToken } from './api/http.js';
+import { getAccessToken, setAccessToken, subscribeAccessToken } from './api/http.js';
+import SessionBootstrap from './session/SessionBootstrap.jsx';
 
 import "./styles/common.scss";
 
@@ -84,31 +85,10 @@ function App() {
   let [ modalWindow, showModalWindow ] = useState(false)
   const [ modalCloseRequest, setModalCloseRequest ] = useState(0)
   const [ accessToken, setAccessTokenState ] = useState(getAccessToken())
-  const [ authReady, setAuthReady ] = useState(false)
   const requestCloseModal = () => setModalCloseRequest(c => c + 1)
 
   useEffect(() => {
     return subscribeAccessToken(setAccessTokenState)
-  }, [])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const restoreSession = async () => {
-      try {
-        await refreshAccessToken()
-      } finally {
-        if (!cancelled) {
-          setAuthReady(true)
-        }
-      }
-    }
-
-    restoreSession()
-
-    return () => {
-      cancelled = true
-    }
   }, [])
 
 
@@ -142,8 +122,9 @@ function App() {
   }, [isDarkTheme]);
 
   return (
-    <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow, requestCloseModal, accessToken, setAccessToken, authReady }}>
+    <AppContext.Provider value={{profile, setProfile, isDarkTheme, setIsDarkTheme, profileLoading, setProfileLoading, toast, showToast, modalWindow, showModalWindow, requestCloseModal, accessToken, setAccessToken }}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <SessionBootstrap>
           <ScrollToTop />
           <RouteSeo />
           <div className={"App"} id="app-root">
@@ -201,6 +182,7 @@ function App() {
               </AppShell>
             </AppLayout>
           </div>
+          </SessionBootstrap>
       </Router>
     </AppContext.Provider>
   )
