@@ -2,6 +2,8 @@
 
 .page-layout {
     min-height: calc(100vh - var(--header-height));
+    min-width: 0;
+    max-width: 100%;
 
     padding-top: 20px;
     padding-bottom: 72px;

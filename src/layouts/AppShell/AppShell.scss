@@ -4,6 +4,7 @@
     display: flex;
     flex: 1;
     width: 100%;
+    max-width: 100%;
     min-height: 100dvh;
     min-width: 0;
 
@@ -12,6 +13,7 @@
         flex-direction: column;
         flex: 1;
         min-width: 0;
+        max-width: 100%;
         min-height: 100dvh;
 
         @include screen() {
@@ -30,9 +32,13 @@
         flex-direction: column;
         flex: 1;
         min-height: 0;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: clip;
 
         @include screen() {
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
 
             &:has(.messages_page) {
                 overflow: hidden;
