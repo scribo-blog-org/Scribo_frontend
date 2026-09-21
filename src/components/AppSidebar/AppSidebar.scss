@@ -12,9 +12,9 @@
     max-height: 100dvh;
     padding: var(--space-5) var(--space-3);
     border-right: 1px solid var(--line-color);
-    background: var(--main-background);
     box-sizing: border-box;
     z-index: 100;
+    transition: border-color 0.3s ease;
 
     @include screen() {
         display: none;
@@ -94,6 +94,7 @@
         width: 20px;
         height: 20px;
         color: inherit;
+        @include use-transition-text();
 
         *[fill] {
             fill: currentColor;

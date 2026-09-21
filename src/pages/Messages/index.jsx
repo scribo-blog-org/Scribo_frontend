@@ -39,7 +39,6 @@ import DeleteIcon from "../../assets/svg/delete.svg?react";
 import EditIcon from "../../assets/svg/edit.svg?react";
 import CrossIcon from "../../assets/svg/cross-icon.svg?react";
 import ArrowLeftIcon from "../../assets/svg/arrow-left.svg?react";
-import ThreeDotsVerticalIcon from "../../assets/svg/three-dots-vertical.svg?react";
 import NewMessageIllustration from "../../assets/svg/illustrations/new-message.svg?react";
 
 import MessageContextMenu from "./MessageContextMenu";
@@ -278,6 +277,7 @@ const MessagesPage = () => {
     const [onlineByUserId, setOnlineByUserId] = useState({});
 
     const listRef = useRef(null);
+    const composerInputRef = useRef(null);
     const stickToBottomRef = useRef(true);
 
     const scrollMessagesToBottom = useCallback(() => {
@@ -377,7 +377,7 @@ const MessagesPage = () => {
     }, [profile?._id, loadConversations]);
 
     useEffect(() => {
-        if (!profile) {
+        if (!profile?._id) {
             return;
         }
 
@@ -561,6 +561,41 @@ const MessagesPage = () => {
     const handleStartReply = (message) => {
         setEditingMessage(null);
         setReplyTo(message);
+    };
+
+    const scrollToMessageDay = useCallback((groupKey) => {
+        document.getElementById(`messages_day_${groupKey}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!replyTo || isChatLoading) {
+            return;
+        }
+
+        const frame = requestAnimationFrame(() => {
+            composerInputRef.current?.focus();
+        });
+
+        return () => cancelAnimationFrame(frame);
+    }, [replyTo, isChatLoading]);
+
+    const handleMessageDoubleClick = (event, message) => {
+        if (!message || message.deleted_at || isChatLoading) {
+            return;
+        }
+
+        if (
+            event.target.closest(
+                "a, button, input, textarea, [contenteditable='true']",
+            )
+        ) {
+            return;
+        }
+
+        handleStartReply(message);
     };
 
     const handleStartEdit = (message) => {
@@ -782,7 +817,7 @@ const MessagesPage = () => {
             cancelled = true;
             void unsubscribe();
         };
-    }, [watchedUserIds.join(",")]);
+    }, [watchedUserIds]);
 
     const messageDayGroups = useMemo(
         () => buildMessageDayGroups(messages),
@@ -902,7 +937,7 @@ const MessagesPage = () => {
                         <div className="messages_blank">
                             <div className="messages_blank_sheet" aria-hidden="true">
                                 
-                                <NewMessageIllustration />
+                                <NewMessageIllustration className="app-transition-color"/>
                             </div>
                             <div className="messages_blank_copy">
                                 <h1>Диалог ещё пустой</h1>
@@ -959,6 +994,7 @@ const MessagesPage = () => {
                                     messageDayGroups.map((group, groupIndex) => (
                                         <section
                                             key={group.key}
+                                            id={`messages_day_${group.key}`}
                                             className="messages_day_group"
                                         >
                                             <div
@@ -969,9 +1005,15 @@ const MessagesPage = () => {
                                                         groupIndex,
                                                 }}
                                             >
-                                                <span className="messages_date_label">
+                                                <button
+                                                    type="button"
+                                                    className="messages_date_label app-transition"
+                                                    onClick={() =>
+                                                        scrollToMessageDay(group.key)
+                                                    }
+                                                >
                                                     {group.label}
-                                                </span>
+                                                </button>
                                             </div>
 
                                             {group.messages.map((message) => {
@@ -999,6 +1041,9 @@ const MessagesPage = () => {
                                             className={`messages_item app-transition${
                                                 isOwn ? " messages_item_own" : ""
                                             }`}
+                                            onDoubleClick={(event) =>
+                                                handleMessageDoubleClick(event, message)
+                                            }
                                             onContextMenu={(event) =>
                                                 openMessageMenu(event, actionItems)
                                             }
@@ -1069,46 +1114,6 @@ const MessagesPage = () => {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {actionItems.length ? (
-                                                <>
-                                                    <div className="messages_actions">
-                                                        {actionItems.map((item) => {
-                                                            const Icon = item.icon;
-
-                                                            return (
-                                                                <button
-                                                                    key={item.id}
-                                                                    type="button"
-                                                                    className="messages_action app-transition"
-                                                                    onClick={() => {
-                                                                        if (item.disabled) {
-                                                                            return;
-                                                                        }
-
-                                                                        item.onClick();
-                                                                    }}
-                                                                    aria-label={item.title}
-                                                                    disabled={item.disabled}
-                                                                >
-                                                                    <Icon />
-                                                                </button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        className="messages_actions_menu app-transition"
-                                                        aria-label="Действия с сообщением"
-                                                        disabled={isChatLoading}
-                                                        onClick={(event) =>
-                                                            openMessageMenu(event, actionItems)
-                                                        }
-                                                    >
-                                                        <ThreeDotsVerticalIcon />
-                                                    </button>
-                                                </>
-                                            ) : null}
                                         </div>
                                     </article>
                                     );
@@ -1187,6 +1192,7 @@ const MessagesPage = () => {
                                         multilineRows={2}
                                         length={FIELD_LIMITS.chatMessage.max}
                                         className="messages_composer_input"
+                                        inputRef={composerInputRef}
                                         value={draft}
                                         onChange={(event) => setDraft(event.target.value)}
                                         onKeyDown={handleComposerKeyDown}

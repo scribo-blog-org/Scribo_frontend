@@ -9,6 +9,21 @@ import "./RichInputField.scss";
 
 const PORTAL_ROOT = "app-layout";
 
+const assignTextareaRef = (node, textareaRef, inputRef) => {
+    textareaRef.current = node;
+
+    if (!inputRef) {
+        return;
+    }
+
+    if (typeof inputRef === "function") {
+        inputRef(node);
+        return;
+    }
+
+    inputRef.current = node;
+};
+
 const RichInputField = ({
     value,
     onChange,
@@ -24,6 +39,7 @@ const RichInputField = ({
     disabled,
     onFocus,
     onKeyDown,
+    inputRef,
     ...props
 }) => {
     const {
@@ -55,6 +71,7 @@ const RichInputField = ({
     if (!resolvedFeatures.hashtags && !resolvedFeatures.mentions) {
         return (
             <InputField
+                ref={inputRef}
                 value={value}
                 onChange={onChange}
                 onMouseDown={onMouseDown}
@@ -97,7 +114,7 @@ const RichInputField = ({
                 }}
             />
             <textarea
-                ref={textareaRef}
+                ref={(node) => assignTextareaRef(node, textareaRef, inputRef)}
                 className={`input_field rich_input_field_input app-transition ${className}${
                     error ? " incorrect_field" : ""
                 }${isBlocked ? " input_field_blocked" : ""}`}

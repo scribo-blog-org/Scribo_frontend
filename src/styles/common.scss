@@ -37,7 +37,7 @@ body {
     color: var(--text-color);
     font-size: var(--text-md);
     line-height: 1.5;
-    transition: background-color .3s, color .3s;
+    transition: background-color 0.3s ease;
 }
 
 body.dark-theme {
@@ -49,7 +49,7 @@ body.no-scroll {
     overflow-y: hidden;
 }
 
-p, h1, h2, h3, h4 ,h5, h6  {
+p, h1, h2, h3, h4 ,h5, h6 {
     margin: 0;
     padding: 0;
     color: var(--text-color);
@@ -102,8 +102,38 @@ p::selection, h1::selection, h2::selection, h3::selection, h4::selection, h5::se
     background-color: var(--text-selection-background-color);
 }
 
-span, p, h1, h2, h3, h4 ,h5, h6, .app-transition {
+.app-transition {
+    @include use-transition-surface();
+}
+
+.app-transition.app-transition-color {
     @include use-transition();
+}
+
+.app-transition-color {
+    @include use-transition-text();
+}
+
+span, p, h1, h2, h3, h4, h5, h6, a, li::marker {
+    @include use-transition-text();
+}
+
+// Цвет темы — один раз на корне ссылки/кнопки, не на span/svg внутри (иначе «длинный» переход).
+:where(a, button).app-transition-color :where(span, p, svg),
+.app-transition.app-transition-color :where(span, p, svg) {
+    transition: none;
+}
+
+.app-transition .app-transition {
+    @include use-transition-surface();
+}
+
+.app-transition .app-transition.app-transition-color {
+    @include use-transition();
+}
+
+.app-transition .app-transition :where(span, p, h1, h2, h3, h4, h5, h6) {
+    @include use-transition-text();
 }
 
 .section {

@@ -68,10 +68,10 @@ function AppSidebar() {
     };
 
     return (
-        <aside className="app-sidebar app-transition" aria-label="Навигация">
+        <aside className="app-sidebar" aria-label="Навигация">
             <Link
                 to="/posts"
-                className="app-sidebar_logo app-transition"
+                className="app-sidebar_logo app-transition-color"
                 onClick={(event) => handleSameRouteClick(event, location.pathname, "/posts")}
             >
                 <MainLogo className="app-sidebar_logo_icon" />

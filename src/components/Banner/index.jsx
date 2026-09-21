@@ -10,15 +10,15 @@ const Banner = () => (
     <aside className="banner">
         <p className="banner_kicker">Личный проект</p>
         <p className="banner_lead">Пишу, когда есть что сказать — без редакции.</p>
-        <div className="banner_links app-transition">
+        <div className="banner_links">
             <a
-                className="banner_link app-transition"
+                className="banner_link"
                 href="https://github.com/MaksimKosyanchuk"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="GitHub MaksimKosyanchuk"
             >
-                <GhIcon className="banner_link_icon app-transition" aria-hidden="true" />
+                <GhIcon className="banner_link_icon app-transition-color" aria-hidden="true" />
                 <span className="banner_link_copy">
                     <span className="banner_link_label">GitHub</span>
                     <span className="banner_link_hint">MaksimKosyanchuk</span>
@@ -26,11 +26,11 @@ const Banner = () => (
                 <ChevronRightIcon className="banner_link_chevron" aria-hidden="true" />
             </a>
             <Link
-                className="banner_link app-transition"
+                className="banner_link"
                 to="/users/Maks"
                 aria-label="Профиль на этом сайте"
             >
-                <ProfileIcon className="banner_link_icon app-transition" aria-hidden="true" />
+                <ProfileIcon className="banner_link_icon app-transition-color" aria-hidden="true" />
                 <span className="banner_link_copy">
                     <span className="banner_link_label">Мой профиль</span>
                     <span className="banner_link_hint">на scribo</span>
