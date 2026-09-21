@@ -39,7 +39,6 @@ import DeleteIcon from "../../assets/svg/delete.svg?react";
 import EditIcon from "../../assets/svg/edit.svg?react";
 import CrossIcon from "../../assets/svg/cross-icon.svg?react";
 import ArrowLeftIcon from "../../assets/svg/arrow-left.svg?react";
-import ThreeDotsVerticalIcon from "../../assets/svg/three-dots-vertical.svg?react";
 import NewMessageIllustration from "../../assets/svg/illustrations/new-message.svg?react";
 
 import MessageContextMenu from "./MessageContextMenu";
@@ -378,7 +377,7 @@ const MessagesPage = () => {
     }, [profile?._id, loadConversations]);
 
     useEffect(() => {
-        if (!profile) {
+        if (!profile?._id) {
             return;
         }
 
@@ -818,7 +817,7 @@ const MessagesPage = () => {
             cancelled = true;
             void unsubscribe();
         };
-    }, [watchedUserIds.join(",")]);
+    }, [watchedUserIds]);
 
     const messageDayGroups = useMemo(
         () => buildMessageDayGroups(messages),
