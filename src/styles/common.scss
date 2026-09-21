@@ -114,7 +114,7 @@ p::selection, h1::selection, h2::selection, h3::selection, h4::selection, h5::se
     @include use-transition-text();
 }
 
-span, p, h1, h2, h3, h4, h5, h6 {
+span, p, h1, h2, h3, h4, h5, h6, a, li::marker {
     @include use-transition-text();
 }
 
