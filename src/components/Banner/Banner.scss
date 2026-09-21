@@ -67,6 +67,7 @@
         &:first-child {
             padding-right: 20px;
             border-right: 1px solid var(--line-color);
+            transition: border-color 0.3s ease;
         }
 
         &:last-child {
