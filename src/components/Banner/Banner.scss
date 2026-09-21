@@ -48,6 +48,7 @@
         grid-template-columns: 1fr 1fr;
         margin-top: var(--space-1);
         border-top: 1px solid var(--line-color);
+        transition: border-color 0.3s ease;
 
         @include screen() {
             grid-template-columns: 1fr;
@@ -61,6 +62,7 @@
         padding: 14px 16px 14px 0;
         color: var(--text-color);
         border-bottom: 1px solid var(--line-color);
+        transition: border-color 0.3s ease;
 
         &:first-child {
             padding-right: 20px;
@@ -101,6 +103,7 @@
         height: 18px;
         flex-shrink: 0;
         color: var(--text-color);
+        transition: color 0.3s ease;
     }
 
     &_link_copy {

@@ -563,6 +563,22 @@ const MessagesPage = () => {
         setReplyTo(message);
     };
 
+    const handleMessageDoubleClick = (event, message) => {
+        if (!message || message.deleted_at || isChatLoading) {
+            return;
+        }
+
+        if (
+            event.target.closest(
+                "a, button, input, textarea, [contenteditable='true']",
+            )
+        ) {
+            return;
+        }
+
+        handleStartReply(message);
+    };
+
     const handleStartEdit = (message) => {
         setReplyTo(null);
         setEditingMessage(message);
@@ -999,6 +1015,9 @@ const MessagesPage = () => {
                                             className={`messages_item app-transition${
                                                 isOwn ? " messages_item_own" : ""
                                             }`}
+                                            onDoubleClick={(event) =>
+                                                handleMessageDoubleClick(event, message)
+                                            }
                                             onContextMenu={(event) =>
                                                 openMessageMenu(event, actionItems)
                                             }
@@ -1069,46 +1088,6 @@ const MessagesPage = () => {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {actionItems.length ? (
-                                                <>
-                                                    <div className="messages_actions">
-                                                        {actionItems.map((item) => {
-                                                            const Icon = item.icon;
-
-                                                            return (
-                                                                <button
-                                                                    key={item.id}
-                                                                    type="button"
-                                                                    className="messages_action app-transition"
-                                                                    onClick={() => {
-                                                                        if (item.disabled) {
-                                                                            return;
-                                                                        }
-
-                                                                        item.onClick();
-                                                                    }}
-                                                                    aria-label={item.title}
-                                                                    disabled={item.disabled}
-                                                                >
-                                                                    <Icon />
-                                                                </button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        className="messages_actions_menu app-transition"
-                                                        aria-label="Действия с сообщением"
-                                                        disabled={isChatLoading}
-                                                        onClick={(event) =>
-                                                            openMessageMenu(event, actionItems)
-                                                        }
-                                                    >
-                                                        <ThreeDotsVerticalIcon />
-                                                    </button>
-                                                </>
-                                            ) : null}
                                         </div>
                                     </article>
                                     );

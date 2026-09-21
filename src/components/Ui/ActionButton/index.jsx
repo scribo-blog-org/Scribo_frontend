@@ -5,7 +5,7 @@ export default function ActionButton({ children, onClick, type = "button", class
   const isDisabled = disabled || isLoading;
   return (
     <button
-      className={`action_button app-transition ${className} ${isLoading ? "action_button_loading" : ""} ${isDisabled && !isLoading ? "action_button_disabled" : ""}`}
+      className={`action_button app-transition app-transition-color ${className} ${isLoading ? "action_button_loading" : ""} ${isDisabled && !isLoading ? "action_button_disabled" : ""}`}
       onClick={isDisabled ? undefined : onClick}
       type={type}
       disabled={isDisabled}

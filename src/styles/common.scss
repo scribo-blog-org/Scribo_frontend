@@ -37,7 +37,7 @@ body {
     color: var(--text-color);
     font-size: var(--text-md);
     line-height: 1.5;
-    transition: background-color .3s, color .3s;
+    transition: background-color 0.3s ease;
 }
 
 body.dark-theme {
@@ -102,8 +102,36 @@ p::selection, h1::selection, h2::selection, h3::selection, h4::selection, h5::se
     background-color: var(--text-selection-background-color);
 }
 
-span, p, h1, h2, h3, h4 ,h5, h6, .app-transition {
+// Только surface.
+.app-transition {
+    @include use-transition-surface();
+}
+
+// Surface + color на одном узле (один transition, без перезаписи shorthand).
+.app-transition.app-transition-color {
     @include use-transition();
+}
+
+// Только color.
+.app-transition-color {
+    @include use-transition-text();
+}
+
+span, p, h1, h2, h3, h4, h5, h6 {
+    @include use-transition-text();
+}
+
+// Вложенные оболочки: не дублируем surface; color — через app-transition-color.
+.app-transition .app-transition {
+    transition: none;
+}
+
+.app-transition .app-transition.app-transition-color {
+    @include use-transition-text();
+}
+
+.app-transition .app-transition :where(span, p, h1, h2, h3, h4, h5, h6, svg) {
+    @include use-transition-text();
 }
 
 .section {

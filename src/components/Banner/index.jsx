@@ -10,7 +10,7 @@ const Banner = () => (
     <aside className="banner">
         <p className="banner_kicker">Личный проект</p>
         <p className="banner_lead">Пишу, когда есть что сказать — без редакции.</p>
-        <div className="banner_links app-transition">
+        <div className="banner_links">
             <a
                 className="banner_link app-transition"
                 href="https://github.com/MaksimKosyanchuk"
@@ -18,7 +18,7 @@ const Banner = () => (
                 rel="noreferrer"
                 aria-label="GitHub MaksimKosyanchuk"
             >
-                <GhIcon className="banner_link_icon app-transition" aria-hidden="true" />
+                <GhIcon className="banner_link_icon" aria-hidden="true" />
                 <span className="banner_link_copy">
                     <span className="banner_link_label">GitHub</span>
                     <span className="banner_link_hint">MaksimKosyanchuk</span>
@@ -30,7 +30,7 @@ const Banner = () => (
                 to="/users/Maks"
                 aria-label="Профиль на этом сайте"
             >
-                <ProfileIcon className="banner_link_icon app-transition" aria-hidden="true" />
+                <ProfileIcon className="banner_link_icon" aria-hidden="true" />
                 <span className="banner_link_copy">
                     <span className="banner_link_label">Мой профиль</span>
                     <span className="banner_link_hint">на scribo</span>
