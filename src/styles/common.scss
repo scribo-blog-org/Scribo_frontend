@@ -49,7 +49,7 @@ body.no-scroll {
     overflow-y: hidden;
 }
 
-p, h1, h2, h3, h4 ,h5, h6  {
+p, h1, h2, h3, h4 ,h5, h6 {
     margin: 0;
     padding: 0;
     color: var(--text-color);
@@ -102,17 +102,14 @@ p::selection, h1::selection, h2::selection, h3::selection, h4::selection, h5::se
     background-color: var(--text-selection-background-color);
 }
 
-// Только surface.
 .app-transition {
     @include use-transition-surface();
 }
 
-// Surface + color на одном узле (один transition, без перезаписи shorthand).
 .app-transition.app-transition-color {
     @include use-transition();
 }
 
-// Только color.
 .app-transition-color {
     @include use-transition-text();
 }
@@ -121,16 +118,21 @@ span, p, h1, h2, h3, h4, h5, h6 {
     @include use-transition-text();
 }
 
-// Вложенные оболочки: не дублируем surface; color — через app-transition-color.
-.app-transition .app-transition {
+// Цвет темы — один раз на корне ссылки/кнопки, не на span/svg внутри (иначе «длинный» переход).
+:where(a, button).app-transition-color :where(span, p, svg),
+.app-transition.app-transition-color :where(span, p, svg) {
     transition: none;
 }
 
-.app-transition .app-transition.app-transition-color {
-    @include use-transition-text();
+.app-transition .app-transition {
+    @include use-transition-surface();
 }
 
-.app-transition .app-transition :where(span, p, h1, h2, h3, h4, h5, h6, svg) {
+.app-transition .app-transition.app-transition-color {
+    @include use-transition();
+}
+
+.app-transition .app-transition :where(span, p, h1, h2, h3, h4, h5, h6) {
     @include use-transition-text();
 }
 

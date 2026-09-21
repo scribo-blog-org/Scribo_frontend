@@ -7,7 +7,7 @@ export default function PrimaryButton({ children, onClick, type = "button", clas
   return (
     <button
       id={id}
-      className={`primary_button app-transition ${className} ${isLoading ? "primary_button_loading" : ""} ${isDisabled && !isLoading ? "primary_button_disabled" : ""}`}
+      className={`primary_button app-transition app-transition-color ${className} ${isLoading ? "primary_button_loading" : ""} ${isDisabled && !isLoading ? "primary_button_disabled" : ""}`}
       onClick={isDisabled ? undefined : onClick}
       type={type}
       disabled={isDisabled}>

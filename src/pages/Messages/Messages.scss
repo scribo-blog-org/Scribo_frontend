@@ -298,7 +298,9 @@
 
 .messages_date_label {
     flex-shrink: 0;
+    margin: 0;
     padding: 4px 12px;
+    border: 0;
     border-radius: 999px;
     background: color-mix(
         in srgb,
@@ -312,6 +314,12 @@
     color: var(--light-text-color);
     white-space: nowrap;
     pointer-events: auto;
+    cursor: pointer;
+    font-family: inherit;
+
+    @include hover {
+        color: var(--text-color);
+    }
 }
 
 .messages_item {
@@ -349,22 +357,45 @@
     --message-quote-bg: color-mix(
         in srgb,
         var(--text-color) 5%,
-        var(--section-item-hover-background-color)
+        var(--section-background-color)
     );
     --message-quote-bg-hover: color-mix(
         in srgb,
         var(--text-color) 11%,
-        var(--section-item-hover-background-color)
+        var(--section-background-color)
     );
 
     display: flex;
     flex-direction: column;
     gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
     padding: 12px 14px;
+    border: 0;
     border-radius: 12px;
-    background: var(--section-item-hover-background-color);
+    background: var(--section-background-color);
     color: var(--text-color);
     min-width: 0;
+    @include use-transition-surface();
+}
+
+.messages_item_own .messages_bubble {
+    --message-quote-bg: color-mix(
+        in srgb,
+        var(--accent-color) 10%,
+        var(--main-background)
+    );
+    --message-quote-bg-hover: color-mix(
+        in srgb,
+        var(--accent-color) 16%,
+        var(--main-background)
+    );
+
+    background: color-mix(
+        in srgb,
+        var(--accent-color) 12%,
+        var(--section-background-color)
+    );
 }
 
 .messages_quote {
@@ -380,7 +411,6 @@
     text-align: left;
     box-sizing: border-box;
     cursor: pointer;
-    @include use-transition();
 
     @include hover {
         background: var(--message-quote-bg-hover, var(--section-item-hover-background-color));
@@ -567,7 +597,6 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    margin-top: 8px;
     border: 1px solid var(--input-outline-color);
     border-radius: 8px;
     background: transparent;
@@ -619,6 +648,8 @@
         display: grid;
         grid-template-columns: auto minmax(0, 1fr) auto;
         align-items: center;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
         gap: 10px;
         padding: 10px 12px;
         border-bottom: 1px solid var(--line-color);
@@ -857,6 +888,6 @@
     }
 }
 
-path {
-    transition: fill .3s ease;
+.messages_page path {
+    transition: fill 0.3s ease;
 }

@@ -278,6 +278,7 @@ const MessagesPage = () => {
     const [onlineByUserId, setOnlineByUserId] = useState({});
 
     const listRef = useRef(null);
+    const composerInputRef = useRef(null);
     const stickToBottomRef = useRef(true);
 
     const scrollMessagesToBottom = useCallback(() => {
@@ -562,6 +563,25 @@ const MessagesPage = () => {
         setEditingMessage(null);
         setReplyTo(message);
     };
+
+    const scrollToMessageDay = useCallback((groupKey) => {
+        document.getElementById(`messages_day_${groupKey}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!replyTo || isChatLoading) {
+            return;
+        }
+
+        const frame = requestAnimationFrame(() => {
+            composerInputRef.current?.focus();
+        });
+
+        return () => cancelAnimationFrame(frame);
+    }, [replyTo, isChatLoading]);
 
     const handleMessageDoubleClick = (event, message) => {
         if (!message || message.deleted_at || isChatLoading) {
@@ -918,7 +938,7 @@ const MessagesPage = () => {
                         <div className="messages_blank">
                             <div className="messages_blank_sheet" aria-hidden="true">
                                 
-                                <NewMessageIllustration />
+                                <NewMessageIllustration className="app-transition-color"/>
                             </div>
                             <div className="messages_blank_copy">
                                 <h1>Диалог ещё пустой</h1>
@@ -975,6 +995,7 @@ const MessagesPage = () => {
                                     messageDayGroups.map((group, groupIndex) => (
                                         <section
                                             key={group.key}
+                                            id={`messages_day_${group.key}`}
                                             className="messages_day_group"
                                         >
                                             <div
@@ -985,9 +1006,15 @@ const MessagesPage = () => {
                                                         groupIndex,
                                                 }}
                                             >
-                                                <span className="messages_date_label">
+                                                <button
+                                                    type="button"
+                                                    className="messages_date_label app-transition"
+                                                    onClick={() =>
+                                                        scrollToMessageDay(group.key)
+                                                    }
+                                                >
                                                     {group.label}
-                                                </span>
+                                                </button>
                                             </div>
 
                                             {group.messages.map((message) => {
@@ -1166,6 +1193,7 @@ const MessagesPage = () => {
                                         multilineRows={2}
                                         length={FIELD_LIMITS.chatMessage.max}
                                         className="messages_composer_input"
+                                        inputRef={composerInputRef}
                                         value={draft}
                                         onChange={(event) => setDraft(event.target.value)}
                                         onKeyDown={handleComposerKeyDown}

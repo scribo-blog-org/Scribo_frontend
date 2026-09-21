@@ -94,6 +94,7 @@
         width: 20px;
         height: 20px;
         color: inherit;
+        @include use-transition-text();
 
         *[fill] {
             fill: currentColor;

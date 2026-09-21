@@ -12,7 +12,7 @@ const Banner = () => (
         <p className="banner_lead">Пишу, когда есть что сказать — без редакции.</p>
         <div className="banner_links">
             <a
-                className="banner_link app-transition"
+                className="banner_link app-transition-color"
                 href="https://github.com/MaksimKosyanchuk"
                 target="_blank"
                 rel="noreferrer"
@@ -26,7 +26,7 @@ const Banner = () => (
                 <ChevronRightIcon className="banner_link_chevron" aria-hidden="true" />
             </a>
             <Link
-                className="banner_link app-transition"
+                className="banner_link app-transition-color"
                 to="/users/Maks"
                 aria-label="Профиль на этом сайте"
             >
