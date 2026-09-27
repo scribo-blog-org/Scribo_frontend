@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "destination": "https://scribo-blog.duckdns.org/:path*",
+      "statusCode": 301
+    }
+  ]
+}
