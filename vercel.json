@@ -3,7 +3,7 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "scribo-blog-stage.duckdns.org" }],
-      "destination": "https://scribo-stage.pp.ua/posts",
+      "destination": "https://scribo-stage.pp.ua/",
       "statusCode": 301
     },
     {
@@ -14,7 +14,7 @@
     },
     {
       "source": "/",
-      "destination": "https://scribo.pp.ua/posts",
+      "destination": "https://scribo.pp.ua/",
       "statusCode": 301
     },
     {
